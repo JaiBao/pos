@@ -9421,39 +9421,65 @@ const columns = [
 // 招牌便當推入表格
 const rows = reactive([])
 const submitBandong1Form = () => {
-  // 在這裡處理表單的提交操作，可以使用 form 物件中的資料
-  // 可以向後端發送請求，更新資料等
-
-  // 將表單資料推入資料表格的資料中，並在前面加入 "客人" 兩個字
   const currentIndex = rows.length + 1
+  const calories = []
+  const fat = []
+
+  // 主餐
+  if (bangdong1Form.bangdong1Vegetable > 0) {
+    calories.push('全素X' + bangdong1Form.bangdong1Vegetable)
+  }
+  if (bangdong1Form.bangdong1Egg > 0) {
+    calories.push('蛋素X' + bangdong1Form.bangdong1Egg)
+  }
+  if (bangdong1Form.bangdong1Potato > 0) {
+    calories.push('薯泥X' + bangdong1Form.bangdong1Potato)
+  }
+  if (bangdong1Form.bangdong1Shrimp > 0) {
+    calories.push('炸蝦X' + bangdong1Form.bangdong1Shrimp)
+  }
+  if (bangdong1Form.bangdong1Chicken > 0) {
+    calories.push('炒雞X' + bangdong1Form.bangdong1Chicken)
+  }
+  if (bangdong1Form.bangdong1Fish > 0) {
+    calories.push('酥魚X' + bangdong1Form.bangdong1Fish)
+  }
+  if (bangdong1Form.bangdong1Pig > 0) {
+    calories.push('培根X' + bangdong1Form.bangdong1Pig)
+  }
+  if (bangdong1Form.bangdong1Meet > 0) {
+    calories.push('滷肉X' + bangdong1Form.bangdong1Meet)
+  }
+
+  // 飲料
+  if (bangdong1Form.bangdong1SugarZero > 0) {
+    fat.push('無豆' + bangdong1Form.bangdong1SugarZero + '杯' + '、')
+  }
+  if (bangdong1Form.bangdong1SugarSome > 0) {
+    fat.push('微豆' + bangdong1Form.bangdong1SugarSome + '杯' + '、')
+  }
+  if (bangdong1Form.bangdong1BlackTea > 0) {
+    fat.push('紅茶' + bangdong1Form.bangdong1BlackTea + '杯' + '、')
+  }
+  if (bangdong1Form.bangdong1MilkTea > 0) {
+    fat.push('奶茶' + bangdong1Form.bangdong1MilkTea + '杯' + '、')
+  }
+  if (bangdong1Form.bangdong1Sweetsoup > 0) {
+    fat.push('甜湯' + bangdong1Form.bangdong1Sweetsoup + '碗' + '、')
+  }
+  if (bangdong1Form.bangdong1Soup > 0) {
+    fat.push('濃湯' + bangdong1Form.bangdong1Soup + '碗' + '、')
+  }
+  console.log(fat)
+  console.log(calories)
+
   rows.push({
-    index: currentIndex, // 將目前的資料筆數作為 index 的值
+    index: currentIndex,
     name: '招牌便當X' + bangdong1Form.bangdong1Quantity,
-    // 主餐推入
-    calories: [
-      bangdong1Form.bangdong1Vegetable > 0 ? '全素X' + bangdong1Form.bangdong1Vegetable : '',
-      bangdong1Form.bangdong1Egg > 0 ? '蛋素X' + bangdong1Form.bangdong1Egg : '',
-      bangdong1Form.bangdong1Potato > 0 ? '薯泥X' + bangdong1Form.bangdong1Potato : '',
-      bangdong1Form.bangdong1Shrimp > 0 ? '炸蝦X' + bangdong1Form.bangdong1Shrimp : '',
-      bangdong1Form.bangdong1Chicken > 0 ? '炒雞X' + bangdong1Form.bangdong1Chicken : '',
-      bangdong1Form.bangdong1Fish > 0 ? '酥魚X' + bangdong1Form.bangdong1Fish : '',
-      bangdong1Form.bangdong1Pig > 0 ? '培根X' + bangdong1Form.bangdong1Pig : '',
-      bangdong1Form.bangdong1Meet > 0 ? '滷肉X' + bangdong1Form.bangdong1Meet : ''
-
-    ].filter(calorie => calorie !== ''), // 過濾掉值為空的項目
-
-    // 飲料推入
-    fat: [
-      bangdong1Form.bangdong1SugarZero > 0 ? '無豆' + bangdong1Form.bangdong1SugarZero + '杯' + '、' : '',
-      bangdong1Form.bangdong1SugarSome > 0 ? '微豆' + bangdong1Form.bangdong1SugarSome + '杯' + '、' : '',
-      bangdong1Form.bangdong1BlackTea > 0 ? '紅茶' + bangdong1Form.bangdong1BlackTea + '杯' + '、' : '',
-      bangdong1Form.bangdong1MilkTea > 0 ? '奶茶' + bangdong1Form.bangdong1MilkTea + '杯' + '、' : '',
-      bangdong1Form.bangdong1Sweetsoup > 0 ? '甜湯' + bangdong1Form.bangdong1Sweetsoup + '碗' + '、' : '',
-      bangdong1Form.bangdong1Soup > 0 ? '濃湯' + bangdong1Form.bangdong1Soup + '碗' + '、' : ''
-    ].filter(calorie => calorie !== '') // 過濾掉值為空的項目
-
+    calories
+    fat
   })
-  console.log(submitBandong1Form)
+  console.log(rows)
 
   // 清空表單資料
   bangdong1Form.bangdong1Quantity = 0
