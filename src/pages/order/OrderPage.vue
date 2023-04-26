@@ -8287,8 +8287,17 @@ watch(
         personForm.company = data.data[0].payment_company
         personForm.road = data.data[0].shipping_road
         personForm.road2 = data.data[0].shipping_address1
-        personForm.address = data.data[0].shipping_state_id
-        personForm.address2 = data.data[0].shipping_city_id
+        // 導入舊資料縣市
+        const stateObject = await apiAuth.get('localization/getJsonStates?pagination=false')
+          .then(response => response.data.find(item => item.id === data.data[0].shipping_state_id))
+
+        personForm.address = stateObject.name
+        // 導入舊資料區域
+        const cities = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${stateObject.id}`)
+          .then(response => response.data)
+        const cityObject = cities.find(item => item.id === data.data[0].shipping_city_id)
+
+        personForm.address2 = cityObject.name
       } else {
         // 如果沒有找到對應的資料，清空表單中的其他資料
         personForm.name = ''
