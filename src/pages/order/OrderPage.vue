@@ -8200,6 +8200,7 @@ function onReset () {
 // 縣市
 
 const addressoptions = reactive([])
+
 const address2Options = reactive([])
 
 const getAddressList = async () => {
@@ -8210,73 +8211,25 @@ const getAddressList = async () => {
     console.error(error)
   }
 }
-getAddressList()
 
-const getCityList = async (parentId) => {
+const getDistrictList = async (id) => {
   try {
-    const response = await apiAuth.get(`http://ods.dtstw.com/api/localization/getJsonCities?filter_parent_id=${parentId}`)
-    address2Options.splice(0, address2Options.length, ...response.data.map(item => ({ label: item.name, value: item.id })))
+    const response = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${id}`)
+    address2Options.splice(0, address2Options.length, ...response.data.map(item => item.name))
   } catch (error) {
     console.error(error)
   }
 }
 
-// 監聽縣市選擇的變化，更新區域選項
-watch(personForm.address, (newValue) => {
-  if (newValue.address) {
-    getCityList(newValue.address)
+getAddressList()
+// 監聽獲取區域
+watch(
+  () => personForm.address,
+  async (newValue) => {
+    const stateId = addressoptions.findIndex(item => item === newValue) + 1
+    await getDistrictList(stateId)
   }
-}, { deep: true })
-
-// watch(() => personForm.address, async (newValue) => {
-//   try {
-//     const response = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${getId(newValue)}`)
-//     address2Options.splice(0, address2Options.length, ...response.data.map(item => item.name))
-//   } catch (error) {
-//     console.error(error)
-//   }
-// })
-
-// const getId = (name) => {
-//   const state = addressoptions.find(item => item === name)
-//   return state ? state.id : ''
-// }
-
-// const getAddress2List = async (parentId) => {
-//   try {
-//     const response = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${parentId}`)
-//     // 根據縣市的id，將行政區數據添加到對應的數組中
-//     if (parentId === 1) {
-//       address2s[0].splice(0, address2s[0].length, ...response.data.map(item => item.name))
-//     } else if (parentId === 2) {
-//       address2s[1].splice(0, address2s[1].length, ...response.data.map(item => item.name))
-//     }
-//     // ... 其他縣市對應的行政區數據
-//   } catch (error) {
-//     console.error(error)
-//   }
-// }
-// getAddress2List()
-
-// const address2Options = computed(() => {
-//   if (personForm.address === '台北市') {
-//     return address2s[0]
-//   } else if (personForm.address === '新北市') {
-//     return address2s[1]
-//   } else {
-//     return []
-//   }
-// })
-
-// const getAddressList = async () => {
-//   try {
-//     const response = await apiAuth.get('localization/getJsonStates?pagination=false')
-//     addressoptions.value = response.data.map(item => item.name)
-//   } catch (error) {
-//     console.error(error)
-//   }
-// }
-// getAddressList()
+)
 
 // 電話號碼搜尋自動導入其他
 
@@ -8334,12 +8287,17 @@ watch(
         personForm.company = data.data[0].payment_company
         personForm.road = data.data[0].shipping_road
         personForm.road2 = data.data[0].shipping_address1
+        personForm.address = data.data[0].shipping_state_id
+        personForm.address2 = data.data[0].shipping_city_id
       } else {
         // 如果沒有找到對應的資料，清空表單中的其他資料
         personForm.name = ''
         personForm.email = ''
         personForm.company = ''
         personForm.road = ''
+        personForm.road2 = ''
+        personForm.address = ''
+        personForm.address2 = ''
       }
     } catch (error) {
       // 處理錯誤
