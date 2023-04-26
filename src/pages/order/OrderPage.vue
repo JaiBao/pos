@@ -123,13 +123,29 @@
             :input-style="{ fontSize: '20px' }"/>
           </td>
           <td>
-            <q-input
+            <q-select
             outlined
              v-model="personForm.tel"
              type="tel"
-             label="訂購人電話"
-             :input-style="{ fontSize: '20px' }" />
-
+             label="訂購人手機"
+             use-input
+             :input-style="{ fontSize: '17px' }"
+             hide-selected
+              fill-input
+              input-debounce="0"
+              :options="teloptions"
+              @filter="filterFn"
+              @input="selectHandler"
+              :dropdown-icon-class="'custom-dropdown'"
+             >
+              <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey" >
+              查無此號碼
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
           </td>
           <td>
             <q-input
@@ -158,7 +174,7 @@
               outlined
               v-model="personForm.address"
               label="縣市"
-            :options="addresss"
+            :options="addressoptions"
             />
             <q-select
 
@@ -169,12 +185,22 @@
               :options="address2Options"
             />
             <q-input
-            style="padding: 2px;width: 490px;"
+            style="padding: 2px;width: 290px;"
             id="road"
             outlined
              v-model="personForm.road"
              type="text"
              label="路"
+             clearable
+             :input-style="{ fontSize: '20px' }"
+              />
+            <q-input
+            style="padding: 2px;width: 200px;"
+            id="road2"
+            outlined
+             v-model="personForm.road2"
+             type="text"
+             label="門牌號碼"
              clearable
              :input-style="{ fontSize: '20px' }"
               />
@@ -200,7 +226,7 @@
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('號')"
+            @click="run2('號')"
             class="q-mt-md"
              label="號"/>
              <q-btn
@@ -334,30 +360,21 @@
               </div>
               <!-- 客戶備註 -->
               <q-dialog v-model="dialogVisible2" persistent>
-      <q-card>
-        <q-card-section>
-          <q-input
-            v-model="searchTerm2"
-            placeholder="搜尋..."
-            dense
-            class="q-mb-md"
-          />
-          <q-item
-            v-for="option2 in filteredOption2s"
-            :key="option2"
-            clickable
-            @click="selectOption2(option2)"
-          >
-            <q-item-section>
-              <q-item-label>{{ option2 }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn label="取消" color="primary" @click="closeDialog2" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <q-card>
+      <q-card-section>
+        <q-input v-model="searchTerm2" placeholder="搜尋..." dense class="q-mb-md" />
+        <q-item v-for="option2 in filteredOption2s" :key="option2" clickable @click="selectOption2(option2)">
+          <q-item-section>
+            <q-item-label>{{ option2 }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-pagination v-if="totalPage2s > 1" v-model="currentPage2" :min="1" :max="totalPage2s" :input="true" />
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn label="取消" color="primary" @click="closeDialog2" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
               <div class="row justify-end  col-2">
                 <q-select
                 outlined
@@ -1059,15 +1076,7 @@ style="width: 130px;"
       label="鮮蔬(全)"
 
     />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Egg"
-      label="鮮蔬(蛋)"
 
-    />
     <q-input
       outlined
       type="number"
@@ -2244,7 +2253,7 @@ style="width: 130px;"
             label="送出"
             type="submit"
             class="q-mt-md"
-            @click="submitForm"
+            @click="submitLunchBox1Form"
             />
             <q-btn
             color="red"
@@ -7971,7 +7980,7 @@ class="q-mt-md"
               icon="edit"
               color="info"
               fab-mini unelevated size="sm"
-              @click="editRow(props.rowKey)" />
+              @click="editRow(props.row.index)" />
               <q-btn
               icon="delete"
               color="red"
@@ -7995,31 +8004,38 @@ class="q-mt-md"
       @input="showDialog"
     />
   </div>
-    <q-dialog v-model="dialogVisible" persistent>
-      <q-card>
-        <q-card-section>
-          <q-input
-            v-model="searchTerm"
-            placeholder="搜尋..."
-            dense
-            class="q-mb-md"
-          />
-          <q-item
-            v-for="option in filteredOptions"
-            :key="option"
-            clickable
-            @click="selectOption(option)"
-          >
-            <q-item-section>
-              <q-item-label>{{ option }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn label="取消" color="primary" @click="closeDialog" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+  <q-dialog v-model="dialogVisible" persistent>
+  <q-card>
+    <q-card-section>
+      <q-input
+        v-model="searchTerm"
+        placeholder="搜尋..."
+        dense
+        class="q-mb-md"
+      />
+      <q-item
+        v-for="option in filteredOptions"
+        :key="option"
+        clickable
+        @click="selectOption(option)"
+      >
+        <q-item-section>
+          <q-item-label>{{ option }}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-pagination
+        v-if="totalPages > 1"
+        v-model="currentPage"
+        :min="1"
+        :max="totalPages"
+        :input="true"
+      />
+    </q-card-section>
+    <q-card-actions align="right">
+      <q-btn label="取消" color="primary" @click="closeDialog" />
+    </q-card-actions>
+  </q-card>
+</q-dialog>
 
         <!-- 結帳金額區域 -->
         <div class="row justify-center">
@@ -8063,18 +8079,23 @@ class="q-mt-md"
 
 <script setup>
 import { ref, watch, computed, reactive } from 'vue'
-// import { useQuasar } from 'quasar'
-// import { apiAuth } from 'src/boot/axios'
+import { useQuasar } from 'quasar'
+import { apiAuth } from 'src/boot/axios'
+
 // import { useRouter } from 'vue-router'
 
 // const router = useRouter()
-// const $q = useQuasar()
+const $q = useQuasar()
 
 // 聯絡人區
 // 路名輔助按鈕
 function run (message) {
   personForm.road += message
 }
+function run2 (message) {
+  personForm.road2 += message
+}
+
 // 訂購日期自動導入
 
 const personForm = reactive({
@@ -8093,12 +8114,7 @@ const personForm = reactive({
   address: '', // 縣市
   address2: '', // 區域
   road: '', // 路名
-  // xian: '', // 巷
-  // non: '', // 弄
-  // hao: '', // 號
-  // lo: '', // 樓
-  // room: '', // 室
-  // replenishAdress: '', // 補充地址
+  road2: '', // 門牌
   recipient: '', // 收件人
   recipientTel: '', // 收件人電話
   gender: '', // 性別
@@ -8110,7 +8126,6 @@ const personForm = reactive({
   orderStatu: ''// 訂單狀態
 })
 const picks = reactive(['自取', '外送'])
-const addresss = reactive(['台北市', '新北市'])
 
 // 抓取當日日期
 function updateDateTime () {
@@ -8139,22 +8154,6 @@ watch(() => personForm.getDate, (newVal) => {
 // watch(() => personForm.weekday, (newValue) => {
 //   personForm.week = newValue
 // })
-
-// 選擇縣市後，區域的選項會改變
-const address2s = [
-  ['中正區', '大同區', '中山區', '松山區', '大安區', '萬華區', '信義區', '士林區', '北投區', '內湖區', '南港區', '文山區'],
-  ['板橋區', '中和區', '永和區', '土城區', '樹林區', '三峽區', '鶯歌區', '三重區', '新莊區', '泰山區', '林口區', '蘆洲區', '五股區', '八里區', '淡水區', '三芝區', '石門區']
-]
-
-const address2Options = computed(() => {
-  if (personForm.address === '台北市') {
-    return address2s[0]
-  } else if (personForm.address === '新北市') {
-    return address2s[1]
-  } else {
-    return []
-  }
-})
 
 const orderStatus = reactive([
   '未確認', '待配餐', '已確認', '未結清', '已結案', '作廢'
@@ -8196,14 +8195,193 @@ function onReset () {
   // 重設其它狀態
   // ...
 }
-const dialogVisible2 = ref(false)
-const option2s = ref(['一樓管理室', '二樓停屍間', '地下室'])
-const searchTerm2 = ref('')
-const filteredOption2s = computed(() =>
-  option2s.value.filter(option2 =>
-    option2.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
+// await new Promise(resolve => setTimeout(resolve, 1000)) // 每次等待1秒再繼續請求
+
+// 縣市
+
+const addressoptions = reactive([])
+const address2Options = reactive([])
+
+const getAddressList = async () => {
+  try {
+    const response = await apiAuth.get('localization/getJsonStates?pagination=false')
+    addressoptions.splice(0, addressoptions.length, ...response.data.map(item => item.name))
+  } catch (error) {
+    console.error(error)
+  }
+}
+getAddressList()
+
+const getCityList = async (parentId) => {
+  try {
+    const response = await apiAuth.get(`http://ods.dtstw.com/api/localization/getJsonCities?filter_parent_id=${parentId}`)
+    address2Options.splice(0, address2Options.length, ...response.data.map(item => ({ label: item.name, value: item.id })))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 監聽縣市選擇的變化，更新區域選項
+watch(personForm.address, (newValue) => {
+  if (newValue.address) {
+    getCityList(newValue.address)
+  }
+}, { deep: true })
+
+// watch(() => personForm.address, async (newValue) => {
+//   try {
+//     const response = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${getId(newValue)}`)
+//     address2Options.splice(0, address2Options.length, ...response.data.map(item => item.name))
+//   } catch (error) {
+//     console.error(error)
+//   }
+// })
+
+// const getId = (name) => {
+//   const state = addressoptions.find(item => item === name)
+//   return state ? state.id : ''
+// }
+
+// const getAddress2List = async (parentId) => {
+//   try {
+//     const response = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${parentId}`)
+//     // 根據縣市的id，將行政區數據添加到對應的數組中
+//     if (parentId === 1) {
+//       address2s[0].splice(0, address2s[0].length, ...response.data.map(item => item.name))
+//     } else if (parentId === 2) {
+//       address2s[1].splice(0, address2s[1].length, ...response.data.map(item => item.name))
+//     }
+//     // ... 其他縣市對應的行政區數據
+//   } catch (error) {
+//     console.error(error)
+//   }
+// }
+// getAddress2List()
+
+// const address2Options = computed(() => {
+//   if (personForm.address === '台北市') {
+//     return address2s[0]
+//   } else if (personForm.address === '新北市') {
+//     return address2s[1]
+//   } else {
+//     return []
+//   }
+// })
+
+// const getAddressList = async () => {
+//   try {
+//     const response = await apiAuth.get('localization/getJsonStates?pagination=false')
+//     addressoptions.value = response.data.map(item => item.name)
+//   } catch (error) {
+//     console.error(error)
+//   }
+// }
+// getAddressList()
+
+// 電話號碼搜尋自動導入其他
+
+const teloptions = ref([])
+
+const filterFn = async (search, update, abort) => {
+  if (search.length > 3) {
+    const newData = []
+    let page = 1
+    let totalPages = 1
+
+    while (page <= totalPages) {
+      const { data } = await apiAuth.get(`/member/member?sort=id&order=DESC&filter_phone=${search}&page=${page}`)
+
+      // Update the total number of pages if it hasn't been set yet
+      if (totalPages === 1) {
+        totalPages = data.last_page
+      }
+
+      newData.push(...data.data.map(item => item.mobile.replace('-', '')))
+      page++
+    }
+
+    update(() => {
+      teloptions.value.length = 0
+      teloptions.value.push(...newData)
+    })
+  } else {
+    teloptions.value.length = 0
+  }
+}
+
+const selectHandler = (value) => {
+  personForm.tel = value
+}
+watch(
+  // 監聽personForm.tel的變化
+  () => personForm.tel,
+  async (newVal) => {
+    // 如果tel為空，清空表單中的其他資料
+    if (!newVal) {
+      personForm.name = ''
+      personForm.email = ''
+      return
+    }
+
+    try {
+      // 發送API請求獲取資料
+      const { data } = await apiAuth.get(`/member/member?filter_phone=${newVal}`)
+
+      // 如果找到對應的資料，填入表單中
+      if (data.data.length > 0) {
+        personForm.name = data.data[0].name
+        personForm.email = data.data[0].email
+        personForm.company = data.data[0].payment_company
+        personForm.road = data.data[0].shipping_road
+        personForm.road2 = data.data[0].shipping_address1
+      } else {
+        // 如果沒有找到對應的資料，清空表單中的其他資料
+        personForm.name = ''
+        personForm.email = ''
+        personForm.company = ''
+        personForm.road = ''
+      }
+    } catch (error) {
+      // 處理錯誤
+      console.error(error)
+    }
+  }
 )
+
+// 客戶備註
+const dialogVisible2 = ref(false)
+const option2s = ref([])
+const getExtraComments2 = async () => {
+  try {
+    const response = await apiAuth.get('/sale/order/getOrderPhrases/phrase_order_comment')
+    const extraComments = response.data
+
+    for (let i = 0; i < extraComments.length; i++) {
+      option2s.value.push(extraComments[i].translation.name)
+    }
+  } catch (error) {
+    $q.notify({
+      color: 'red-4',
+      textColor: 'white',
+      icon: 'cloud_off',
+      message: error.message
+    })
+  }
+}
+
+getExtraComments2()
+
+const ITEMS_PER_PAGE2 = 10
+const searchTerm2 = ref('')
+const currentPage2 = ref(1)
+const filteredOption2s = computed(() => {
+  const start = (currentPage2.value - 1) * ITEMS_PER_PAGE2
+  const end = start + ITEMS_PER_PAGE2
+  return option2s.value
+    .filter(option2 => option2.toLowerCase().includes(searchTerm2.value.toLowerCase()))
+    .slice(start, end)
+})
+const totalPage2s = computed(() => Math.ceil(option2s.value.length / ITEMS_PER_PAGE2))
 watch(() => personForm.remark, (newVal) => {
   if (newVal.includes('..')) {
     showDialog2()
@@ -8211,7 +8389,8 @@ watch(() => personForm.remark, (newVal) => {
 })
 
 function showDialog2 () {
-  searchTerm.value = ''
+  searchTerm2.value = ''
+  currentPage2.value = 1
   dialogVisible2.value = true
 }
 function closeDialog2 () {
@@ -8223,18 +8402,44 @@ function selectOption2 (option2) {
   personForm.remark = personForm.remark.replace('..', '')
   closeDialog2()
 }
-// 客戶備註
 
 // 餐點備註
 const mealRemark = ref('')
 const dialogVisible = ref(false)
-const options = ref(['不要蛋', '不要豆干', '不要袋子'])
+
+const options = ref([])
+
+const getExtraComments = async () => {
+  try {
+    const response = await apiAuth.get('/sale/order/getOrderPhrases/phrase_order_extra_comment')
+    const extraComments = response.data
+
+    for (let i = 0; i < extraComments.length; i++) {
+      options.value.push(extraComments[i].translation.name)
+    }
+  } catch (error) {
+    $q.notify({
+      color: 'red-4',
+      textColor: 'white',
+      icon: 'cloud_off',
+      message: error.message
+    })
+  }
+}
+
+getExtraComments()
+
+const ITEMS_PER_PAGE = 10
 const searchTerm = ref('')
-const filteredOptions = computed(() =>
-  options.value.filter(option =>
-    option.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
-)
+const currentPage = ref(1)
+const filteredOptions = computed(() => {
+  const start = (currentPage.value - 1) * ITEMS_PER_PAGE
+  const end = start + ITEMS_PER_PAGE
+  return options.value
+    .filter(option => option.toLowerCase().includes(searchTerm.value.toLowerCase()))
+    .slice(start, end)
+})
+const totalPages = computed(() => Math.ceil(options.value.length / ITEMS_PER_PAGE))
 
 watch(mealRemark, (newVal) => {
   if (newVal.includes('..')) {
@@ -8244,6 +8449,7 @@ watch(mealRemark, (newVal) => {
 
 function showDialog () {
   searchTerm.value = ''
+  currentPage.value = 1
   dialogVisible.value = true
 }
 
@@ -8255,6 +8461,31 @@ function selectOption (option) {
   mealRemark.value += option
   mealRemark.value = mealRemark.value.replace('..', '')
   closeDialog()
+}
+
+const valid = ref(false)
+const loading = ref(false)
+const onSubmit = async () => {
+  await apiAuth.post('/users', personForm)
+  // await apiAuth.post('/orders', form)
+  if (!valid.value) return
+  loading.value = true
+  try {
+    await $q.notify({
+      color: 'green-4',
+      textColor: 'white  ',
+      icon: 'check-circle',
+      message: '新增訂單聯絡人，請繼續點餐'
+    })
+  } catch (error) {
+    $q.notify({
+      color: 'red-4',
+      textColor: 'white',
+      icon: 'error',
+      message: error.message || '發生錯誤'
+    })
+  }
+  loading.value = false
 }
 // 便當盒餐開關
 const showbangdong = ref(false)
@@ -9363,6 +9594,7 @@ const columns = [
     align: 'center',
     label: '主餐',
     field: 'calories',
+    format: val => `${val}`,
     sortable: true
   },
   {
@@ -9370,6 +9602,7 @@ const columns = [
     label: '飲料',
     align: 'center',
     field: 'fat',
+    format: val => `${val}`,
     sortable: true
   },
   {
@@ -9386,38 +9619,6 @@ const columns = [
   }
 ]
 
-// const seed = [
-//   {
-//     name: '招牌便當X9',
-//     calories: '全素X3、炒雞X3、酥魚X3',
-//     fat: '無豆X3、紅茶X3、濃湯X3',
-//     carbs: 900
-
-//   },
-//   {
-//     name: '經濟盒餐X9',
-//     calories: '全素X3、炒雞X3、酥魚X3',
-//     fat: '無豆X3、紅茶X3、甜湯X3',
-//     carbs: 900
-
-//   },
-//   {
-//     name: '客製招牌便當X9',
-//     calories: '全素X3、炒雞X3、酥魚X4',
-//     fat: '無豆X3、奶茶X3、濃湯X3',
-//     carbs: 1800
-
-//   }
-// ]
-
-// // we generate lots of rows here
-// let rows = []
-// for (let i = 1; i < 20; i++) {
-//   rows = rows.concat(seed.slice(0).map(r => ({ ...r })))
-// }
-// rows.forEach((row, index) => {
-//   row.index = index + 1
-// })
 // 招牌便當推入表格
 const rows = reactive([])
 const submitBandong1Form = () => {
@@ -9476,7 +9677,7 @@ const submitBandong1Form = () => {
   rows.push({
     index: currentIndex,
     name: '招牌便當X' + bangdong1Form.bangdong1Quantity,
-    calories
+    calories,
     fat
   })
   console.log(rows)
@@ -9502,6 +9703,223 @@ const submitBandong1Form = () => {
   bangdong1Form.bangdong1Soup = 0
   showbangdong1.value = 'false'
 }
+
+// 經濟盒餐推入
+// 經濟盒餐總數計算
+let lunchbox1Quantity = 0
+function totallunchbox1Quantity () {
+  return parseInt(lunchbox1Form.vegetablePotato) +
+    parseInt(lunchbox1Form.eggPotato) +
+    parseInt(lunchbox1Form.potato) +
+    parseInt(lunchbox1Form.shrimp) +
+    parseInt(lunchbox1Form.chicken) +
+    parseInt(lunchbox1Form.fish) +
+    parseInt(lunchbox1Form.pig) +
+    parseInt(lunchbox1Form.meet)
+}
+watch(() => totallunchbox1Quantity(), (newValue) => {
+  lunchbox1Quantity = newValue
+})
+// 無豆計算
+let lunchbox1SugarZeroQuantity = 0
+function totallunchbox1SugarZeroQuantity () {
+  return parseInt(lunchbox1Form.vegetablePotato_sugarZero) +
+    parseInt(lunchbox1Form.eggPotato_sugarZero) +
+    parseInt(lunchbox1Form.potato_sugarZero) +
+    parseInt(lunchbox1Form.shrimp_sugarZero) +
+    parseInt(lunchbox1Form.chicken_sugarZero) +
+    parseInt(lunchbox1Form.fish_sugarZero) +
+    parseInt(lunchbox1Form.pig_sugarZero) +
+    parseInt(lunchbox1Form.meet_sugarZero)
+}
+watch(() => totallunchbox1SugarZeroQuantity(), (newValue) => {
+  lunchbox1SugarZeroQuantity = newValue
+})
+// 微豆計算
+let lunchbox1SugarsSomeQuantity = 0
+function totallunchbox1SugarsSomeQuantity () {
+  return parseInt(lunchbox1Form.vegetablePotato_sugarSome) +
+    parseInt(lunchbox1Form.eggPotato_sugarSome) +
+    parseInt(lunchbox1Form.potato_sugarSome) +
+    parseInt(lunchbox1Form.shrimp_sugarSome) +
+    parseInt(lunchbox1Form.chicken_sugarSome) +
+    parseInt(lunchbox1Form.fish_sugarSome) +
+    parseInt(lunchbox1Form.pig_sugarSome) +
+    parseInt(lunchbox1Form.meet_sugarSome)
+}
+watch(() => totallunchbox1SugarsSomeQuantity(), (newValue) => {
+  lunchbox1SugarsSomeQuantity = newValue
+})
+
+// 紅茶計算
+let lunchbox1BlackTeaQuantity = 0
+function totallunchbox1BlackTeaQuantity () {
+  return parseInt(lunchbox1Form.vegetablePotato_blackTea) +
+    parseInt(lunchbox1Form.eggPotato_blackTea) +
+    parseInt(lunchbox1Form.potato_blackTea) +
+    parseInt(lunchbox1Form.shrimp_blackTea) +
+    parseInt(lunchbox1Form.chicken_blackTea) +
+    parseInt(lunchbox1Form.fish_blackTea) +
+    parseInt(lunchbox1Form.pig_blackTea) +
+    parseInt(lunchbox1Form.meet_blackTea)
+}
+watch(() => totallunchbox1BlackTeaQuantity(), (newValue) => {
+  lunchbox1BlackTeaQuantity = newValue
+})
+// 奶茶計算
+let lunchbox1MilkTeaQuantity = 0
+function totallunchbox1MilkTeaQuantity () {
+  return parseInt(lunchbox1Form.vegetablePotato_milkTea) +
+    parseInt(lunchbox1Form.eggPotato_milkTea) +
+    parseInt(lunchbox1Form.potato_milkTea) +
+    parseInt(lunchbox1Form.shrimp_milkTea) +
+    parseInt(lunchbox1Form.chicken_milkTea) +
+    parseInt(lunchbox1Form.fish_milkTea) +
+    parseInt(lunchbox1Form.pig_milkTea) +
+    parseInt(lunchbox1Form.meet_milkTea)
+}
+watch(() => totallunchbox1MilkTeaQuantity(), (newValue) => {
+  lunchbox1MilkTeaQuantity = newValue
+})
+// 甜湯計算
+let lunchbox1SweetsoupQuantity = 0
+function totallunchbox1SweetsoupQuantity () {
+  return parseInt(lunchbox1Form.vegetablePotato_sweetsoup) +
+    parseInt(lunchbox1Form.eggPotato_sweetsoup) +
+    parseInt(lunchbox1Form.potato_sweetsoup) +
+    parseInt(lunchbox1Form.shrimp_sweetsoup) +
+    parseInt(lunchbox1Form.chicken_sweetsoup) +
+    parseInt(lunchbox1Form.fish_sweetsoup) +
+    parseInt(lunchbox1Form.pig_sweetsoup) +
+    parseInt(lunchbox1Form.meet_sweetsoup)
+}
+watch(() => totallunchbox1SweetsoupQuantity(), (newValue) => {
+  lunchbox1SweetsoupQuantity = newValue
+})
+// 濃湯計算
+let lunchbox1SoupQuantity = 0
+function totallunchbox1SoupQuantity () {
+  return parseInt(lunchbox1Form.vegetablePotato_soup) +
+    parseInt(lunchbox1Form.eggPotato_soup) +
+    parseInt(lunchbox1Form.potato_soup) +
+    parseInt(lunchbox1Form.shrimp_soup) +
+    parseInt(lunchbox1Form.chicken_soup) +
+    parseInt(lunchbox1Form.fish_soup) +
+    parseInt(lunchbox1Form.pig_soup) +
+    parseInt(lunchbox1Form.meet_soup)
+}
+watch(() => totallunchbox1SoupQuantity(), (newValue) => {
+  lunchbox1SoupQuantity = newValue
+})
+// 推入
+const submitLunchBox1Form = () => {
+  const currentIndex = rows.length + 1
+  const calories = []
+  const fat = []
+
+  // 主餐
+  if (lunchbox1Form.vegetablePotato > 0) {
+    calories.push('全素X' + lunchbox1Form.vegetablePotato)
+  }
+  if (lunchbox1Form.eggPotato > 0) {
+    calories.push('蛋素X' + lunchbox1Form.eggPotato)
+  }
+  if (lunchbox1Form.potato > 0) {
+    calories.push('薯泥X' + lunchbox1Form.potato)
+  }
+  if (lunchbox1Form.shrimp > 0) {
+    calories.push('炸蝦X' + lunchbox1Form.shrimp)
+  }
+  if (lunchbox1Form.chicken > 0) {
+    calories.push('炒雞X' + lunchbox1Form.chicken)
+  }
+  if (lunchbox1Form.fish > 0) {
+    calories.push('酥魚X' + lunchbox1Form.fish)
+  }
+  if (lunchbox1Form.pig > 0) {
+    calories.push('培根X' + lunchbox1Form.pig)
+  }
+  if (lunchbox1Form.meet > 0) {
+    calories.push('滷肉X' + lunchbox1Form.meet)
+  }
+
+  // 飲料
+  if (lunchbox1SugarZeroQuantity > 0) {
+    fat.push('無豆' + lunchbox1SugarZeroQuantity + '杯' + '、')
+  }
+  if (lunchbox1SugarsSomeQuantity > 0) {
+    fat.push('微豆' + lunchbox1SugarsSomeQuantity + '杯' + '、')
+  }
+  if (lunchbox1BlackTeaQuantity > 0) {
+    fat.push('紅茶' + lunchbox1BlackTeaQuantity + '杯' + '、')
+  }
+  if (lunchbox1MilkTeaQuantity > 0) {
+    fat.push('奶茶' + lunchbox1MilkTeaQuantity + '杯' + '、')
+  }
+  if (lunchbox1SweetsoupQuantity > 0) {
+    fat.push('甜湯' + lunchbox1SweetsoupQuantity + '碗' + '、')
+  }
+  if (lunchbox1SoupQuantity > 0) {
+    fat.push('濃湯' + lunchbox1SoupQuantity + '碗' + '、')
+  }
+  console.log(fat)
+  console.log(calories)
+
+  rows.push({
+    index: currentIndex,
+    name: '經濟盒餐X' + lunchbox1Quantity,
+    calories,
+    fat
+  })
+  console.log(rows)
+
+  // 清空表單資料
+  lunchbox1Form.vegetablePotato = 0
+  lunchbox1Form.eggPotato = 0
+  lunchbox1Form.potato = 0
+  lunchbox1Form.shrimp = 0
+  lunchbox1Form.chicken = 0
+  lunchbox1Form.fish = 0
+  lunchbox1Form.pig = 0
+  lunchbox1Form.meet = 0
+  lunchbox1Form.vegetablePotato_sugarZero = 0
+  lunchbox1Form.eggPotato_sugarZero = 0
+  lunchbox1Form.potato_sugarZero = 0
+  lunchbox1Form.shrimp_sugarZero = 0
+  lunchbox1Form.chicken_sugarZero = 0
+  lunchbox1Form.fish_sugarZero = 0
+  lunchbox1Form.pig_sugarZero = 0
+  lunchbox1Form.meet_sugarZero = 0
+  lunchbox1Form.vegetablePotato_sugarsSome = 0
+  lunchbox1Form.eggPotato_sugarsSome = 0
+  lunchbox1Form.potato_sugarsSome = 0
+  lunchbox1Form.shrimp_sugarsSome = 0
+  lunchbox1Form.chicken_sugarsSome = 0
+  lunchbox1Form.fish_sugarsSome = 0
+  lunchbox1Form.pig_sugarsSome = 0
+  lunchbox1Form.meet_sugarsSome = 0
+  lunchbox1Form.blackTea = 0
+  lunchbox1Form.milkTea = 0
+  lunchbox1Form.sweetsoup = 0
+  lunchbox1Form.vegetablePotato_soup = 0
+  lunchbox1Form.eggPotato_soup = 0
+  lunchbox1Form.potato_soup = 0
+  lunchbox1Form.shrimp_soup = 0
+  lunchbox1Form.chicken_soup = 0
+  lunchbox1Form.fish_soup = 0
+  lunchbox1Form.pig_soup = 0
+  lunchbox1Form.meet_soup = 0
+  lunchbox1Quantity = 0
+  lunchbox1SugarZeroQuantity = 0
+  lunchbox1SugarsSomeQuantity = 0
+  lunchbox1BlackTeaQuantity = 0
+  lunchbox1MilkTeaQuantity = 0
+  lunchbox1SweetsoupQuantity = 0
+  lunchbox1SoupQuantity = 0
+
+  showlunchBox1.value = 'false'
+}
+
 const deleteRow = (row) => {
   // 在這裡處理刪除 row 的操作
   // 可以使用 row 參數來取得要刪除的資料
@@ -9516,9 +9934,14 @@ const deleteRow = (row) => {
   }
 }
 
-// function  editRow(index) {
-//       // TODO: 在表單中顯示要編輯的資料，並保存變更
-//     }
+// function editRow (rows) {
+//   // TODO: 在表單中顯示要編輯的資料，並保存變更
+//   if (rows.name == '招牌便當') {
+//     showbangdong1.value = true
+//   } else {
+//     showbangdong2.value = true
+//   }
+// }
 </script >
 
 <style lang="scss" scoped>
@@ -9765,5 +10188,9 @@ table,table td,table th{
     }
 
   }
+
+  .custom-dropdown {
+  width: 2px;
+}
 
 </style>

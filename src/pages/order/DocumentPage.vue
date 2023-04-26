@@ -35,33 +35,54 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { apiAuth } from 'src/boot/axios'
+import { useQuasar } from 'quasar'
+const $q = useQuasar()
+const orders = reactive([])
+const getOrders = async () => {
+  let page = 1
+  let hasMoreData = true
+  let delayTime = 500 // 初始延迟时间为 500 毫秒
 
-const orders = reactive([
-  {
-    id: 1,
-    orderNumber: 'ORD001',
-    name: 'John',
-    phone: '555-1234',
-    deliveryDate: '2023-04-25',
-    orderStatus: 'Pending'
-  },
-  {
-    id: 2,
-    orderNumber: 'ORD002',
-    name: 'Jane',
-    phone: '555-5678',
-    deliveryDate: '2023-04-27',
-    orderStatus: 'Complete'
-  },
-  {
-    id: 3,
-    orderNumber: 'ORD003',
-    name: 'Bob',
-    phone: '555-9012',
-    deliveryDate: '2023-04-28',
-    orderStatus: 'Processing'
+  while (hasMoreData) {
+    try {
+      const data = await apiAuth.get(`/sale/order?page=${page}`)
+      // console.log(data.data.data)
+
+      for (let i = 0; i < data.data.data.length; i++) {
+        orders.push({
+          id: data.data.data[i].id,
+          orderNumber: data.data.data[i].code,
+          name: data.data.data[i].personal_name,
+          phone: data.data.data[i].mobile,
+          deliveryDate: data.data.data[i].delivery_date,
+          orderStatus: data.data.data[i].status_txt
+        })
+      }
+
+      // 使用可选链操作符检查是否还有更多的订单数据
+      hasMoreData = data.data.meta?.pagination?.next_page !== null
+      // 如果还有更多数据，则将页码加 1
+      if (hasMoreData) {
+        page++
+        // 使用指数退避算法动态调整请求频率
+        await new Promise(resolve => setTimeout(resolve, delayTime))
+        delayTime = delayTime * 2 // 每次延迟时间加倍
+      }
+    } catch (error) {
+      $q.notify({
+        color: 'red-4',
+        textColor: 'white',
+        icon: 'cloud_off',
+        message: error.message
+      })
+      // 如果请求出错，退出循环
+      hasMoreData = false
+    }
   }
-])
+}
+
+getOrders()
 
 const columns = ref([
   {
@@ -95,7 +116,7 @@ const columns = ref([
   {
     name: 'deliveryDate',
     align: 'center',
-    label: '訂購日期',
+    label: '送達日期',
     field: 'deliveryDate',
     sortable: true
   },

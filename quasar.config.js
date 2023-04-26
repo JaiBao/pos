@@ -123,6 +123,7 @@ module.exports = configure(function (/* ctx */) {
         'LocalStorage',
         'Notify',
         'Loading'
+
       ]
     },
 

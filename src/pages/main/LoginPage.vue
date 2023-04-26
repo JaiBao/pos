@@ -9,7 +9,7 @@
         <q-input
           outlined
           type="text"
-          v-model="form.account"
+          v-model="form.username"
           label="帳號"
           hint="請輸入帳號"
           lazy-rules
@@ -32,7 +32,7 @@
             flat
             class="q-ml-sm"
           />
-          <q-btn label="送出" type="submit" color="primary" to="/index" />
+          <q-btn label="送出" color="primary" @click="login" />
 
         </div>
       </q-form>
@@ -52,51 +52,47 @@
 <script setup>
 // import { useQuasar } from 'quasar'
 import { reactive } from 'vue'
-// import { useUserStore } from 'src/stores/user'
-// import { useRouter } from 'vue-router'
+import { useUserStore } from 'src/stores/user'
+import { useRouter } from 'vue-router'
+// import { api } from 'src/boot/axios'
 
-// const router = useRouter()
+const router = useRouter()
 // const $q = useQuasar()
-// const user = useUserStore()
+const user = useUserStore()
 const form = reactive({
-  account: '',
+  username: '',
   password: ''
 })
 
-// function login () {
-//   router.push('/admin')
-// }
-// // if (user.role === 1 || user.isAdmin === true) {
-//   router.push('/admin')
-// } else if (user.isLogin === true && user.role === 0) {
-//   router.push('/user')
-// } else {
-//   router.push('/login')
-// }
+const login = async () => {
+  await user.login(form)
+  if (user.tokens.length !== 0) {
+    router.push('/index')
+  }
+}
 
-// const accept = ref(false)
 // const login = async () => {
-//   await user.login(form)
-// }
-// const logout = async () => {
-//   await user.logout()
-// }
-// const onSubmit = async () => {
-//   if (form.account && form.password !== null) {
-//     await login()
-//     if (user.role === 1 || user.isAdmin === true) {
-//       router.push('/admin')
-//     } else if (user.isLogin === true && user.role === 0) {
-//       router.push('/user')
-//     } else {
-//       router.push('/login')
+//   try {
+//     const result = await api.post('/login', form)
+//     // console.log(user.tokens)
+//     user.tokens = result.data.token
+//     // console.log(user.tokens)
+//     if (user.tokens.length !== 0) {
+//       router.push('/index')
 //     }
-//   } else {
 //     $q.notify({
-//       color: 'red-5',
+//       color: 'green-4',
 //       textColor: 'white',
-//       icon: 'warning',
-//       message: '輸入錯誤'
+//       icon: 'cloud_done',
+//       message: '登入成功'
+//     })
+//   } catch (error) {
+//     console.log(error)
+//     $q.notify({
+//       color: 'red-4',
+//       textColor: 'white',
+//       icon: 'info',
+//       message: error.message
 //     })
 //   }
 // }

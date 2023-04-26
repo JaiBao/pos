@@ -1,31 +1,33 @@
-let editingRowKey = null;
-let editingRowData = null;
+const stringOptions = ref([])
 
-// 編輯行資料
-const editRow = (rowKey, row) => {
-  editingRowKey = rowKey;
-  editingRowData = { ...row };
-};
+const fetchOptions = async () => {
+  let currentPage = 1
+  while (currentPage) {
+    const { data } = await apiAuth.get(/member/member?page=${currentPage}`)
+    const { current_page: currentPageNum, data: currentData } = data
+    currentData.forEach(({ mobile }) => {
+      if (mobile) {
+        options.value.push(mobile)
+      }
+    })
+    if (currentPageNum < data.last_page) {
+      currentPage++
+    } else {
+      currentPage = null
+    }
+  }
+}
 
-// 儲存編輯結果
-const saveEdit = () => {
-  // 在這裡處理編輯完成後的資料保存操作
-  // 可以向後端發送請求，更新資料等
+fetchOptions()
 
-  // 根據 editingRowKey 找到對應的行索引，並更新資料
-  const rowIndex = rows.value.findIndex(row => row.index === editingRowKey);
-  if (rowIndex >= 0) {
-    rows.value[rowIndex] = { ...editingRowData };
+const filterFn = (val, update, abort) => {
+  if (val.length < 3) {
+    abort()
+    return
   }
 
-  // 重置編輯相關的資料
-  editingRowKey = null;
-  editingRowData = null;
-};
-
-// 取消編輯
-const cancelEdit = () => {
-  // 重置編輯相關的資料
-  editingRowKey = null;
-  editingRowData = null;
-};
+  update(() => {
+    const needle = val.toLowerCase()
+    return options.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
+  })
+}

@@ -1,31 +1,84 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-
-<head>
-  <title>Untitled</title>
-</head>
-
-<body>
-  <input id="non" type="button" value="弄" onclick="run('弄');" />
-  <input id="b2" type="button" value="巷" onclick="run('巷');" />
-  <input id="b3" type="button" value="衖" onclick="run('衖');" />
-  <input id="b4" type="button" value="號" onclick="run('號');" />
-  <input id="b5" type="button" value="棟" onclick="run('棟');" />
-  <input id="b6" type="button" value="大樓" onclick="run('大樓');" />
-  <input id="b7" type="button" value="樓" onclick="run('樓');" />
-  <input id="b8" type="button" value="房" onclick="run('房');" />
-  <input id="b9" type="button" value="室" onclick="run('室');" />
-  <div id="content">
-    <input id="road" type="text">
+<template>
+  <div class="row justify-start">
+    <q-input style="width: 97%; margin-left: 20px; background-color: white;" v-model="personForm.remark" type="text"
+      label="餐點備註" :input-style="{ fontSize: '20px' }" @input="showDialog2" />
   </div>
-  <script>
-    function run(message) {
-      let input = document.getElementById("road");
-      let n = document.createElement("p");
-      n.appendChild(document.createTextNode(message));
-      personForm.road.value += message;
-    }
-  </script>
-</body>
+  <q-dialog v-model="dialogVisible2" persistent>
+    <q-card>
+      <q-card-section>
+        <q-input v-model="searchTerm2" placeholder="搜尋..." dense class="q-mb-md" />
+        <q-item v-for="option2 in filteredOption2s" :key="option2" clickable @click="selectOption2(option2)">
+          <q-item-section>
+            <q-item-label>{{ option2 }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-pagination v-if="totalPage2s > 1" v-model="currentPage2" :min="1" :max="totalPage2s" :input="true" />
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn label="取消" color="primary" @click="closeDialog2" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+</template>
 
-</html>
+<script setup>
+  // 客戶備註
+  const dialogVisible2 = ref(false)
+
+  const option2s = ref([])
+
+  const getExtraComments2 = async () => {
+    try {
+      const response = await apiAuth.get('/sale/order/getOrderPhrases/phrase_order_comment')
+      const extraComments = response.data
+
+      for (let i = 0; i < extraComments.length; i++) {
+        option2s.value.push(extraComments[i].translation.name)
+      }
+    } catch (error) {
+      $q.notify({
+        color: 'red-4',
+        textColor: 'white',
+        icon: 'cloud_off',
+        message: error.message
+      })
+    }
+  }
+
+  getExtraComments2()
+
+  const ITEMS_PER_PAGE2 = 10
+  const searchTerm2 = ref('')
+  const currentPage2 = ref(1)
+  const filteredOption2s = computed(() => {
+    const start = (currentPage2.value - 1) * ITEMS_PER_PAGE2
+    const end = start + ITEMS_PER_PAGE2
+    return option2s.value
+      .filter(option2 => option2.toLowerCase().includes(searchTerm2.value.toLowerCase()))
+      .slice(start, end)
+  })
+  const totalPage2s = computed(() => Math.ceil(option2s.value.length / ITEMS_PER_PAGE2))
+
+  watch(personForm.remark, (newVal) => {
+    if (newVal.includes('..')) {
+      showDialog2()
+    }
+  })
+
+  function showDialog2() {
+    searchTerm2.value = ''
+    currentPage2.value = 1
+    dialogVisible2.value = true
+  }
+
+  function closeDialog2() {
+    dialogVisible2.value = false
+  }
+
+  function selectOption2(option2) {
+    personForm.remark += option2
+    personForm.remark = personForm.remark.replace('..', '')
+    closeDialog2()
+  }
+
+</script>
