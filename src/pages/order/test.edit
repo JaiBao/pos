@@ -1,33 +1,95 @@
-const stringOptions = ref([])
+// 获取已有客户列表
+axios.get('http://ods.dtstw.com/api/member/member')
+  .then(response => {
+    const customers = response.data
+    const existingCustomer = customers.find(c => c.name === personForm.name && c.tel === personForm.tel)
+    if (existingCustomer) {
+      // 更新现有客户数据
+      axios.put(`http://ods.dtstw.com/api/member/member/${existingCustomer.id}`, personForm)
+        .then(response => {
+          console.log('客户数据已更新：', response.data)
+        })
+        .catch(error => {
+          console.error('更新客户数据时出错：', error)
+        })
+    } else {
+      // 推送新客户数据
+      axios.post('http://ods.dtstw.com/api/member/member', personForm)
+        .then(response => {
+          console.log('新客户已添加：', response.data)
+        })
+        .catch(error => {
+          console.error('添加新客户时出错：', error)
+        })
+    }
+  })
+  .catch(error => {
+    console.error('获取客户列表时出错：', error)
+  })
 
-const fetchOptions = async () => {
-  let currentPage = 1
-  while (currentPage) {
-    const { data } = await apiAuth.get(/member/member?page=${currentPage}`)
-    const { current_page: currentPageNum, data: currentData } = data
-    currentData.forEach(({ mobile }) => {
-      if (mobile) {
-        options.value.push(mobile)
+
+const savePerson = () => {
+  // 將表單資料轉換成 JSON 格式
+  const data = JSON.stringify(personForm.value)
+  // 使用 API 推送資料到檔案
+  apiAuth.post('/member', data)
+    .then(response => {
+      // 確認資料是否成功推送到檔案
+      if (response.status === 200) {
+        console.log('Data saved successfully!')
+        // 檢查資料庫中是否已有該客戶
+        apiAuth.get('/member')
+          .then(response => {
+            // 取得資料庫中的客戶清單
+            const members = response.data
+            // 搜尋是否有相同的客戶
+            const index = members.findIndex(member => member.company === personForm.value.company && member.name === personForm.value.name)
+            if (index > -1) {
+              // 更新該客戶資料
+              apiAuth.put(`/member/${members[index].id}`, data)
+                .then(response => {
+                  // 確認是否成功更新客戶資料
+                  if (response.status === 200) {
+                    console.log('Data updated successfully!')
+                  } else {
+                    console.log('Failed to update data!')
+                  }
+                })
+            }
+          })
+      } else {
+        console.log('Failed to save data!')
       }
     })
-    if (currentPageNum < data.last_page) {
-      currentPage++
-    } else {
-      currentPage = null
-    }
-  }
 }
 
-fetchOptions()
 
-const filterFn = (val, update, abort) => {
-  if (val.length < 3) {
-    abort()
-    return
+import axios from 'axios'
+const apiAuth = 'http://ods.dtstw.com/api'
+
+const personForm = {
+  // 表單資料
+}
+
+async function savePerson() {
+  // 推入檔案
+  const res = await axios.post(`${apiAuth}/member/member`, personForm)
+
+  // 確認資料庫內是否有原本的客戶
+  const customers = await axios.get(`${apiAuth}/member/member`)
+  const existingCustomer = customers.data.data.find(c => c.payment_tin === personForm.compilation)
+
+  // 若有就更新
+  if (existingCustomer) {
+    const updateRes = await axios.patch(`${apiAuth}/member/member/${existingCustomer.id}`, personForm)
+    console.log('更新成功', updateRes.data)
   }
 
-  update(() => {
-    const needle = val.toLowerCase()
-    return options.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
-  })
+  console.log('儲存成功', res.data)
+}
+
+function onReset() {
+  // 將表單的資料都重置為初始值
+  personForm.checkDate = ''
+  // ...
 }

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>訂餐系統</title>
+</head>
+
+<body>
+  <button id="btnMainCourse">主餐</button>
+  <button id="btnSideDish">配菜</button>
+  <button id="btnAddToOrder">加入訂單</button>
+
+  <div id="dialogMainCourse" style="display: none;">
+    <h2>主餐</h2>
+    <label for="mainCourseSteak">牛排：</label>
+    <input type="number" id="mainCourseSteak" value="0" min="0">
+    <br>
+    <label for="mainCoursePork">豬排：</label>
+    <input type="number" id="mainCoursePork" value="0" min="0">
+    <br>
+    <button id="btnSubmitMainCourse">送出</button>
+  </div>
+
+  <div id="dialogSideDish" style="display: none;">
+    <h2>配菜</h2>
+    <label for="sideDishCucumber">黃瓜：</label>
+    <input type="number" id="sideDishCucumber" value="0" min="0">
+    <br>
+    <label for="sideDishBeanSprouts">豆芽：</label>
+    <input type="number" id="sideDishBeanSprouts" value="0" min="0">
+    <br>
+    <button id="btnSubmitSideDish">送出</button>
+  </div>
+  <h1>訂單暫存</h1>
+  <table id="cartTable" border="1">
+    <thead>
+      <tr>
+        <th>品項</th>
+        <th>數量</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <h1>訂單</h1>
+  <table id="orderTable" border="1">
+    <thead>
+      <tr>
+        <th>單號</th>
+        <th>商品</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+  <script>
+    // 綁定按鈕點擊事件
+    let btnMainCourse = document.getElementById("btnMainCourse");
+    let btnSideDish = document.getElementById("btnSideDish");
+    let btnAddToOrder = document.getElementById("btnAddToOrder");
+    btnMainCourse.onclick = openMainCourseDialog;
+    btnSideDish.onclick = openSideDishDialog;
+    btnAddToOrder.onclick = addToOrder;
+
+    // 綁定對話框的送出按鈕點擊事件
+    let btnSubmitMainCourse = document.getElementById("btnSubmitMainCourse");
+    let btnSubmitSideDish = document.getElementById("btnSubmitSideDish");
+    btnSubmitMainCourse.onclick = submitMainCourse;
+    btnSubmitSideDish.onclick = submitSideDish;
+
+    // 主餐對話框
+    function openMainCourseDialog() {
+      document.getElementById("dialogMainCourse").style.display = "block";
+    }
+
+    function submitMainCourse() {
+      let steakCount = parseInt(document.getElementById("mainCourseSteak").value);
+      let porkCount = parseInt(document.getElementById("mainCoursePork").value);
+
+      if (steakCount > 0) {
+        addToTable("牛排", steakCount);
+      }
+
+      if (porkCount > 0) {
+        addToTable("豬排", porkCount);
+      }
+
+      closeMainCourseDialog();
+    }
+
+    function closeMainCourseDialog() {
+      document.getElementById("dialogMainCourse").style.display = "none";
+    }
+
+    // 配菜對話框
+    function openSideDishDialog() {
+      document.getElementById("dialogSideDish").style.display = "block";
+    }
+
+    function submitSideDish() {
+      let cucumberCount = parseInt(document.getElementById("sideDishCucumber").value);
+      let beanSproutsCount = parseInt(document.getElementById("sideDishBeanSprouts").value);
+
+      if (cucumberCount > 0) {
+        addToTable("黃瓜", cucumberCount);
+      }
+
+      if (beanSproutsCount > 0) {
+        addToTable("豆芽", beanSproutsCount);
+      }
+
+      closeSideDishDialog();
+    }
+
+    function closeSideDishDialog() {
+      document.getElementById("dialogSideDish").style.display = "none";
+    }
+
+
+    // 清空暫存購物車
+    function clearCart() {
+      let cartTable = document.getElementById("cartTable");
+      while (cartTable.rows.length > 1) {
+        cartTable.deleteRow(1);
+      }
+    }
+    // 加入訂單按鈕
+    function addToOrder() {
+      let orderTable = document.getElementById("orderTable");
+      let orderNumber = orderTable.rows.length - 1;
+
+      // 將暫存購物車中的內容推入訂單表格中
+      let cartTable = document.getElementById("cartTable");
+      let orderItems = "";
+      for (let i = 1; i < cartTable.rows.length; i++) {
+        let item = cartTable.rows[i].cells[0].innerHTML;
+        let count = parseInt(cartTable.rows[i].cells[1].innerHTML);
+        if (count > 0) {
+          orderItems += item + " " + count + ", ";
+        }
+      }
+      if (orderItems) {
+        orderItems = orderItems.slice(0, -2);
+        let row = orderTable.insertRow(-1);
+        let numberCell = row.insertCell(0);
+        let itemCell = row.insertCell(1);
+        numberCell.innerHTML = orderNumber;
+        itemCell.innerHTML = orderItems;
+      }
+
+      // 清空暫存購物車
+      clearCart();
+
+      alert("訂單已提交！");
+    }
+
+    // 將品項和數量加入訂單表格中
+    function addToTable(item, count) {
+      let cartTable = document.getElementById("cartTable");
+      let row = cartTable.insertRow(-1);
+      let itemCell = row.insertCell(0);
+      let countCell = row.insertCell(1);
+      itemCell.innerHTML = item;
+      countCell.innerHTML = count;
+    }
+  </script>
+
+  <!-- 引入jQuery UI庫 -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+</body>
+
+</html>

@@ -55,7 +55,7 @@
               v-model="personForm.getDate"
               mask="date"
               style="padding: 0;"
-              :rules="[(val) => (val && val >= personForm.checkDate) || '需大於等於訂購日期']"
+
             >
               <template v-slot:append>
                 <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
@@ -96,14 +96,18 @@
              style="padding: 0;"/>
           </td>
           <td>
-            <q-input
-            outlined
-             v-model="personForm.compilation"
-             type="text"
-             label="統編"
-             style="padding: 0;"
-             :input-style="{ fontSize: '20px' }"
-             :rules="[(val) => (val && val.length == 8) || '需為8位數']"/>
+
+              <q-input
+              outlined
+              v-model="personForm.compilation"
+              type="text"
+              label="統編"
+              style="padding: 0;"
+              :input-style="{ fontSize: '20px' }"
+              :rules="[val => !val || val.length === 8 || '需為8位數']"
+              :readonly="isCompilationReadonly"
+    />
+
           </td>
           <td>
             <q-input
@@ -133,10 +137,10 @@
              hide-selected
               fill-input
               input-debounce="0"
-              :options="teloptions"
-              @filter="filterFn"
-              @input="selectHandler"
-              :dropdown-icon-class="'custom-dropdown'"
+              :options="telOptions"
+              @filter="filterTel"
+              @input="selectTel"
+              :loading="loading"
              >
               <template v-slot:no-option>
           <q-item>
@@ -167,9 +171,8 @@
   <div class="row">
 
             <q-select
-
               style="padding: 2px;
-              width: 120px;"
+              width: 120px;font-size: 20px;"
               type="text"
               outlined
               v-model="personForm.address"
@@ -178,22 +181,22 @@
             />
             <q-select
 
-              style="padding: 2px;width: 120px;"
+              style="padding: 2px;width: 120px;font-size: 20px"
               outlined
               v-model="personForm.address2"
               label="區"
               :options="address2Options"
             />
-            <q-input
-            style="padding: 2px;width: 290px;"
-            id="road"
+            <q-select
             outlined
              v-model="personForm.road"
              type="text"
-             label="路"
-             clearable
-             :input-style="{ fontSize: '20px' }"
-              />
+             label="路名"
+             style="padding: 2px;width: 290px;font-size: 20px"
+              :options="roadOptions"
+              use-input
+             />
+
             <q-input
             style="padding: 2px;width: 200px;"
             id="road2"
@@ -208,19 +211,19 @@
             <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('巷')"
+            @click="run2('巷')"
             class="q-mt-md"
              label="巷"/>
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('弄')"
+            @click="run2('弄')"
             class="q-mt-md"
              label="弄"/>
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('衖')"
+            @click="run2('衖')"
             class="q-mt-md"
              label="衖"/>
              <q-btn
@@ -232,31 +235,31 @@
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('棟')"
+            @click="run2('棟')"
             class="q-mt-md"
              label="棟"/>
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('樓')"
+            @click="run2('樓')"
             class="q-mt-md"
              label="樓"/>
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('大樓')"
+            @click="run2('大樓')"
             class="q-mt-md"
              label="大樓"/>
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('房')"
+            @click="run2('房')"
             class="q-mt-md"
              label="房"/>
              <q-btn
             style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
             color="primary"
-            @click="run('室')"
+            @click="run2('室')"
             class="q-mt-md"
              label="室"/>
 
@@ -292,6 +295,12 @@
       val="xs"
       label="同訂購公司"
       />
+      <q-checkbox
+      size="xs"
+      val="xs"
+      v-model="noCompilation"
+      label="不需要統編"
+    />
     </div>
   </div>
 
@@ -333,12 +342,16 @@
             </td>
 
           <td colspan="5">
-            <q-input
-            outlined
-             v-model="personForm.event"
-             type="text"
-             label="活動事件"
-             :input-style="{ fontSize: '20px' }" />
+            <q-select
+    filled
+    v-model="personForm.event"
+    multiple
+    :options="eventOptions"
+    use-chips
+    stack-label
+    label="活動事件"
+    use-input
+  />
 
           </td>
         </tr>
@@ -394,7 +407,9 @@
               flat
               class="q-ml-sm"
               />
-              <q-btn label="送出" type="submit" color="primary"  />
+              <q-btn label="儲存" type="submit" color="primary"
+              @click="savePerson"
+              />
             </div>
           </div>
           </td>
@@ -639,7 +654,7 @@
   readonly
 />
 </div>
-  <!-- <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
     <h5 style="line-height: 0;">配菜</h5>
   </div>
   <div class="row">
@@ -740,7 +755,7 @@
         label="烤地瓜"
         style="width: 130px;"
       />
-    </div> -->
+    </div>
           <div class="row justify-end" style="width: 100%;">
             <q-btn
               color="primary"
@@ -8089,9 +8104,7 @@ const $q = useQuasar()
 
 // 聯絡人區
 // 路名輔助按鈕
-function run (message) {
-  personForm.road += message
-}
+
 function run2 (message) {
   personForm.road2 += message
 }
@@ -8121,12 +8134,23 @@ const personForm = reactive({
   sameOrderCustomer: false, // 訂購人與收件人相同
   sameOrderCompany: false, // 訂購公司與收件公司相同
   getCompany: '', // 收件公司
-  event: '', // 活動
+  event: '  ', // 活動
   remark: '', // 備註
-  orderStatu: ''// 訂單狀態
+  orderStatu: '未確認'// 訂單狀態
 })
 const picks = reactive(['自取', '外送'])
+const eventOptions = [
+  '會議',
+  '教會',
+  '廟會',
+  '婚禮',
+  '喪禮',
+  '生日',
+  '滿月'
+]
+const noCompilation = ref(false)
 
+const isCompilationReadonly = computed(() => noCompilation.value)
 // 抓取當日日期
 function updateDateTime () {
   const now = new Date()
@@ -8177,12 +8201,6 @@ function onReset () {
   personForm.address = ''// 縣市
   personForm.address2 = ''// 區域
   personForm.road = ''// 路名
-  personForm.xian = ''// 巷
-  personForm.non = ''// 弄
-  personForm.hao = ''// 號
-  personForm.lo = ''// 樓
-  personForm.room = ''// 室
-  personForm.replenishAdress = ''// 補充地址
   personForm.recipient = ''// 收件人
   personForm.recipientTel = ''// 收件人電話
   personForm.gender = ''// 性別
@@ -8191,7 +8209,7 @@ function onReset () {
   personForm.getCompany = ''// 收件公司
   personForm.event = ''// 活動
   personForm.remark = ''// 備註
-  personForm.orderStatu = ''// 訂單狀態
+  personForm.orderStatu = '未確認'// 訂單狀態
   // 重設其它狀態
   // ...
 }
@@ -8202,26 +8220,69 @@ function onReset () {
 const addressoptions = reactive([])
 
 const address2Options = reactive([])
+const roadOptions = reactive([])
 
+// 取得縣市選項
 const getAddressList = async () => {
   try {
-    const response = await apiAuth.get('localization/getJsonStates?pagination=false')
+    const response = await apiAuth.get('localization/division/state')
     addressoptions.splice(0, addressoptions.length, ...response.data.map(item => item.name))
   } catch (error) {
     console.error(error)
   }
 }
 
+// 取得區域選項
 const getDistrictList = async (id) => {
   try {
-    const response = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${id}`)
+    const response = await apiAuth.get(`localization/division/city?filter_parent_id=${id}`)
+    if (!Array.isArray(response.data)) {
+      throw new Error('response.data is not an array')
+    }
     address2Options.splice(0, address2Options.length, ...response.data.map(item => item.name))
   } catch (error) {
     console.error(error)
   }
 }
 
+// 獲取路名列表
+// const getRoadList = async (stateId, districtId) => {
+//   try {
+//     const cityResponse = await apiAuth.get(`/localization/division/city?filter_parent_id=${stateId}`)
+//     const city = cityResponse.data.find(item => item.name === districtId)
+//     if (!city) {
+//       throw new Error('City not found')
+//     }
+//     const response = await apiAuth.get(`/localization/road?filter_state_id=${stateId}&filter_city_id=${city.city_id}`)
+//     if (!Array.isArray(response.data)) {
+//       throw new Error('response.data is not an array')
+//     }
+//     roadOptions.splice(0, roadOptions.length, ...response.data.map(item => item.name))
+//   } catch (error) {
+//     console.error(error)
+//   }
+// }
+const getRoadList = async (stateId, districtId, filterName = '') => {
+  try {
+    const cityResponse = await apiAuth.get(`/localization/division/city?filter_parent_id=${stateId}`)
+    const city = cityResponse.data.find(item => item.name === districtId)
+    if (!city) {
+      throw new Error('City not found')
+    }
+    const filter = filterName ? `&filter_name=${filterName}` : ''
+    const response = await apiAuth.get(`/localization/road?filter_state_id=${stateId}&filter_city_id=${city.city_id}${filter}`)
+    if (!Array.isArray(response.data)) {
+      throw new Error('response.data is not an array')
+    }
+    roadOptions.splice(0, roadOptions.length, ...response.data.map(item => item.name))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 獲取初始的縣市列表
 getAddressList()
+
 // 監聽獲取區域
 watch(
   () => personForm.address,
@@ -8231,11 +8292,54 @@ watch(
   }
 )
 
+// 監聽獲取路名
+// watch(
+//   () => [personForm.address, personForm.address2],
+//   async ([state, district]) => {
+//     const stateId = addressoptions.findIndex(item => item === state) + 1
+//     await getRoadList(stateId, district)
+//   }
+// )
+watch(
+  () => [personForm.address, personForm.address2, personForm.road],
+  async ([state, district, road]) => {
+    const stateId = addressoptions.findIndex(item => item === state) + 1
+    await getRoadList(stateId, district, road)
+  }
+)
+
+// 同訂購人按鈕
+watch(() => personForm.sameOrderCustomer, (newVal) => {
+  if (newVal) {
+    personForm.recipient = personForm.name
+    personForm.recipientTel = personForm.tel
+  }
+})
+// 同訂購公司按鈕
+watch(() => personForm.sameOrderCompany, (newVal) => {
+  if (newVal) {
+    personForm.getCompany = personForm.company
+  }
+})
+// 統編搜尋帶入公司名稱
+watch(() => personForm.compilation, (newVal) => {
+  if (newVal.length === 8) {
+    apiAuth
+      .get(`/member/guin/autocomplete?filter_uniform_invoice_no=${newVal}`)
+      .then((res) => {
+        if (res.data && res.data.length) {
+          personForm.company = res.data[0].name
+        }
+      })
+  } else {
+    personForm.company = ''
+  }
+})
 // 電話號碼搜尋自動導入其他
 
-const teloptions = ref([])
+const telOptions = ref([])
 
-const filterFn = async (search, update, abort) => {
+const filterTel = async (search, update, abort) => {
   if (search.length > 3) {
     const newData = []
     let page = 1
@@ -8254,16 +8358,16 @@ const filterFn = async (search, update, abort) => {
     }
 
     update(() => {
-      teloptions.value.length = 0
-      teloptions.value.push(...newData)
+      telOptions.value.length = 0
+      telOptions.value.push(...newData)
     })
   } else {
-    teloptions.value.length = 0
+    telOptions.value.length = 0
   }
 }
 
-const selectHandler = (value) => {
-  personForm.tel = value
+const selectTel = (value) => {
+  personForm.tel = value.target.value
 }
 watch(
   // 監聽personForm.tel的變化
@@ -8273,6 +8377,10 @@ watch(
     if (!newVal) {
       personForm.name = ''
       personForm.email = ''
+      personForm.road = ''
+      personForm.address = ''
+      personForm.address2 = ''
+      personForm.road2 = ''
       return
     }
 
@@ -8284,25 +8392,23 @@ watch(
       if (data.data.length > 0) {
         personForm.name = data.data[0].name
         personForm.email = data.data[0].email
-        personForm.company = data.data[0].payment_company
         personForm.road = data.data[0].shipping_road
         personForm.road2 = data.data[0].shipping_address1
         // 導入舊資料縣市
-        const stateObject = await apiAuth.get('localization/getJsonStates?pagination=false')
+        const stateObject = await apiAuth.get('localization/division/state')
           .then(response => response.data.find(item => item.id === data.data[0].shipping_state_id))
 
         personForm.address = stateObject.name
+        // console.log(stateObject.id)
         // 導入舊資料區域
-        const cities = await apiAuth.get(`localization/getJsonCities?filter_parent_id=${stateObject.id}`)
-          .then(response => response.data)
-        const cityObject = cities.find(item => item.id === data.data[0].shipping_city_id)
+        const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${stateObject.id}`)
+          .then(response => response.data.find(item => item.city_id === data.data[0].shipping_city_id))
 
-        personForm.address2 = cityObject.name
+        personForm.address2 = cities.name
       } else {
         // 如果沒有找到對應的資料，清空表單中的其他資料
         personForm.name = ''
         personForm.email = ''
-        personForm.company = ''
         personForm.road = ''
         personForm.road2 = ''
         personForm.address = ''
@@ -8429,31 +8535,142 @@ function selectOption (option) {
   mealRemark.value = mealRemark.value.replace('..', '')
   closeDialog()
 }
+// 推入聯絡人
+const getCustomers = async () => {
+  const batchSize = 100 // 每批處理的客戶端請求數量
+  const customers = []
+  let currentPage = 1
+  let totalPages = 1
 
-const valid = ref(false)
-const loading = ref(false)
-const onSubmit = async () => {
-  await apiAuth.post('/users', personForm)
-  // await apiAuth.post('/orders', form)
-  if (!valid.value) return
-  loading.value = true
   try {
+    const { data: { total } } = await apiAuth.get('/member/member')
+    totalPages = Math.ceil(total / batchSize)
+
+    while (currentPage <= totalPages) {
+      const requests = []
+      for (let i = 0; i < batchSize; i++) {
+        const request = apiAuth.get(`/member/member?page=${currentPage}`)
+        requests.push(request)
+        currentPage++
+        if (currentPage > totalPages) break
+      }
+
+      const responses = await Promise.all(requests)
+
+      for (const response of responses) {
+        customers.push(...response.data.data)
+      }
+
+      // Add a delay of 1 second between API calls
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+
+    return customers
+  } catch (error) {
+    console.error(error)
+    throw new Error('Unable to fetch customers')
+  }
+}
+const savePerson = async () => {
+  // 導入資料縣市
+  const states = await apiAuth.get('localization/division/state')
+
+  // 搜索
+  const state = states.data.find(s => s.name === personForm.address)
+  const stateId = state.id
+  console.log(personForm.address)
+
+  // 導入資料區域
+  const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${state.id}`)
+  const city = cities.data.find(c => c.name === personForm.address2)
+
+  const address2Id = city.city_id
+
+  const customers = await getCustomers()
+  const customer = customers.find(c => c.mobile.replace('-', '') === personForm.tel.replace('-', ''))
+
+  if (customer) {
+    // 如果已經存在客戶資料，就更新它
+    // await apiAuth.put(`/member/member/${customer.id}`,
+    await apiAuth.post('/member/member/save',
+      {
+        member_id: customer.id,
+        name: personForm.name,
+        mobile: personForm.tel,
+        email: personForm.email,
+        shipping_personal_name: personForm.recipient,
+        shipping_phone: personForm.recipientTel,
+        payment_tin: personForm.compilation,
+        payment_company: personForm.company,
+        shipping_company: personForm.getCompany,
+        shipping_country_code: stateId, // 推入對應的ID
+        shipping_city_id: address2Id,
+        shipping_road: personForm.road,
+        shipping_address1: personForm.replenishAdress
+
+      })
     await $q.notify({
       color: 'green-4',
-      textColor: 'white  ',
-      icon: 'check-circle',
-      message: '新增訂單聯絡人，請繼續點餐'
-    })
-  } catch (error) {
-    $q.notify({
-      color: 'red-4',
       textColor: 'white',
-      icon: 'error',
-      message: error.message || '發生錯誤'
+      icon: 'check-circle',
+      message: '是老客戶,已更新資料'
+    })
+  } else {
+    // 如果不存在客戶資料，就新增一筆新的客戶資料
+    await apiAuth.post('/member/member/save', {
+      member_id: '',
+      name: personForm.name,
+      mobile: personForm.tel,
+      email: personForm.email,
+      shipping_personal_name: personForm.recipient,
+      shipping_phone: personForm.recipientTel,
+      payment_tin: personForm.compilation,
+      payment_company: personForm.company,
+      shipping_company: personForm.getCompany,
+      shipping_country_code: stateId, // 推入對應的ID
+      shipping_city_id: address2Id,
+      shipping_road: personForm.road,
+      shipping_address1: personForm.replenishAdress,
+      is_active: 1,
+      is_admin: 0
+    })
+    await $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'check-circle',
+      message: '是新客戶,已加入資料'
     })
   }
-  loading.value = false
+  // 介面上顯示原本的地址名稱
+  personForm.address = state.name
+  personForm.address2 = city.name
 }
+
+/// //
+// const valid = ref(false)
+const loading = ref(false)
+// const onSubmit = async () => {
+//   await apiAuth.post('/users', personForm)
+//   // await apiAuth.post('/orders', form)
+//   if (!valid.value) return
+//   loading.value = true
+//   try {
+// await $q.notify({
+//   color: 'green-4',
+//   textColor: 'white  ',
+//   icon: 'check-circle',
+//   message: '新增訂單聯絡人，請繼續點餐'
+// })
+//   } catch (error) {
+//     $q.notify({
+//       color: 'red-4',
+//       textColor: 'white',
+//       icon: 'error',
+//       message: error.message || '發生錯誤'
+//     })
+//   }
+//   loading.value = false
+// }
 // 便當盒餐開關
 const showbangdong = ref(false)
 
@@ -8475,18 +8692,18 @@ const bangdong1Form = reactive({
   bangdong1Fish: 0, // 酥魚
   bangdong1Pig: 0, // 培根
   bangdong1Meet: 0, // 滷肉
-  // tomato: 0, // 番茄
-  // egg: 0, // 鹽水煮蛋
-  // vegetable: 0, // 蔬菜
-  // fried_mushroom: 0, // 炸菇
-  // braised_dried: 0, // 滷豆干
-  // oil_rice: 0, // 油飯
-  // fried_potato: 0, // 炸地瓜
-  // eggtart: 0, // 蛋撻
-  // shortbread: 0, // 酥餅
-  // chicken_wing: 0, // 雞翅
-  // fruit: 0, // 水果
-  // bake_potato: 0, // 烤地瓜
+  tomato: 0, // 番茄
+  egg: 0, // 鹽水煮蛋
+  vegetable: 0, // 蔬菜
+  fried_mushroom: 0, // 炸菇
+  braised_dried: 0, // 滷豆干
+  oil_rice: 0, // 油飯
+  fried_potato: 0, // 炸地瓜
+  eggtart: 0, // 蛋撻
+  shortbread: 0, // 酥餅
+  chicken_wing: 0, // 雞翅
+  fruit: 0, // 水果
+  bake_potato: 0, // 烤地瓜
   bangdong1SugarZero: 0, // 無糖
   bangdong1SugarSome: 0, // 微糖
   bangdong1BlackTea: 0, // 紅茶
@@ -8511,39 +8728,39 @@ function totalbangdong1 () {
 watch(() => totalbangdong1(), (newValue) => {
   bangdong1Form.bangdong1Quantity = newValue
 })
-// // 蛋素招牌自動補配菜
-// watch(() => bangdong1Form.bangdong1Egg, (newValue, oldValue) => {
-//   const increment = newValue - oldValue // 每多1的變化量
-//   bangdong1Form.tomato += increment
-//   bangdong1Form.egg += increment
-//   bangdong1Form.vegetable += increment
-//   bangdong1Form.fried_mushroom += increment
-//   bangdong1Form.braised_dried += increment
-//   bangdong1Form.fried_potato += increment
-//   bangdong1Form.bake_potato += increment
-// })
-// // 全素招牌自動補配菜
-// watch(() => bangdong1Form.bangdong1Vegetable, (newValue, oldValue) => {
-//   const increment = newValue - oldValue // 每多1的變化量
-//   bangdong1Form.tomato += increment
-//   bangdong1Form.egg += increment
-//   bangdong1Form.vegetable += increment
-//   bangdong1Form.fried_mushroom += increment
-//   bangdong1Form.braised_dried += increment
-//   bangdong1Form.fried_potato += increment
-//   bangdong1Form.bake_potato += increment
-// })
-// // 薯泥自動補配菜
-// watch(() => bangdong1Form.bangdong1Potato, (newValue, oldValue) => {
-//   const increment = newValue - oldValue // 每多1的變化量
-//   bangdong1Form.tomato += increment
-//   bangdong1Form.egg += increment
-//   bangdong1Form.vegetable += increment
-//   bangdong1Form.fried_mushroom += increment
-//   bangdong1Form.braised_dried += increment
-//   bangdong1Form.fried_potato += increment
-//   bangdong1Form.bake_potato += increment
-// })
+// 蛋素招牌自動補配菜
+watch(() => bangdong1Form.bangdong1Egg, (newValue, oldValue) => {
+  const increment = newValue - oldValue // 每多1的變化量
+  bangdong1Form.tomato += increment
+  bangdong1Form.egg += increment
+  bangdong1Form.vegetable += increment
+  bangdong1Form.fried_mushroom += increment
+  bangdong1Form.braised_dried += increment
+  bangdong1Form.fried_potato += increment
+  bangdong1Form.bake_potato += increment
+})
+// 全素招牌自動補配菜
+watch(() => bangdong1Form.bangdong1Vegetable, (newValue, oldValue) => {
+  const increment = newValue - oldValue // 每多1的變化量
+  bangdong1Form.tomato += increment
+  bangdong1Form.egg += increment
+  bangdong1Form.vegetable += increment
+  bangdong1Form.fried_mushroom += increment
+  bangdong1Form.braised_dried += increment
+  bangdong1Form.fried_potato += increment
+  bangdong1Form.bake_potato += increment
+})
+// 薯泥自動補配菜
+watch(() => bangdong1Form.bangdong1Potato, (newValue, oldValue) => {
+  const increment = newValue - oldValue // 每多1的變化量
+  bangdong1Form.tomato += increment
+  bangdong1Form.egg += increment
+  bangdong1Form.vegetable += increment
+  bangdong1Form.fried_mushroom += increment
+  bangdong1Form.oil_rice += increment
+  bangdong1Form.fried_potato += increment
+  bangdong1Form.bake_potato += increment
+})
 // 雞腿便當
 
 const bangdong2Form = reactive({
