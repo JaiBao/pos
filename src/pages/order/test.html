@@ -1,84 +1,61 @@
 <template>
-  <div class="row justify-start">
-    <q-input style="width: 97%; margin-left: 20px; background-color: white;" v-model="personForm.remark" type="text"
-      label="餐點備註" :input-style="{ fontSize: '20px' }" @input="showDialog2" />
+  <div>
+    <q-dialog v-model="compationDialog">
+      <q-card>
+        <q-card-section>
+          <q-item-label>
+            {{ compationDialogTitle }}
+          </q-item-label>
+        </q-card-section>
+        <q-card-section>
+          <q-item-label>
+            {{ compationDialogMessage }}
+          </q-item-label>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn label="Cancel" @click="hideCompationDialog" />
+          <q-btn color="primary" label="OK" @click="confirm" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
-  <q-dialog v-model="dialogVisible2" persistent>
-    <q-card>
-      <q-card-section>
-        <q-input v-model="searchTerm2" placeholder="搜尋..." dense class="q-mb-md" />
-        <q-item v-for="option2 in filteredOption2s" :key="option2" clickable @click="selectOption2(option2)">
-          <q-item-section>
-            <q-item-label>{{ option2 }}</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-pagination v-if="totalPage2s > 1" v-model="currentPage2" :min="1" :max="totalPage2s" :input="true" />
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn label="取消" color="primary" @click="closeDialog2" />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
-
 <script setup>
-  // 客戶備註
-  const dialogVisible2 = ref(false)
+  // 統編搜尋帶入公司名稱
+  watch(() => personForm.compilation, (newVal) => {
+    if (newVal.length === 8) {
+      apiAuth
+        .get(`/member/guin/autocomplete?filter_uniform_invoice_no=${newVal}`)
+        .then((res) => {
+          if (res.data && res.data.length) {
+            // Set the company name
+            personForm.company = res.data[0].name
 
-  const option2s = ref([])
-
-  const getExtraComments2 = async () => {
-    try {
-      const response = await apiAuth.get('/sale/order/getOrderPhrases/phrase_order_comment')
-      const extraComments = response.data
-
-      for (let i = 0; i < extraComments.length; i++) {
-        option2s.value.push(extraComments[i].translation.name)
-      }
-    } catch (error) {
-      $q.notify({
-        color: 'red-4',
-        textColor: 'white',
-        icon: 'cloud_off',
-        message: error.message
-      })
-    }
-  }
-
-  getExtraComments2()
-
-  const ITEMS_PER_PAGE2 = 10
-  const searchTerm2 = ref('')
-  const currentPage2 = ref(1)
-  const filteredOption2s = computed(() => {
-    const start = (currentPage2.value - 1) * ITEMS_PER_PAGE2
-    const end = start + ITEMS_PER_PAGE2
-    return option2s.value
-      .filter(option2 => option2.toLowerCase().includes(searchTerm2.value.toLowerCase()))
-      .slice(start, end)
-  })
-  const totalPage2s = computed(() => Math.ceil(option2s.value.length / ITEMS_PER_PAGE2))
-
-  watch(personForm.remark, (newVal) => {
-    if (newVal.includes('..')) {
-      showDialog2()
+            // Check if the address should be overwritten
+            const shouldOverwrite = personForm.address || personForm.address2 || personForm.road || personForm.road2
+            if (shouldOverwrite) {
+              this.compationDialog = true
+              this.compationDialogTitle = '確認覆蓋地址'
+              this.compationDialogMessage = '是否要覆蓋已有的地址？'
+              this.confirm = () => {
+                personForm.address = res.data[0].address_parts.full_city
+                personForm.address2 = res.data[0].address_parts.full_district
+                personForm.road = res.data[0].address_parts.full_road_section
+                personForm.road2 = res.data[0].address_parts.after_road_section
+                this.hideCompationDialog()
+              }
+            } else {
+              personForm.address = res.data[0].address_parts.full_city
+              personForm.address2 = res.data[0].address_parts.full_district
+              personForm.road = res.data[0].address_parts.full_road_section
+              personForm.road2 = res.data[0].address_parts.after_road_section
+            }
+          } else {
+            personForm.company = ''
+          }
+        })
+    } else {
+      personForm.company = ''
     }
   })
-
-  function showDialog2() {
-    searchTerm2.value = ''
-    currentPage2.value = 1
-    dialogVisible2.value = true
-  }
-
-  function closeDialog2() {
-    dialogVisible2.value = false
-  }
-
-  function selectOption2(option2) {
-    personForm.remark += option2
-    personForm.remark = personForm.remark.replace('..', '')
-    closeDialog2()
-  }
-
 </script>
