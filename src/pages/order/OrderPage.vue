@@ -482,26 +482,21 @@ label="女士" />
         <q-dialog v-model="showbangdong1"  >
           <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard"
           >
-          <div >
-    <div v-for="product in products" :key="product.id" class="row">
-      <div v-for="option in product.product_options" :key="option.id"
-      >
-        <h5 style="margin: 0; padding: 0;" >{{ option.name }}</h5>
-        <div class="row items-center"
+          <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdongMainName }}</h5>
+    <div class="row items-center"
        >
-       <q-item v-for="value in option. mainMeal.  product_option_values" :key="value.id" class="flex-auto " style="margin: 0; padding: 0;">
-          <q-input
-          outlined
-          :label="value.short_name"
-          v-model.number="value.quantity"
-          type="number"
+    <q-item  v-for="(bnagdong1Main, index) in bnagdong1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+      <q-input
+      v-model="bnagdong1Main.quantity" :label="bnagdong1Main.name"
+      outlined
+      type="number"
           :input-style="{ fontSize: '20px', margin: '0' }"
           :label-style="{ fontSize: '20px' }"
-          style="width: 130px;"/>
-        </q-item>
-        </div>
-      </div>
-    </div>
+          style="width: 130px;"
+          />
+    </q-item>
+  </div>
   </div>
   <div style="width:100%;padding: 0;margin: 0;height: 30px;">
             <h5  style="line-height: 0;">招牌便當</h5>
@@ -512,7 +507,7 @@ outlined
 type="number"
 :input-style="{ fontSize: '20px' }"
 style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Quantity"
+v-model="bangdong1TotalQuantity"
 label="數量總計"
 :rules="[val => !!val || '此欄位為必填']"
 readonly
@@ -522,7 +517,7 @@ outlined
 type="number"
 :input-style="{ fontSize: '20px' }"
 style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Price"
+v-model="bangdong1TotalQuantityPrice"
 label="金額總計"
 :rules="[val => !!val || '此欄位為必填']"
 readonly
@@ -8442,18 +8437,43 @@ const openbangdong = () => {
   showbangdong.value = true
 }
 // 招牌便當
-const products = reactive([])
-const getProducts = async () => {
+// 主菜抓取
+const bnagdong1Mains = reactive([])
+const bangdongMainName = ref('')
+const price = ref(0)
+
+const loadBangdongMain = async () => {
   try {
-    const response = await apiAuth.get('/catalog/product/1001')
-    products.push(response.data)
+    const response = await apiAuth.get('catalog/product/1001')
+    const productOptions = response.data.product_options
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+    for (const value of values) {
+      bnagdong1Mains.push({
+        id: value.id,
+        name: value.short_name,
+        quantity: 0
+      })
+    }
+    bangdongMainName.value = mainMeal.name
+    price.value = parseInt(response.data.price)
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
-getProducts()
+loadBangdongMain()
+// 計算總數量
+const bangdong1TotalQuantity = computed(() => {
+  return bnagdong1Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
 
+// 計算總價格
+const bangdong1TotalQuantityPrice = computed(() => {
+  return bangdong1TotalQuantity.value * price.value
+})
 // function totalbangdong1 () {
 //   return parseInt(bangdong1Form.bangdong1Vegetable) +
 //     parseInt(bangdong1Form.bangdong1Egg) +

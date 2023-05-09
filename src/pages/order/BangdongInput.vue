@@ -1,5 +1,7 @@
 <template>
-
+        <q-dialog v-model="showbangdong1"  >
+          <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard"
+          >
           <div>
     <h5 style="margin: 0; padding: 0;">{{ bangdongMainName }}</h5>
     <div class="row items-center"
@@ -47,7 +49,7 @@ color="primary"
 label="送出"
 type="submit"
 class="q-mt-md"
-@click="submitBangdong1"
+@click="submitForm"
 />
 <q-btn
 color="red"
@@ -57,10 +59,8 @@ class="q-mt-md"
 />
 
 </div >
-<q-table>
-
-</q-table>
-
+          </q-card>
+      </q-dialog>
 </template>
 
 <script setup>
