@@ -1,7 +1,9 @@
 <template>
 <div class="orderMenucontainer">
   <!-- 聯絡人區 -->
-<div class="row person">
+  <q-btn v-if="!show" color="blue" size="md" @click="show = !show" style="width:100%">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
+
+<div class="row person"  v-show="show">
 
     <q-form
     @submit="onSubmit" @reset="onReset"
@@ -280,29 +282,17 @@
 </td>
           <td >
             <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
-        <div >
-      <q-checkbox
-      size="xs"
-      v-model="personForm.sameOrderCustomer"
-      val="xs"
-      label="同訂購人"
-      />
-    </div>
-    <div >
-      <q-checkbox
-      size="xs"
-      v-model="personForm.sameOrderCompany"
-      val="xs"
-      label="同訂購公司"
-      />
-      <q-checkbox
-      size="xs"
-      val="xs"
-      v-model="noCompilation"
-      label="不需要統編"
-    />
-    </div>
-  </div>
+
+<q-radio
+v-model="personForm.gender"
+val="gentleman"
+label="先生" />
+<q-radio
+
+v-model="personForm.gender"
+val="lady"
+label="女士" />
+</div>
 
           </td>
 
@@ -327,18 +317,32 @@
 
           </td>
           <td>
-            <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
+            <div class="row justify-start" style="font-size: 20px; display: flex; ">
+        <div >
+      <q-checkbox
+      size="xs"
+      v-model="personForm.sameOrderCustomer"
+      val="xs"
+      label="同訂購人"
+      />
+    </div>
+    <div >
+      <q-checkbox
+      size="xs"
+      v-model="personForm.sameOrderCompany"
+      val="xs"
+      label="同訂購公司"
+      />
+      <q-checkbox
+      size="xs"
+      val="xs"
+      v-model="personForm.noCompilation"
+      label="不需要統編"
 
-              <q-radio
-              v-model="personForm.gender"
-              val="gentleman"
-              label="先生" />
-              <q-radio
+    />
+    </div>
+  </div>
 
-              v-model="personForm.gender"
-              val="lady"
-              label="女士" />
-            </div>
             </td>
 
           <td colspan="5">
@@ -359,7 +363,7 @@
           <td colspan="8">
             <div class="row">
 
-              <div class="row justify-start  col-8">
+              <div class="row justify-start  col-6">
                 <q-input
                 outlined
                 style="width:100%;margin-left: 20px;"
@@ -388,7 +392,7 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
-              <div class="row justify-end  col-2">
+              <div class="row justify-end  col-3">
                 <q-select
                 outlined
                 v-model="personForm.orderStatu"
@@ -399,12 +403,13 @@
                 style="padding: 0;width: 100%;font-size: 20px;"
             />
             </div>
-              <div class="row justify-end  col-2">
+              <div class="row justify-end  col-3">
+                <q-btn v-if="show" color="blue"  @click="show = !show"   class="q-ml-sm">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
         <q-btn
               label="清除"
               type="reset"
-              color="primary"
-              flat
+              color="red"
+
               class="q-ml-sm"
               />
               <q-btn label="儲存" type="submit" color="primary"
@@ -476,8 +481,10 @@
       <!-- 招牌便當dialog -->
         <q-dialog v-model="showbangdong1"  >
           <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-            <div>
-            <h5>主餐</h5>
+            <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">主餐</h5>
+            </div>
+            <div v-for="bandong1 in bandon1s" :key="bandong1.id" class="row">
             <q-input
               outlined
               type="number"
@@ -551,9 +558,11 @@
 
             />
           </div>
-            <div>
+          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+          <h5 style="line-height: 0;">副餐</h5>
+          </div>
+            <div class="row">
 
-            <h5>附餐</h5>
             <q-input
               outlined
               type="number"
@@ -582,9 +591,10 @@
 
             />
           </div>
-
-          <div>
-            <h5>飲料</h5>
+          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+          <h5 style="line-height: 0;">飲料</h5>
+          </div>
+          <div class="row">
             <q-input
               outlined
               type="number"
@@ -640,9 +650,11 @@
 
             />
           </div>
-          <div>
-          <h5>招牌便當</h5>
+          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+          <h5 style="line-height: 0;">招牌便當</h5>
+          </div>
 
+          <div class="row">
 <q-input
   outlined
   type="number"
@@ -778,8 +790,10 @@
       <!-- 雞腿便當dailog -->
       <q-dialog v-model="showbangdong2"  >
   <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-    <div>
-    <h5>主餐</h5>
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">主餐</h5>
+</div>
+    <div class="row">
     <q-input
       outlined
       type="number"
@@ -853,9 +867,10 @@
 
     />
   </div>
-    <div>
-
-    <h5>附餐</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+<h5 style="line-height: 0;">副餐</h5>
+</div>
+    <div class="row">
     <q-input
       outlined
       type="number"
@@ -885,8 +900,10 @@
     />
   </div>
 
-  <div>
-    <h5>飲料</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">飲料</h5>
+</div>
+  <div class="row">
     <q-input
       outlined
       type="number"
@@ -942,8 +959,10 @@
 
     />
   </div>
-  <div>
-  <h5>雞腿便當</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">雞腿便當</h5>
+</div>
+  <div class="row">
 
 <q-input
 outlined
@@ -956,108 +975,108 @@ label="數量總計"
 readonly
 />
 </div>
-<!-- <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">配菜</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">配菜</h5>
 </div>
 <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.tomato"
-label="梅汁番茄"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.egg"
-label="鹽水煮蛋"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.vegetable"
-label="季節時蔬"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.fried_mushroom"
-label="酥炸菇菇"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.braised_dried"
-label="滷豆干"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.oil_rice"
-label="油飯"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.fried_potato"
-label="炸地瓜"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.eggtart"
-label="手工蛋塔"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.shortbread"
-label="香蔥酥餅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.chicken_wing"
-label="香滷雞翅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.fruit"
-label="水果"
-style="width: 130px;"
-/>
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.tomato"
+      label="梅汁番茄"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.egg"
+      label="鹽水煮蛋"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.vegetable"
+      label="季節時蔬"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.fried_mushroom"
+      label="酥炸菇菇"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.braised_dried"
+      label="滷豆干"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.oil_rice"
+      label="油飯"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.fried_potato"
+      label="炸地瓜"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.eggtart"
+      label="手工蛋塔"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.shortbread"
+      label="香蔥酥餅"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.chicken_wing"
+      label="香滷雞翅"
+      style="width: 130px;"
+    />
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.fruit"
+      label="水果"
+      style="width: 130px;"
+    />
 
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong2Form.bake_potato"
-label="烤地瓜"
-style="width: 130px;"
-/>
-</div> -->
+    <q-input
+      outlined
+      type="number"
+      :input-style="{ fontSize: '20px' }"
+      v-model="bangdong2Form.bake_potato"
+      label="烤地瓜"
+      style="width: 130px;"
+    />
+  </div>
   <div class="row justify-end" style="width: 100%;">
     <q-btn
       color="primary"
@@ -1080,8 +1099,10 @@ style="width: 130px;"
       <!-- 雞胸便當dailog -->
       <q-dialog v-model="showbangdong3"  >
   <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-    <div>
-    <h5>主餐</h5>
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">主餐</h5>
+</div>
+    <div class="row">
     <q-input
       outlined
       type="number"
@@ -1147,9 +1168,10 @@ style="width: 130px;"
 
     />
   </div>
-    <div>
-
-    <h5>附餐</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">副餐</h5>
+</div>
+    <div class="row">
     <q-input
       outlined
       type="number"
@@ -1179,8 +1201,10 @@ style="width: 130px;"
     />
   </div>
 
-  <div>
-    <h5>飲料</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">飲料</h5>
+</div>
+    <div class="row">
     <q-input
       outlined
       type="number"
@@ -1236,8 +1260,10 @@ style="width: 130px;"
 
     />
   </div>
-  <div>
-  <h5>雞胸便當</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">雞胸便當</h5>
+</div>
+    <div class="row">
 
 <q-input
 outlined
@@ -1250,108 +1276,37 @@ label="數量總計"
 readonly
 />
 </div>
-<!-- <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">配菜</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">配菜</h5>
 </div>
 <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.tomato"
-label="梅汁番茄"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.egg"
-label="鹽水煮蛋"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.vegetable"
-label="季節時蔬"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.fried_mushroom"
-label="酥炸菇菇"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.braised_dried"
-label="滷豆干"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.oil_rice"
-label="油飯"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.fried_potato"
-label="炸地瓜"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.eggtart"
-label="手工蛋塔"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.shortbread"
-label="香蔥酥餅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.chicken_wing"
-label="香滷雞翅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.fruit"
-label="水果"
-style="width: 130px;"
-/>
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.tomato" label="梅汁番茄"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.egg" label="鹽水煮蛋"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.vegetable" label="季節時蔬"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.fried_mushroom"
+    label="酥炸菇菇" style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.braised_dried" label="滷豆干"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.oil_rice" label="油飯"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.fried_potato" label="炸地瓜"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.eggtart" label="手工蛋塔"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.shortbread" label="香蔥酥餅"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.chicken_wing" label="香滷雞翅"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.fruit" label="水果"
+    style="width: 130px;" />
 
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong3Form.bake_potato"
-label="烤地瓜"
-style="width: 130px;"
-/>
-</div> -->
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.bake_potato" label="烤地瓜"
+    style="width: 130px;" />
+</div>
+
   <div class="row justify-end" style="width: 100%;">
     <q-btn
       color="primary"
@@ -1374,8 +1329,10 @@ style="width: 130px;"
        <!-- 滷牛便當dailog -->
        <q-dialog v-model="showbangdong4"  >
   <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-    <div>
-    <h5>主餐</h5>
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">主餐</h5>
+</div>
+<div class="row">
     <q-input
       outlined
       type="number"
@@ -1449,9 +1406,10 @@ style="width: 130px;"
 
     />
   </div>
-    <div>
-
-    <h5>附餐</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">副餐</h5>
+</div>
+<div class="row">
     <q-input
       outlined
       type="number"
@@ -1481,8 +1439,10 @@ style="width: 130px;"
     />
   </div>
 
-  <div>
-    <h5>飲料</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">飲料</h5>
+</div>
+<div class="row">
     <q-input
       outlined
       type="number"
@@ -1538,8 +1498,10 @@ style="width: 130px;"
 
     />
   </div>
-  <div>
-  <h5>滷牛便當</h5>
+  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">滷牛便當</h5>
+</div>
+<div class="row">
 
 <q-input
 outlined
@@ -1552,108 +1514,37 @@ label="數量總計"
 readonly
 />
 </div>
-<!-- <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">配菜</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">配菜</h5>
 </div>
 <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.tomato"
-label="梅汁番茄"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.egg"
-label="鹽水煮蛋"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.vegetable"
-label="季節時蔬"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.fried_mushroom"
-label="酥炸菇菇"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.braised_dried"
-label="滷豆干"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.oil_rice"
-label="油飯"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.fried_potato"
-label="炸地瓜"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.eggtart"
-label="手工蛋塔"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.shortbread"
-label="香蔥酥餅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.chicken_wing"
-label="香滷雞翅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.fruit"
-label="水果"
-style="width: 130px;"
-/>
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.tomato" label="梅汁番茄"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.egg" label="鹽水煮蛋"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.vegetable" label="季節時蔬"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.fried_mushroom"
+    label="酥炸菇菇" style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.braised_dried" label="滷豆干"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.oil_rice" label="油飯"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.fried_potato" label="炸地瓜"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.eggtart" label="手工蛋塔"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.shortbread" label="香蔥酥餅"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.chicken_wing" label="香滷雞翅"
+    style="width: 130px;" />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.fruit" label="水果"
+    style="width: 130px;" />
 
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="bangdong4Form.bake_potato"
-label="烤地瓜"
-style="width: 130px;"
-/>
-</div> -->
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.bake_potato" label="烤地瓜"
+    style="width: 130px;" />
+</div>
+
   <div class="row justify-end" style="width: 100%;">
     <q-btn
       color="primary"
@@ -4066,8 +3957,10 @@ style="width: 130px;"
 
       <q-dialog v-model="showsolo" >
         <q-card class="q-gutter-md row items-start  word-break " id="solocard" >
-            <div >
-              <h5>6吋潤餅</h5>
+          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">6吋潤餅</h5>
+            </div>
+            <div class="row">
 
             <q-input
               outlined
@@ -4120,8 +4013,10 @@ style="width: 130px;"
             />
 
           </div>
-            <div>
-              <h5>3吋潤餅</h5>
+          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">3吋潤餅</h5>
+            </div>
+            <div class="row">
 
             <q-input
               outlined
@@ -4179,8 +4074,10 @@ style="width: 130px;"
               <h5></h5>
 
           </div>
-          <div>
-            <h5>飲料</h5>
+          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">飲料</h5>
+            </div>
+            <div class="row">
             <q-input
               outlined
               v-model="soloForm.sugarZero"
@@ -4224,8 +4121,10 @@ style="width: 130px;"
               style="width: 130px;"
             />
           </div>
-          <div style="word-break: break-all;">
-            <h5>環保袋</h5>
+          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">環保袋</h5>
+            </div>
+            <div class="row">
             <q-input
               outlined
               v-model="soloForm.smallBag"
@@ -4241,7 +4140,10 @@ style="width: 130px;"
               style="width: 130px;"
             />
             </div>
-            <h5 style="width: 100%;">配菜</h5>
+            <div  style="width:100%;padding: 0;margin: 0;height: 30px;">
+              <h5 style="line-height: 0;">配菜</h5>
+            </div >
+            <div class="row">
             <q-input
               outlined
               v-model="soloForm.tomato"
@@ -4326,7 +4228,7 @@ style="width: 130px;"
               type="number"
               style="width: 130px;"
             />
-
+            </div>
           <div class="row justify-end" style="width: 100%;">
             <q-btn
               color="primary"
@@ -4363,8 +4265,10 @@ style="width: 130px;"
       <!-- 客製招牌便當dialog -->
         <q-dialog v-model="showCustomBangdong1"  >
           <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-  <div>
-  <h5>主餐</h5>
+            <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">主餐</h5>
+            </div>
+            <div class="row">
   <q-input
     outlined
     type="number"
@@ -4438,9 +4342,10 @@ style="width: 130px;"
 
   />
 </div>
-  <div>
-
-  <h5>附餐</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">副餐</h5>
+            </div>
+            <div class="row">
   <q-input
     outlined
     type="number"
@@ -4470,8 +4375,10 @@ style="width: 130px;"
   />
 </div>
 
-<div>
-  <h5>飲料</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">飲料</h5>
+            </div>
+            <div class="row">
   <q-input
     outlined
     type="number"
@@ -4527,8 +4434,10 @@ style="width: 130px;"
 
   />
 </div>
-<div>
-<h5>招牌便當</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">招牌便當</h5>
+            </div>
+            <div class="row">
 
 <q-input
 outlined
@@ -4665,8 +4574,10 @@ style="width: 130px;"
       <!-- 客製雞腿便當dailog -->
       <q-dialog v-model="showCustomBangdong2"  >
   <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-<div>
-<h5>主餐</h5>
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">主餐</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -4740,9 +4651,10 @@ label="滷肉"
 
 />
 </div>
-<div>
-
-<h5>附餐</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">副餐</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -4772,8 +4684,10 @@ label="滷牛"
 />
 </div>
 
-<div>
-<h5>飲料</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">飲料</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -4829,8 +4743,10 @@ label="濃湯"
 
 />
 </div>
-<div>
-<h5>雞腿便當</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">雞腿便當</h5>
+            </div>
+            <div class="row">
 
 <q-input
 outlined
@@ -4967,8 +4883,10 @@ class="q-mt-md"
         <!-- 客製雞腿便當dailog -->
         <q-dialog v-model="showCustomBangdong3"  >
   <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-<div>
-<h5>主餐</h5>
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">主餐</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -5042,9 +4960,10 @@ label="滷肉"
 
 />
 </div>
-<div>
-
-<h5>附餐</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">副餐</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -5074,8 +4993,10 @@ label="滷牛"
 />
 </div>
 
-<div>
-<h5>飲料</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">飲料</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -5131,8 +5052,10 @@ label="濃湯"
 
 />
 </div>
-<div>
-<h5>雞胸便當</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">雞胸便當</h5>
+            </div>
+            <div class="row">
 
 <q-input
 outlined
@@ -5269,8 +5192,10 @@ class="q-mt-md"
        <!-- 客製滷牛便當dailog -->
        <q-dialog v-model="showCustomBangdong4"  >
   <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-<div>
-<h5>主餐</h5>
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">主餐</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -5344,9 +5269,10 @@ label="滷肉"
 
 />
 </div>
-<div>
-
-<h5>附餐</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">副餐</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -5376,8 +5302,10 @@ label="滷牛"
 />
 </div>
 
-<div>
-<h5>飲料</h5>
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">飲料</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -5433,9 +5361,10 @@ label="濃湯"
 
 />
 </div>
-<div>
-<h5>滷牛便當</h5>
-
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+            <h5  style="line-height: 0;">滷牛便當</h5>
+            </div>
+            <div class="row">
 <q-input
 outlined
 type="number"
@@ -7966,9 +7895,9 @@ class="q-mt-md"
 
         <div class="row justify-center">
           <div class="col-12">
-            <div class="q-pa-md " >
+            <div class="q-pa-xs " >
               <q-table
-      style="max-height:35vh;"
+              :style="{ maxHeight: show ? 'calc(30vh)' : 'calc(68vh)' }"
       title="商品訂單"
       :rows="rows"
       :columns="columns"
@@ -8011,7 +7940,7 @@ class="q-mt-md"
         <!-- 商品備註 -->
         <div class="row justify-start">
           <q-input
-      style="width: 97%; margin-left: 20px; background-color: white;"
+      style="width: 100%; margin: 1px 5px; background-color: white;"
       v-model="mealRemark"
       type="text"
       label="餐點備註"
@@ -8054,37 +7983,28 @@ class="q-mt-md"
 
         <!-- 結帳金額區域 -->
         <div class="row justify-center">
-          <tbody><tr>
-          <td colspan="2">
-            <span style="font-weight:bolder">已付清</span> 或
-            <span style="font-weight:bolder">尚有欠款</span>
-             </td>
-             </tr>
-             <tr>
-               <td>付款方式：&nbsp;
-                 <input type="radio" id="input-payment-method-cash" name="payment-method" value="cash">
-                 <label for="input-payment-method-cash">現金</label>&nbsp;
+  <div class="col-12">
+    <div class="q-pa-xs row justify-around ">
+      <q-radio v-model="paymentMethod" val="cash" label="現金"  class="radio-option"/>
+      <q-radio v-model="paymentMethod" val="wire" label="電匯" class="radio-option" />
+      <q-radio v-model="paymentMethod" val="credit" label="信用卡" class="radio-option" />
+      <q-radio v-model="paymentMethod" val="withindays30" label="收貨後30天"  class="radio-option"/>
+      <div class="q-field row no-wrap items-center">
+        <div class="col-auto" style="font-size: 20px;">總金額</div>
+        <q-input outlined v-model="total" readonly style="width:160px"  />
+      </div>
+      <div class="q-field row no-wrap items-center">
+        <div class="col-auto" style="font-size: 20px;">已付金額</div>
+        <q-input outlined v-model="paid" style="width:160px"  />
+      </div>
+      <div class="q-field row no-wrap items-center">
+        <div class="col-auto" style="font-size: 20px;">未付餘額</div>
+        <q-input outlined v-model="unpaid" readonly style="width:160px"   />
+      </div>
+    </div>
+  </div>
+</div>
 
-               <input type="radio" id="input-payment-method-wire" name="payment-method" value="wire">
-               <label for="input-payment-method-wire">電匯</label>&nbsp;
-
-               <input type="radio" id="input-payment-method-credit" name="payment-method" value="credit">
-               <label for="input-payment-method-credit">信用卡</label>&nbsp;
-
-               <input type="radio" id="input-payment-method-withindays30" name="payment-method" value="withindays30">
-               <label for="input-payment-method-withindays30">收貨後30天</label>&nbsp;
-
-              </td>
-              <td>
-                總金額：<input type="text" id="input-payment-total" value="0" style="width:80px" readonly="">&nbsp;&nbsp; &nbsp;&nbsp;
-                已付金額： <input type="text" id="input-payment-paid" name="payment-paid" value="0" style="width:80px">&nbsp;&nbsp;
-                未付餘額： <input type="text" id="input-payment-unpaid" name="payment-unpaid" value="0" style="width:80px" readonly="">&nbsp;&nbsp;
-
-              </td>
-            </tr>
-
-              </tbody>
-        </div>
       </div>
 
 </div>
@@ -8094,7 +8014,7 @@ class="q-mt-md"
 
 <script setup>
 import { ref, watch, computed, reactive } from 'vue'
-import { useQuasar } from 'quasar'
+import { useQuasar, Dialog } from 'quasar'
 import { apiAuth } from 'src/boot/axios'
 
 // import { useRouter } from 'vue-router'
@@ -8108,7 +8028,7 @@ const $q = useQuasar()
 function run2 (message) {
   personForm.road2 += message
 }
-
+const show = ref(false)
 // 訂購日期自動導入
 
 const personForm = reactive({
@@ -8133,10 +8053,12 @@ const personForm = reactive({
   gender: '', // 性別
   sameOrderCustomer: false, // 訂購人與收件人相同
   sameOrderCompany: false, // 訂購公司與收件公司相同
+  noCompilation: false, // 統編勾選
   getCompany: '', // 收件公司
-  event: '  ', // 活動
+  event: [], // 活動
   remark: '', // 備註
   orderStatu: '未確認'// 訂單狀態
+
 })
 const picks = reactive(['自取', '外送'])
 const eventOptions = [
@@ -8148,9 +8070,25 @@ const eventOptions = [
   '生日',
   '滿月'
 ]
-const noCompilation = ref(false)
 
-const isCompilationReadonly = computed(() => noCompilation.value)
+// 統編勾選變成唯讀並且清空
+
+const isCompilationReadonly = computed(() => personForm.noCompilation)
+
+watch(isCompilationReadonly, (newVal) => {
+  if (newVal) {
+    personForm.compilation = ''
+  }
+})
+// 結帳區
+const paymentMethod = ref('cash')
+const total = ref(0)
+const paid = ref(0)
+const unpaid = ref(0)
+
+watch([total, paid], () => {
+  unpaid.value = total.value - paid.value
+})
 // 抓取當日日期
 function updateDateTime () {
   const now = new Date()
@@ -8207,11 +8145,13 @@ function onReset () {
   personForm.sameOrderCustomer = false// 訂購人與收件人相同
   personForm.sameOrderCompany = false// 訂購公司與收件公司personForm.相同
   personForm.getCompany = ''// 收件公司
-  personForm.event = ''// 活動
+  personForm.event = []// 活動
   personForm.remark = ''// 備註
   personForm.orderStatu = '未確認'// 訂單狀態
   // 重設其它狀態
   // ...
+  personForm.time = ''// 時段
+  personForm.noCompilation = false
 }
 // await new Promise(resolve => setTimeout(resolve, 1000)) // 每次等待1秒再繼續請求
 
@@ -8286,7 +8226,14 @@ getAddressList()
 // 監聽獲取區域
 watch(
   () => personForm.address,
-  async (newValue) => {
+  async (newValue, oldValue) => {
+    // 清空區域跟路名
+    if (oldValue && newValue !== oldValue && !personForm.company) {
+      personForm.address2 = ''
+      personForm.road = ''
+      personForm.road2 = ''
+    }
+
     const stateId = addressoptions.findIndex(item => item === newValue) + 1
     await getDistrictList(stateId)
   }
@@ -8302,7 +8249,15 @@ watch(
 // )
 watch(
   () => [personForm.address, personForm.address2, personForm.road],
-  async ([state, district, road]) => {
+  async ([state, district, road], [oldState, oldDistrict, oldRoad]) => {
+    // 清空路名
+    if ((oldState && state !== oldState) || (oldDistrict && district !== oldDistrict && !personForm.company)) {
+      if (!personForm.company) {
+        personForm.road = ''
+        personForm.road2 = ''
+      }
+    }
+
     const stateId = addressoptions.findIndex(item => item === state) + 1
     await getRoadList(stateId, district, road)
   }
@@ -8322,19 +8277,56 @@ watch(() => personForm.sameOrderCompany, (newVal) => {
   }
 })
 // 統編搜尋帶入公司名稱
-watch(() => personForm.compilation, (newVal) => {
-  if (newVal.length === 8) {
-    apiAuth
-      .get(`/member/guin/autocomplete?filter_uniform_invoice_no=${newVal}`)
-      .then((res) => {
-        if (res.data && res.data.length) {
-          personForm.company = res.data[0].name
-        }
-      })
-  } else {
-    personForm.company = ''
+watch(
+  () => personForm.compilation,
+  async (newVal) => {
+    if (newVal && newVal.length === 8) {
+      apiAuth
+        .get(`/member/guin/autocomplete?filter_uniform_invoice_no=${newVal}`)
+        .then((res) => {
+          if (res.data && res.data.length) {
+            // Set the company name
+            personForm.company = res.data[0].name
+
+            // Check if the address should be overwritten
+            const shouldOverwrite = personForm.address || personForm.address2 || personForm.road || personForm.road2
+            if (shouldOverwrite) {
+              Dialog.create({
+                title: '確認覆蓋地址',
+                message: '是否要覆蓋已有的地址？',
+                persistent: true,
+                ok: '確定',
+                cancel: '取消'
+              }).onOk(() => {
+                // Check if the company name is already set
+                // If yes, do not clear the area and road name
+                if (!personForm.company) {
+                  personForm.address2 = ''
+                  personForm.road = ''
+                  personForm.road2 = ''
+                }
+
+                personForm.address = res.data[0].address_parts.full_city
+                personForm.address2 = res.data[0].address_parts.full_district
+                personForm.road = res.data[0].address_parts.full_road_section
+                personForm.road2 = res.data[0].address_parts.after_road_section
+              }).onCancel(() => {
+                // 用户取消时不做任何操作
+              })
+            } else {
+              personForm.address = res.data[0].address_parts.full_city
+              personForm.address2 = res.data[0].address_parts.full_district
+              personForm.road = res.data[0].address_parts.full_road_section
+              personForm.road2 = res.data[0].address_parts.after_road_section
+            }
+          } else {
+            personForm.company = ''
+          }
+        })
+    }
   }
-})
+)
+
 // 電話號碼搜尋自動導入其他
 
 const telOptions = ref([])
@@ -8789,18 +8781,18 @@ const bangdong2Form = reactive({
   bangdong1Fish: 0, // 酥魚
   bangdong1Pig: 0, // 培根
   bangdong1Meet: 0, // 滷肉
-  // tomato: 0, // 番茄
-  // egg: 0, // 鹽水煮蛋
-  // vegetable: 0, // 蔬菜
-  // fried_mushroom: 0, // 炸菇
-  // braised_dried: 0, // 滷豆干
-  // oil_rice: 0, // 油飯
-  // fried_potato: 0, // 炸地瓜
-  // eggtart: 0, // 蛋撻
-  // shortbread: 0, // 酥餅
-  // chicken_wing: 0, // 雞翅
-  // fruit: 0, // 水果
-  // bake_potato: 0, // 烤地瓜
+  tomato: 0, // 番茄
+  egg: 0, // 鹽水煮蛋
+  vegetable: 0, // 蔬菜
+  fried_mushroom: 0, // 炸菇
+  braised_dried: 0, // 滷豆干
+  oil_rice: 0, // 油飯
+  fried_potato: 0, // 炸地瓜
+  eggtart: 0, // 蛋撻
+  shortbread: 0, // 酥餅
+  chicken_wing: 0, // 雞翅
+  fruit: 0, // 水果
+  bake_potato: 0, // 烤地瓜
   bangdong1SugarZero: 0, // 無糖
   bangdong1SugarSome: 0, // 微糖
   bangdong1BlackTea: 0, // 紅茶
@@ -8841,18 +8833,18 @@ const bangdong3Form = reactive({
   bangdong1Fish: 0, // 酥魚
   bangdong1Pig: 0, // 培根
   bangdong1Meet: 0, // 滷肉
-  // tomato: 0, // 番茄
-  // egg: 0, // 鹽水煮蛋
-  // vegetable: 0, // 蔬菜
-  // fried_mushroom: 0, // 炸菇
-  // braised_dried: 0, // 滷豆干
-  // oil_rice: 0, // 油飯
-  // fried_potato: 0, // 炸地瓜
-  // eggtart: 0, // 蛋撻
-  // shortbread: 0, // 酥餅
-  // chicken_wing: 0, // 雞翅
-  // fruit: 0, // 水果
-  // bake_potato: 0, // 烤地瓜
+  tomato: 0, // 番茄
+  egg: 0, // 鹽水煮蛋
+  vegetable: 0, // 蔬菜
+  fried_mushroom: 0, // 炸菇
+  braised_dried: 0, // 滷豆干
+  oil_rice: 0, // 油飯
+  fried_potato: 0, // 炸地瓜
+  eggtart: 0, // 蛋撻
+  shortbread: 0, // 酥餅
+  chicken_wing: 0, // 雞翅
+  fruit: 0, // 水果
+  bake_potato: 0, // 烤地瓜
   bangdong1SugarZero: 0, // 無糖
   bangdong1SugarSome: 0, // 微糖
   bangdong1BlackTea: 0, // 紅茶
@@ -8893,18 +8885,18 @@ const bangdong4Form = reactive({
   bangdong1Fish: 0, // 酥魚
   bangdong1Pig: 0, // 培根
   bangdong1Meet: 0, // 滷肉
-  // tomato: 0, // 番茄
-  // egg: 0, // 鹽水煮蛋
-  // vegetable: 0, // 蔬菜
-  // fried_mushroom: 0, // 炸菇
-  // braised_dried: 0, // 滷豆干
-  // oil_rice: 0, // 油飯
-  // fried_potato: 0, // 炸地瓜
-  // eggtart: 0, // 蛋撻
-  // shortbread: 0, // 酥餅
-  // chicken_wing: 0, // 雞翅
-  // fruit: 0, // 水果
-  // bake_potato: 0, // 烤地瓜
+  tomato: 0, // 番茄
+  egg: 0, // 鹽水煮蛋
+  vegetable: 0, // 蔬菜
+  fried_mushroom: 0, // 炸菇
+  braised_dried: 0, // 滷豆干
+  oil_rice: 0, // 油飯
+  fried_potato: 0, // 炸地瓜
+  eggtart: 0, // 蛋撻
+  shortbread: 0, // 酥餅
+  chicken_wing: 0, // 雞翅
+  fruit: 0, // 水果
+  bake_potato: 0, // 烤地瓜
   bangdong1SugarZero: 0, // 無糖
   bangdong1SugarSome: 0, // 微糖
   bangdong1BlackTea: 0, // 紅茶
@@ -10186,10 +10178,10 @@ font-size: 50px!important;
   // margin-top: 10px;
   // margin-left: 30px;
   height: 85px;
-  margin:25px 30px 0 5px ;
+  margin:0px 30px 0 5px ;
   text-align: center;
   h5{
-    font-size: 30px;
+    font-size: 23px;
   }
   // position: relative;
   // top: 50%;
@@ -10200,10 +10192,10 @@ font-size: 50px!important;
   background: #477DE7;
   color: #FFFFFF;
   margin: 9px;
-  margin-top: 20px;
+  margin-top: 6px;
   /* margin-top: 20px; */
   font-size: 27px;
-  box-shadow: 10px 10px 0px 2px #1564ad;
+  box-shadow: 7px 5px 0px 2px #1564ad;
   }
 
 }
@@ -10221,16 +10213,16 @@ font-size: 50px!important;
 }
 
 .row {
-  max-height: 600px;
+  max-height: 700px;
 }
 
 .slider {
-  height: 440px;
+  height: 100%;
   width: 1260px;
   overflow-y: auto;
   background: #dadde0;
   // margin: 10px;
-  margin-top: 20px;
+  margin-top: 5px;
 
    th{
     font-size: 20px!important;
@@ -10238,6 +10230,7 @@ font-size: 50px!important;
 }
 
 #sliderTable{
+  height: 100%;
   .q-table__middle{
         th{
     font-size: 2rem!important;
@@ -10286,7 +10279,7 @@ height: 270px;
     color: #FFFFFF;
 }
 .person{
-  height: 369px;
+  height: 427px;
   width:100%;
   margin:0 5px;
   .person-form{
@@ -10296,7 +10289,7 @@ height: 270px;
 }
 
 #bangdongcard{
-  width: 630px!important;
+  width: 100%!important;
   height: 720px;
   .q-input{
     margin-top: 10px;
@@ -10304,8 +10297,8 @@ height: 270px;
 
 }
 #customBangdongcard{
-  width: 700px!important;
-  height: 930px;
+  width: 100%!important;
+  height: 720px;
   h5{
     line-height: 0;
   }
@@ -10324,7 +10317,7 @@ height: 270px;
 
 }
 #solocard{
-  width: 50vw!important;
+  width: 100%!important;
   max-height: 900px;
   // overflow: hidden;
   display: flex;
@@ -10390,4 +10383,10 @@ table,table td,table th{
   width: 2px;
 }
 
+.radio-option {
+  font-size: 20px;
+}
+.radio-option .q-radio__label {
+  font-size: 20px;
+}
 </style>
