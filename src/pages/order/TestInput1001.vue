@@ -1,12 +1,12 @@
 <template>
 
   <div>
-<h5 style="margin: 0; padding: 0;">{{ bangdongMainName }}</h5>
+<h5 style="margin: 0; padding: 0;">{{ bangdong1MainName }}</h5>
 <div class="row items-center"
 >
-<q-item  v-for="(bnagdong1Main, index) in bnagdong1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+<q-item  v-for="(bangdong1Main, index) in bangdong1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
 <q-input
-v-model="bnagdong1Main.quantity" :label="bnagdong1Main.name"
+v-model="bangdong1Main.quantity" :label="bangdong1Main.name"
 outlined
 type="number"
   :input-style="{ fontSize: '20px', margin: '0' }"
@@ -17,7 +17,7 @@ type="number"
 </div>
 </div>
 <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-    <h5  style="line-height: 0;">招牌便當</h5>
+    <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
     </div>
     <div class="row">
 <q-input
@@ -27,7 +27,6 @@ type="number"
 style="width: 130px;"
 v-model="bangdong1TotalQuantity"
 label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
 readonly
 />
 <q-input
@@ -37,7 +36,6 @@ type="number"
 style="width: 130px;"
 v-model="bangdong1TotalQuantityPrice"
 label="金額總計"
-:rules="[val => !!val || '此欄位為必填']"
 readonly
 />
 </div>
@@ -60,17 +58,19 @@ class="q-mt-md"
 <q-table :rows="tableRows">
 <template #header>
 <q-tr>
-<q-th>商品</q-th>
-<q-th>數量</q-th>
-<q-th></q-th>
+<q-th style="font-size:20px">商品</q-th>
+<q-th style="font-size:20px">搭配</q-th>
+<q-th style="font-size:20px">飲料</q-th>
+<q-th style="font-size:20px">操作</q-th>
 </q-tr>
 </template>
 
 <template #body="props">
 <q-tr :props="props">
-<q-td>{{ props.row.name }}</q-td>
-<q-td>{{ props.row.quantity }}</q-td>
-<q-td>
+<q-td style="text-align: center;font-size:20px">{{ props.row.name }}</q-td>
+<q-td style="text-align: center;font-size:20px">{{ props.row.quantity }}</q-td>
+<q-td style="text-align: center;font-size:20px">{{ props.row.quantity }}</q-td>
+<q-td style="text-align: center">
 <q-btn icon="delete"
 color="red"
 fab-mini
@@ -82,48 +82,72 @@ fab-mini
 unelevated size="sm"
 color="info"
 @click="editRowDialog(props.row)"/>
+
 </q-td>
 </q-tr>
 </template>
 </q-table>
+<q-dialog v-model="editDialog" persistent>
+    <q-card>
+      <q-card-section>
 
-<q-dialog v-model="showEditDialog">
-<q-card>
-<q-card-section>
-<q-input v-model="editRowData.quantity" label="數量" type="number" />
-</q-card-section>
-<q-card-actions align="right">
-<q-btn label="Cancel" color="negative" @click="showEditDialog = false" />
-<q-btn label="Save" color="primary" @click="saveEditRow" />
-</q-card-actions>
-</q-card>
-</q-dialog>
+        <div>
+  <h5 style="margin: 0; padding: 0;">{{ bangdong1MainName }}</h5>
+  <div class="row items-center"></div>
+  <q-item v-for="(bangdong1EditMain, index) in bangdong1EditMains" :key="index" class="flex-auto "
+    style="margin: 0; padding: 0;">
+    <q-input v-model="bangdong1EditMain.quantity" :label="bangdong1EditMain.name" outlined type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+  </q-item>
+</div>
 
+<div style="width:100%;padding: 0;margin: 0;height: 30px;">
+  <h5 style="line-height: 0;">招牌便當</h5>
+</div>
+<div class="row">
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+    v-model="bangdong1EditTotalQuantity" label="數量總計" readonly />
+  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+    v-model="bangdong1EditTotalQuantityPrice" label="金額總計" readonly />
+</div>
+
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn label="取消" color="red" @click="closeEditDialog" />
+        <q-btn label="儲存" color="primary" @click="saveEditDialog" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
 import { reactive, ref, computed } from 'vue'
 import { apiAuth } from 'src/boot/axios'
 
-const bnagdong1Mains = reactive([])
-const bangdongMainName = ref('')
+const bangdong1Mains = reactive([])
+const bangdong1MainName = ref('')
+const bangdong1Name = ref('')
 const price = ref(0)
 const tableRows = reactive([])
-
+const editDialog = ref(false)
+// 抓取招牌便當主餐形成input
 const loadBangdongMain = async () => {
   try {
     const response = await apiAuth.get('catalog/product/1001')
     const productOptions = response.data.product_options
+    // 主餐
     const mainMeal = productOptions.main_meal
-    const values = mainMeal.product_option_values
-    for (const value of values) {
-      bnagdong1Mains.push({
-        id: value.id,
-        name: value.short_name,
+    const mainMealValues = mainMeal.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      bangdong1Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.short_name,
         quantity: 0
       })
     }
-    bangdongMainName.value = mainMeal.name
+    bangdong1Name.value = response.data.name
+    bangdong1MainName.value = mainMeal.name
     price.value = parseInt(response.data.price)
   } catch (error) {
     console.error(error)
@@ -133,7 +157,7 @@ const loadBangdongMain = async () => {
 loadBangdongMain()
 // 計算總數量
 const bangdong1TotalQuantity = computed(() => {
-  return bnagdong1Mains.reduce((total, current) => {
+  return bangdong1Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
   }, 0)
 })
@@ -142,47 +166,123 @@ const bangdong1TotalQuantity = computed(() => {
 const bangdong1TotalQuantityPrice = computed(() => {
   return bangdong1TotalQuantity.value * price.value
 })
+// 將資料推進tableRows
 const submitBangdong1 = () => {
-  for (const bnagdong1Main of bnagdong1Mains) {
-    if (bnagdong1Main.quantity > 0) {
-      const row = {
-        id: bnagdong1Main.id,
-        name: '招牌便當' + bnagdong1Main.name,
-        quantity: parseInt(bnagdong1Main.quantity).toString()
-      }
-      tableRows.push(row)
-    }
+  const row = {
+    id: tableRows.length + 1,
+    name: '',
+    quantity: '',
+    hidenquantity: []
   }
-}
 
+  const totalQuantity = bangdong1TotalQuantity.value // 計算總數量
+
+  for (const bangdong1Main of bangdong1Mains) {
+    if (bangdong1Main.quantity > 0) {
+      row.name = bangdong1Name.value + totalQuantity // 使用總數量
+      row.quantity += bangdong1Main.name + '' + parseInt(bangdong1Main.quantity).toString() + ' '
+      row.hidenquantity.push(parseInt(bangdong1Main.quantity))
+      bangdong1Main.quantity = 0 // 清空數量
+    }
+    console.log(row.hidenquantity)
+  }
+
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+}
+// 刪除該行
 const deleteRow = (id) => {
   const index = tableRows.findIndex((row) => row.id === id)
   if (index >= 0) {
     tableRows.splice(index, 1)
   }
 }
-const showEditDialog = ref(false)
-const editRowData = reactive({
-  id: null,
-  name: '',
-  quantity: 0
+// edit導入修正欄位
+const bangdong1EditMains = reactive([])
+const loadBangdongEditMain = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1001')
+    const productOptions = response.data.product_options
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+    for (const value of values) {
+      bangdong1EditMains.push({
+        id: value.id,
+        name: value.short_name,
+        quantity: 0
+      })
+    }
+    bangdong1MainName.value = mainMeal.name
+    price.value = parseInt(response.data.price)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdongEditMain()
+
+// 計算修正欄位總數量
+
+const bangdong1EditTotalQuantity = computed(() => {
+  return bangdong1EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
 })
 
-const editRowDialog = (row) => {
-  editRowData.id = row.id
-  editRowData.name = row.name
-  editRowData.quantity = parseInt(row.quantity)
-  showEditDialog.value = true
-}
-const saveEditRow = () => {
-  const index = tableRows.findIndex((row) => row.id === editRowData.id)
-  if (index >= 0) {
-    tableRows[index].quantity = parseInt(editRowData.quantity).toString()
+// 計算修正欄位總價格
+const bangdong1EditTotalQuantityPrice = computed(() => {
+  return bangdong1EditTotalQuantity.value * price.value
+})
+
+// 將table資料拆解放回修正欄位
+let editingRow = null
+
+function editRowDialog (row) {
+  for (const bangdong1EditMain of bangdong1EditMains) {
+    bangdong1EditMain.quantity = 0
   }
-  editRowData.id = null
-  editRowData.name = ''
-  editRowData.quantity = 0
-  showEditDialog.value = false
+  const quantitys = row.quantity.split(' ')
+  for (const quantity of quantitys) {
+    const name = quantity.substring(0, 2)
+    const value = quantity.substring(2, quantity.length)
+    const index = bangdong1EditMains.findIndex(
+      (bangdong1EditMain) => bangdong1EditMain.name === name
+    )
+    if (index >= 0) {
+      bangdong1EditMains[index].quantity = parseInt(value)
+    }
+  }
+  editingRow = row // 記錄正在編輯的 row 物件
+  editDialog.value = true
 }
 
+// 關閉修正欄位
+function closeEditDialog () {
+  editDialog.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialog () {
+  const row = {
+    id: tableRows.length + 1,
+    name: '',
+    quantity: ''
+  }
+  const totalEditQuantity = bangdong1EditTotalQuantity.value// 計算總數量
+  for (const bangdong1EditMain of bangdong1EditMains) {
+    if (bangdong1EditMain.quantity > 0) {
+      row.name = bangdong1Name.value + totalEditQuantity // 使用總數量
+      row.quantity += bangdong1EditMain.name + '' + parseInt(bangdong1EditMain.quantity).toString() + ' '
+
+      bangdong1EditMain.quantity = 0 // 清空數量
+    }
+  }
+
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1)
+    tableRows.push(row)
+  }
+  editDialog.value = false
+}
 </script>

@@ -8,6 +8,7 @@ export const useUserStore = defineStore(
     const bnagdong1Mains = reactive([])
     const bangdongMainName = ref('')
     const price = ref(0)
+    const tableRows = reactive([])
 
     const loadBangdongMain = async () => {
       try {
@@ -43,14 +44,67 @@ export const useUserStore = defineStore(
       return bangdong1TotalQuantity.value * price.value
     })
     // const $q = useQuasar()
+    const submitBangdong1 = () => {
+      const row = {
+        name: '',
+        quantity: ''
+      }
+      for (const bnagdong1Main of bnagdong1Mains) {
+        if (bnagdong1Main.quantity > 0) {
+          row.name = '招牌便當' + bangdong1TotalQuantity.value
+          row.quantity +=
+            bnagdong1Main.name +
+            '' +
+            parseInt(bnagdong1Main.quantity).toString() +
+            ' '
+        }
+      }
+      // 將這個 row 推進 tableRows 中
+      tableRows.push(row)
+    }
 
+    const deleteRow = (id) => {
+      const index = tableRows.findIndex((row) => row.id === id)
+      if (index >= 0) {
+        tableRows.splice(index, 1)
+      }
+    }
+    const showEditDialog = ref(false)
+    const editData = reactive({
+      id: null,
+      name: '',
+      quantity: 0
+    })
+
+    const editRowDialog = (row) => {
+      editData.name = row.name
+      editData.quantity = row.quantity
+      showEditDialog.value = true
+    }
+    const saveEditData = () => {
+      const index = tableRows.findIndex(
+        (row) =>
+          row.name === editData.name && row.quantity === editData.quantity
+      )
+      if (index >= 0) {
+        tableRows[index].name = editData.name
+        tableRows[index].quantity = editData.quantity
+      }
+      showEditDialog.value = false
+    }
     return {
       bnagdong1Mains,
       bangdongMainName,
       price,
       loadBangdongMain,
       bangdong1TotalQuantityPrice,
-      bangdong1TotalQuantity
+      bangdong1TotalQuantity,
+      submitBangdong1,
+      deleteRow,
+      editRowDialog,
+      saveEditData,
+      tableRows
+
     }
   },
   {
