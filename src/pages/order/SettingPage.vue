@@ -6,7 +6,8 @@
 >
 <q-item  v-for="(bangdong1Main, index) in bangdong1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
 <q-input
-v-model="bangdong1Main.quantity" :label="bangdong1Main.name"
+v-model="bangdong1Main.quantity"
+:label="bangdong1Main.name"
 outlined
 type="number"
   :input-style="{ fontSize: '20px', margin: '0' }"
@@ -87,7 +88,7 @@ class="q-mt-md"
 <q-th style="font-size:20px">商品</q-th>
 <q-th style="font-size:20px">搭配</q-th>
 <q-th style="font-size:20px">飲料</q-th>
-<!-- <q-th style="font-size:20px">配菜</q-th> -->
+<q-th style="font-size:20px">配菜</q-th>
 <q-th style="font-size:20px">金額</q-th>
 <q-th style="font-size:20px">操作</q-th>
 </q-tr>
@@ -103,7 +104,7 @@ class="q-mt-md"
 </q-td>
 <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.Main }}</q-td>
 <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.drinks }}</q-td>
-<!-- <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.sideDishes }}</q-td> -->
+<q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.sideDishes }}</q-td>
 <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.price }}</q-td>
 
 <q-td style="text-align: center">
@@ -178,7 +179,7 @@ color="info"
 </template>
 
 <script setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, watch } from 'vue'
 import { apiAuth } from 'src/boot/axios'
 
 const bangdong1Mains = reactive([])
@@ -226,9 +227,28 @@ const loadBangdong1 = async () => {
       bangdong1SideDishes.push({
         id: sideDishValue.id,
         name: sideDishValue.short_name,
-        quantity: 0
+        quantity: 0,
+        is_default: sideDishValue.is_default
       })
     }
+    // 監聽主餐的數量變化
+    bangdong1Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+          bangdong1SideDishes.forEach(sideDish => {
+            if (sideDish.is_default) {
+              const diff = newVal - oldVal
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity += diff
+              }
+            }
+          })
+        }
+      })
+    })
     bangdong1Name.value = response.data.name
     bangdong1MainName.value = mainMeal.name
     bangdong1DrinkName.value = Drink.name
@@ -262,6 +282,7 @@ const submitBangdong1 = () => {
     Main: '',
     drinks: '',
     sideDishes: '',
+    sideDishDefault: '',
     price: bangdong1TotalQuantityPrice.value,
     inputs: []
   }
@@ -297,9 +318,11 @@ const submitBangdong1 = () => {
   for (const bangdong1SideDish of bangdong1SideDishes) {
     if (bangdong1SideDish.quantity > 0) {
       row.sideDishes += bangdong1SideDish.name + '' + parseInt(bangdong1SideDish.quantity).toString() + ' '
+      row.sideDishDefault += bangdong1SideDish.is_default + ' '
       const input = {
         name: bangdong1SideDish.name,
-        value: parseInt(bangdong1SideDish.quantity)
+        value: parseInt(bangdong1SideDish.quantity),
+        is_default: bangdong1SideDish.is_default
       }
       row.inputs.push(input)
       bangdong1SideDish.quantity = 0
@@ -326,6 +349,7 @@ const deleteRow = (id) => {
 const bangdong1EditMains = reactive([])
 const bangdong1EditDrinks = reactive([])
 const bangdong1EditSideDishes = reactive([])
+
 const loadBangdong1Edit = async () => {
   try {
     const response = await apiAuth.get('catalog/product/1001')
@@ -343,12 +367,6 @@ const loadBangdong1Edit = async () => {
         hidenquantity: 0
       }
       bangdong1EditMains.push(bangdong1EditMain)
-
-      // 將hidenquantity中的值推入對應的bangdong1EditMain中
-      const index = bangdong1Mains.findIndex(main => main.id === value.id)
-      if (index !== -1) {
-        bangdong1EditMain.quantity = bangdong1Mains[index].hidenquantity
-      }
     }
     // 飲料
     const Drink = productOptions.drink
@@ -361,12 +379,6 @@ const loadBangdong1Edit = async () => {
         hidenquantity: 0
       }
       bangdong1EditDrinks.push(bangdong1EditDrink)
-
-      // 將hidenquantity中的值推入對應的bangdong1EditMain中
-      const index = bangdong1Drinks.findIndex(Drink => Drink.id === DrinkValue.id)
-      if (index !== -1) {
-        bangdong1EditDrink.quantity = bangdong1Drinks[index].hidenquantity
-      }
     }
     // 配菜
     const sideDish = productOptions.side_dish
@@ -376,16 +388,26 @@ const loadBangdong1Edit = async () => {
         id: sideDishValue.id,
         name: sideDishValue.short_name,
         Main: 0,
-        hidenquantity: 0
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
       }
       bangdong1EditSideDishes.push(bangdong1EditSideDish)
-
-      // 將hidenquantity中的值推入對應的bangdong1EditMain中
-      const index = bangdong1SideDishes.findIndex(sideDish => sideDish.id === sideDishValue.id)
-      if (index !== -1) {
-        bangdong1EditSideDish.quantity = bangdong1SideDishes[index].hidenquantity
-      }
     }
+    // // 監聽主餐的數量變化
+    // bangdong1EditMains.forEach(main => {
+    //   watch(() => main.quantity, (newVal, oldVal) => {
+    //     if (newVal !== oldVal) {
+    //     // 配菜的數量跟著主餐的數量變化
+    //       bangdong1EditSideDishes.forEach(sideDish => {
+    //         if (sideDish.is_default) {
+    //           const diff = newVal - oldVal
+
+    //           sideDish.quantity += diff
+    //         }
+    //       })
+    //     }
+    //   })
+    // })
     bangdong1MainName.value = mainMeal.name
     bangdong1DrinkName.value = Drink.name
     bangdong1SideDishName.value = sideDish.name
@@ -414,49 +436,45 @@ const bangdong1EditTotalQuantityPrice = computed(() => {
 let editingRow = null
 
 function editRowDialog (row) {
-  // 將 row 主餐的資料放進 bangdong1EditMains
+  // 將所有 bangdong1EditMains 對象的 quantity 屬性設置為 0
   for (const bangdong1EditMain of bangdong1EditMains) {
     bangdong1EditMain.quantity = 0
   }
-  const quantitys = row.Main.split(' ')
-  for (const quantity of quantitys) {
-    const name = quantity.substring(0, 2)
-    const value = quantity.substring(2, quantity.length)
+  // 將所有 bangdong1EditDrinks 對象的 quantity 屬性設置為 0
+  for (const bangdong1EditDrink of bangdong1EditDrinks) {
+    bangdong1EditDrink.quantity = 0
+  }
+  // 將所有 bangdong1EditSideDishes 對象的 quantity 屬性設置為 0
+  for (const bangdong1EditSideDish of bangdong1EditSideDishes) {
+    bangdong1EditSideDish.quantity = 0
+  }
+
+  // 找到所有 name 属性的 input 元素遍歷它们
+  const inputs = document.querySelectorAll('input[name]')
+  for (const input of inputs) {
+    const name = input.getAttribute('name')
+    const value = input.value
+
+    // 查找具有相同名稱的 bangdong1EditMain 對象更新其數量屬性
     const index = bangdong1EditMains.findIndex(
       (bangdong1EditMain) => bangdong1EditMain.name === name
     )
     if (index >= 0) {
       bangdong1EditMains[index].quantity = parseInt(value)
     }
-  }
-  // 將 row 飲料的資料放進 bangdong1EditDrinks
-  for (const bangdong1EditDrink of bangdong1EditDrinks) {
-    bangdong1EditDrink.quantity = 0
-  }
-  const drinkquantitys = row.drinks.split(' ')
-  for (const drinkquantity of drinkquantitys) {
-    const name = drinkquantity.substring(0, 2)
-    const value = drinkquantity.substring(2, drinkquantity.length)
-    const index = bangdong1EditDrinks.findIndex(
+    // 查找具有相同名稱的 bangdong1EditDrink 對象更新其數量屬性
+    const index1 = bangdong1EditDrinks.findIndex(
       (bangdong1EditDrink) => bangdong1EditDrink.name === name
     )
-    if (index >= 0) {
-      bangdong1EditDrinks[index].quantity = parseInt(value)
+    if (index1 >= 0) {
+      bangdong1EditDrinks[index1].quantity = parseInt(value)
     }
-  }
-  // 將 row 配菜的資料放進 bangdong1EditSideDishes
-  for (const bangdong1EditSideDish of bangdong1EditSideDishes) {
-    bangdong1EditSideDish.quantity = 0
-  }
-  const sideDishquantitys = row.sideDishes.split(' ')
-  for (const sideDishquantity of sideDishquantitys) {
-    const name = sideDishquantity.substring(0, 2)
-    const value = sideDishquantity.substring(2, sideDishquantity.length)
-    const index = bangdong1EditSideDishes.findIndex(
+    // 查找具有相同名稱的 bangdong1EditSideDish對象更新其數量屬性
+    const index2 = bangdong1EditSideDishes.findIndex(
       (bangdong1EditSideDish) => bangdong1EditSideDish.name === name
     )
-    if (index >= 0) {
-      bangdong1EditSideDishes[index].quantity = parseInt(value)
+    if (index2 >= 0) {
+      bangdong1EditSideDishes[index2].quantity = parseInt(value)
     }
   }
 
@@ -476,6 +494,7 @@ function saveEditDialog () {
     Main: '',
     drinks: '',
     sideDishes: '',
+    sideDishDefault: '',
     price: bangdong1EditTotalQuantityPrice.value,
     inputs: []
   }
@@ -510,9 +529,11 @@ function saveEditDialog () {
   for (const bangdong1EditSideDish of bangdong1EditSideDishes) {
     if (bangdong1EditSideDish.quantity > 0) {
       row.sideDishes += bangdong1EditSideDish.name + '' + parseInt(bangdong1EditSideDish.quantity).toString() + ' '
+      row.sideDishDefault += bangdong1EditSideDish.is_default + ' '
       const input = {
         name: bangdong1EditSideDish.name,
-        value: parseInt(bangdong1EditSideDish.quantity)
+        value: parseInt(bangdong1EditSideDish.quantity),
+        is_default: bangdong1EditSideDish.is_default
       }
       row.inputs.push(input)
       bangdong1EditSideDish.quantity = 0
