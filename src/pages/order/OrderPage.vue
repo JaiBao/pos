@@ -1633,7 +1633,7 @@
           <q-td style="text-align: center;font-size:20px;max-width:300px">{{ props.row.sideDishes }}</q-td>
           <q-td style="text-align: center;font-size:20px;max-width:100px">{{ props.row.price }}
             <div v-for="(productInput, index) in props.row.productInputs" :key="index" style="text-align: center;font-size:20px">
-              <input type="value" :name="productInput.name" v-model="productInput.value"
+              <input type="hidden" :name="productInput.name" v-model="productInput.value"
               >
             </div>
           </q-td>
