@@ -1,176 +1,210 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>訂餐系統</title>
-</head>
-
-<body>
-  <button id="btnMainCourse">主餐</button>
-  <button id="btnSideDish">配菜</button>
-  <button id="btnAddToOrder">加入訂單</button>
-
-  <div id="dialogMainCourse" style="display: none;">
-    <h2>主餐</h2>
-    <label for="mainCourseSteak">牛排：</label>
-    <input type="number" id="mainCourseSteak" value="0" min="0">
-    <br>
-    <label for="mainCoursePork">豬排：</label>
-    <input type="number" id="mainCoursePork" value="0" min="0">
-    <br>
-    <button id="btnSubmitMainCourse">送出</button>
-  </div>
-
-  <div id="dialogSideDish" style="display: none;">
-    <h2>配菜</h2>
-    <label for="sideDishCucumber">黃瓜：</label>
-    <input type="number" id="sideDishCucumber" value="0" min="0">
-    <br>
-    <label for="sideDishBeanSprouts">豆芽：</label>
-    <input type="number" id="sideDishBeanSprouts" value="0" min="0">
-    <br>
-    <button id="btnSubmitSideDish">送出</button>
-  </div>
-  <h1>訂單暫存</h1>
-  <table id="cartTable" border="1">
-    <thead>
-      <tr>
-        <th>品項</th>
-        <th>數量</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-  <h1>訂單</h1>
-  <table id="orderTable" border="1">
-    <thead>
-      <tr>
-        <th>單號</th>
-        <th>商品</th>
-      </tr>
-    </thead>
-    <tbody>
-
-    </tbody>
-  </table>
-  <script>
-    // 綁定按鈕點擊事件
-    let btnMainCourse = document.getElementById("btnMainCourse");
-    let btnSideDish = document.getElementById("btnSideDish");
-    let btnAddToOrder = document.getElementById("btnAddToOrder");
-    btnMainCourse.onclick = openMainCourseDialog;
-    btnSideDish.onclick = openSideDishDialog;
-    btnAddToOrder.onclick = addToOrder;
-
-    // 綁定對話框的送出按鈕點擊事件
-    let btnSubmitMainCourse = document.getElementById("btnSubmitMainCourse");
-    let btnSubmitSideDish = document.getElementById("btnSubmitSideDish");
-    btnSubmitMainCourse.onclick = submitMainCourse;
-    btnSubmitSideDish.onclick = submitSideDish;
-
-    // 主餐對話框
-    function openMainCourseDialog() {
-      document.getElementById("dialogMainCourse").style.display = "block";
+// 首席盒餐修改
+const editDialog8 = ref(false)
+function editRowDialog8 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  for (const main of lunchBox4EditMains) {
+    main.quantity = 0
+    for (const drink of main.drinks) {
+      drink.quantity = 0
     }
+  }
 
-    function submitMainCourse() {
-      let steakCount = parseInt(document.getElementById("mainCourseSteak").value);
-      let porkCount = parseInt(document.getElementById("mainCoursePork").value);
+  for (const sideDish of lunchBox4EditSideDishes) {
+    sideDish.quantity = 0
+  }
+  for (const input of row.inputs) {
+    const mainId = input.mainId
+    const name = input.name
+    const value = input.value
 
-      if (steakCount > 0) {
-        addToTable("牛排", steakCount);
-      }
-
-      if (porkCount > 0) {
-        addToTable("豬排", porkCount);
-      }
-
-      closeMainCourseDialog();
+    const mainIndex = lunchBox4EditMains.findIndex(
+      (lunchBox4EditMain) => lunchBox4EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      lunchBox4EditMains[mainIndex].quantity = parseInt(value)
     }
-
-    function closeMainCourseDialog() {
-      document.getElementById("dialogMainCourse").style.display = "none";
-    }
-
-    // 配菜對話框
-    function openSideDishDialog() {
-      document.getElementById("dialogSideDish").style.display = "block";
-    }
-
-    function submitSideDish() {
-      let cucumberCount = parseInt(document.getElementById("sideDishCucumber").value);
-      let beanSproutsCount = parseInt(document.getElementById("sideDishBeanSprouts").value);
-
-      if (cucumberCount > 0) {
-        addToTable("黃瓜", cucumberCount);
-      }
-
-      if (beanSproutsCount > 0) {
-        addToTable("豆芽", beanSproutsCount);
-      }
-
-      closeSideDishDialog();
-    }
-
-    function closeSideDishDialog() {
-      document.getElementById("dialogSideDish").style.display = "none";
-    }
-
-
-    // 清空暫存購物車
-    function clearCart() {
-      let cartTable = document.getElementById("cartTable");
-      while (cartTable.rows.length > 1) {
-        cartTable.deleteRow(1);
-      }
-    }
-    // 加入訂單按鈕
-    function addToOrder() {
-      let orderTable = document.getElementById("orderTable");
-      let orderNumber = orderTable.rows.length - 1;
-
-      // 將暫存購物車中的內容推入訂單表格中
-      let cartTable = document.getElementById("cartTable");
-      let orderItems = "";
-      for (let i = 1; i < cartTable.rows.length; i++) {
-        let item = cartTable.rows[i].cells[0].innerHTML;
-        let count = parseInt(cartTable.rows[i].cells[1].innerHTML);
-        if (count > 0) {
-          orderItems += item + " " + count + ", ";
+    for (const main of lunchBox4EditMains) {
+      if (main.id === mainId) {
+        if (main.name === name) {
+          main.quantity = parseInt(value)
+        } else {
+          for (const drink of main.drinks) {
+            if (drink.name === name) {
+              drink.quantity = parseInt(value)
+            }
+          }
         }
       }
-      if (orderItems) {
-        orderItems = orderItems.slice(0, -2);
-        let row = orderTable.insertRow(-1);
-        let numberCell = row.insertCell(0);
-        let itemCell = row.insertCell(1);
-        numberCell.innerHTML = orderNumber;
-        itemCell.innerHTML = orderItems;
+    }
+
+    const sideDishIndex = lunchBox4EditSideDishes.findIndex(sideDish => sideDish.name === name)
+    if (sideDishIndex >= 0) {
+      lunchBox4EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  lunchBox4EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        lunchBox4EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog8.value = true
+}
+// 首席盒餐修改總數量
+const lunchBox4EditTotalQuantity = computed(() => {
+  return lunchBox4EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 首席盒餐修改單價
+const lunchBox4EditPrice = computed(() => {
+  return lunchBox4Price.value
+})
+// 首席盒餐修改總價格
+const lunchBox4EditTotalQuantityPrice = computed(() => {
+  return lunchBox4EditTotalQuantity.value * lunchBox4Price.value
+})
+
+function closeEditDialog8 () {
+  editDialog8.value = false
+}
+
+const saveEditDialog8 = () => {
+  const row = {
+    bentoType: 8,
+    id: editingRow.id,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox4EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalEditQuantity = lunchBox4EditTotalQuantity.value // 計算總數量
+  for (const option of lunchBox4EditMains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox4DrinkName.value,
+            productTypeId: lunchBox4DrinkId.value,
+            productType: 'options_with_qty'
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            id: drink.id,
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
       }
 
-      // 清空暫存購物車
-      clearCart();
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
 
-      alert("訂單已提交！");
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox4Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox4MainMealId.value,
+        productTypeName: lunchBox4MainName.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        id: option.id,
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
     }
+  }
 
-    // 將品項和數量加入訂單表格中
-    function addToTable(item, count) {
-      let cartTable = document.getElementById("cartTable");
-      let row = cartTable.insertRow(-1);
-      let itemCell = row.insertCell(0);
-      let countCell = row.insertCell(1);
-      itemCell.innerHTML = item;
-      countCell.innerHTML = count;
+  for (const sideDish of lunchBox4EditSideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox4SideDishName.value,
+        productTypeId: lunchBox4SideDishId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        id: sideDish.id,
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
     }
-  </script>
+  }
+  // 保留 首席盒餐、1008、數量
+  const productInput = {
+    id: lunchBox4ProductId.value,
+    name: lunchBox4Name.value,
+    value: parseInt(totalEditQuantity),
+    price: lunchBox4Price.value,
+    totalPrice: row.price
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
+    tableRows.splice(rowIndex, 1, row)
+  }
 
-  <!-- 引入jQuery UI庫 -->
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-</body>
-
-</html>
+  editDialog8.value = false
+}

@@ -16,25 +16,29 @@
           color="blue"
           label="訂單"
           icon="list_alt"
-        to="/Document"
+          href="http://ods.dtstw.com/backend/sale/orders"
+          target="_blank"
         />
         <q-btn
           color="blue"
           label="會員"
           icon="manage_accounts"
-
+          target="_blank"
+          href="http://ods.dtstw.com/backend/member/members"
         />
         <q-btn
-          color="blue"
-          label="折扣"
+          color="grey"
+          label="暫無功能"
           icon="inventory"
-
+        to="/Setting"
         />
         <q-btn
           color="green"
           label="設定"
           icon="settings"
           to="/Setting"
+          target="_blank"
+          href="http://ods.dtstw.com/backend/catalog/products"
         />
         <q-btn
           color="red"

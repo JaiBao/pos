@@ -1,8016 +1,2633 @@
 <template>
-<div class="orderMenucontainer">
-  <!-- 聯絡人區 -->
-  <q-btn v-if="!show" color="blue" size="md" @click="show = !show" style="width:100%">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
+  <div class="orderMenucontainer">
+    <!-- 聯絡人區 -->
+    <q-btn v-if="!show" color="blue" size="md" @click="show = !show" style="width:100%">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
 
-<div class="row person"  v-show="show">
+  <div class="row person"  v-show="show">
 
-    <q-form
-    @submit="onSubmit" @reset="onReset"
-      class="person-form q-gutter-md row items-start justify-center"
-      >
-      <table  border="1" cellpadding="5" style="width: 100%;table-layout:fixed;word-break:break-all;background:#f2f2f2">
-        <tr >
-          <td  >
-            <q-input
+      <q-form
+      @submit="onSubmit" @reset="onReset"
+        class="person-form q-gutter-md row items-start justify-center"
+        >
+        <table  border="1" cellpadding="5" style="width: 100%;table-layout:fixed;word-break:break-all;background:#f2f2f2">
+          <tr >
+            <td  >
+              <q-input
+                outlined
+                label="訂購日期"
+                :input-style="{ fontSize: '18px' }"
+                v-model="personForm.checkDate"
+                mask="date"
+                readonly
+              >
+                <template v-slot:append>
+                  <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="checkDate" today-btn>
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="確定" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+
+            </td>
+
+            <td >
+              <q-select
               outlined
-              label="訂購日期"
-              :input-style="{ fontSize: '18px' }"
-              v-model="personForm.checkDate"
-              mask="date"
-              readonly
-            >
-              <template v-slot:append>
-                <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date v-model="checkDate" today-btn>
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="確定" color="primary" flat />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
+              v-model="personForm.pick"
+              label="取貨方式"
+              :options="picks"
+              :rules="[val => !!val || '請選擇取貨方式']"
+              style="padding: 0;font-size: 20px;"
+              />
+            </td>
+            <td >
+              <q-input
+                outlined
+                label="送達日期"
+                :input-style="{ fontSize: '18px' }"
+                v-model="personForm.getDate"
+                mask="date"
+                style="padding: 0;"
 
-          </td>
+              >
+                <template v-slot:append>
+                  <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="personForm.getDate" today-btn>
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="確定" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
 
-          <td >
-            <q-select
-            outlined
-            v-model="personForm.pick"
-            label="取貨方式"
-            :options="picks"
-            :rules="[val => !!val || '請選擇取貨方式']"
-            style="padding: 0;font-size: 20px;"
-            />
-          </td>
-          <td >
-            <q-input
+            </td>
+            <td width="100">
+              <q-input v-model="personForm.week"
               outlined
-              label="送達日期"
-              :input-style="{ fontSize: '18px' }"
-              v-model="personForm.getDate"
-              mask="date"
-              style="padding: 0;"
+              label="星期"
+              :input-style="{ fontSize: '20px' }"
+              readonly/>
+            </td>
+            <td >
+              <q-input v-model="personForm.time" outlined type="time" label="送達時間" :input-style="{ fontSize: '17px' }"/>
+            </td>
 
-            >
-              <template v-slot:append>
-                <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date v-model="personForm.getDate" today-btn>
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="確定" color="primary" flat />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-
-          </td>
-          <td width="100">
-            <q-input v-model="personForm.week"
-            outlined
-            label="星期"
-            :input-style="{ fontSize: '20px' }"
-            readonly/>
-          </td>
-          <td >
-            <q-input v-model="personForm.time" outlined type="time" label="送達時間" :input-style="{ fontSize: '17px' }"/>
-          </td>
-
-          <td>
-            <q-input
-            outlined
-             v-model="personForm.company"
-             type="text"
-             label="訂購公司"
-             :input-style="{ fontSize: '20px' }"
-             style="padding: 0;"/>
-          </td>
-          <td>
-
+            <td>
               <q-input
               outlined
-              v-model="personForm.compilation"
-              type="text"
-              label="統編"
-              style="padding: 0;"
-              :input-style="{ fontSize: '20px' }"
-              :rules="[val => !val || val.length === 8 || '需為8位數']"
-              :readonly="isCompilationReadonly"
-    />
+               v-model="personForm.company"
+               type="text"
+               label="訂購公司"
+               :input-style="{ fontSize: '20px' }"
+               style="padding: 0;"/>
+            </td>
+            <td>
 
-          </td>
-          <td>
-            <q-input
-            outlined
-             v-model="personForm.getCompany"
-             type="text"
-             label="送達公司"
-             :input-style="{ fontSize: '20px' }" />
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <q-input
-            outlined
-            v-model="personForm.name"
-            label="訂購人"
-            :input-style="{ fontSize: '20px' }"/>
-          </td>
-          <td>
-            <q-select
-            outlined
-             v-model="personForm.tel"
-             type="tel"
-             label="訂購人手機"
-             use-input
-             :input-style="{ fontSize: '17px' }"
-             hide-selected
-              fill-input
-              input-debounce="0"
-              :options="telOptions"
-              @filter="filterTel"
-              @input="selectTel"
-              :loading="loading"
-             >
-              <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey" >
-              查無此號碼
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-          </td>
-          <td>
-            <q-input
-            outlined
-             v-model="personForm.hometel"
-             type="tel"
-             label="室內電話"
-             :input-style="{ fontSize: '20px' }"/>
+                <q-input
+                outlined
+                v-model="personForm.compilation"
+                type="text"
+                label="統編"
+                style="padding: 0;"
+                :input-style="{ fontSize: '20px' }"
+                :rules="[val => !val || val.length === 8 || '需為8位數']"
+                :readonly="!isCompilationReadonly"
+      />
 
-          </td>
-          <td rowspan="2" colspan="5">
-            <div class="row">
-              <div class="row"
-              style="display: flex;
-              align-items: center;">
-        <div style="flex: 1;">
-        <h5 style="margin: auto;">地址</h5>
-        </div>
-  <div class="row">
-
-            <q-select
-              style="padding: 2px;
-              width: 120px;font-size: 20px;"
-              type="text"
+            </td>
+            <td>
+              <q-input
               outlined
-              v-model="personForm.address"
-              label="縣市"
-            :options="addressoptions"
-            />
-            <q-select
-
-              style="padding: 2px;width: 120px;font-size: 20px"
+               v-model="personForm.getCompany"
+               type="text"
+               label="送達公司"
+               :input-style="{ fontSize: '20px' }" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <q-input
               outlined
-              v-model="personForm.address2"
-              label="區"
-              :options="address2Options"
-            />
-            <q-select
-            outlined
-             v-model="personForm.road"
-             type="text"
-             label="路名"
-             style="padding: 2px;width: 290px;font-size: 20px"
-              :options="roadOptions"
-              use-input
-             />
+              v-model="personForm.name"
+              label="訂購人"
+              :input-style="{ fontSize: '20px' }"/>
+            </td>
+            <td>
+              <q-select
+              outlined
+               v-model="personForm.tel"
+               type="string"
+               label="訂購人手機"
+               use-input
+               :input-style="{ fontSize: '17px' }"
+               hide-selected
+                fill-input
+                input-debounce="0"
+                :options="telOptions"
+                @filter="filterTel"
+                @input="selectTel"
+                :loading="loading"
+               >
+                <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey" >
+                查無此號碼
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+            </td>
+            <td>
+              <q-input
+              outlined
+               v-model="personForm.hometel"
+               type="text"
+               label="室內電話"
+               :input-style="{ fontSize: '20px' }"/>
 
-            <q-input
-            style="padding: 2px;width: 200px;"
-            id="road2"
-            outlined
-             v-model="personForm.road2"
-             type="text"
-             label="門牌號碼"
-             clearable
-             :input-style="{ fontSize: '20px' }"
+            </td>
+            <td rowspan="2" colspan="5">
+              <div class="row">
+                <div class="row"
+                style="display: flex;
+                align-items: center;">
+          <div style="flex: 1;">
+          <h5 style="margin: auto;">地址</h5>
+          </div>
+    <div class="row">
+
+              <q-select
+                style="padding: 2px;
+                width: 120px;font-size: 20px;"
+                type="text"
+                outlined
+                v-model="personForm.address"
+                label="縣市"
+              :options="addressoptions"
               />
-        <h5 class="row justify-center" style="font-size: 1.2rem; margin: 0 5px;align-items: center;padding: 0;">輔助按鍵</h5>
-            <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('巷')"
-            class="q-mt-md"
-             label="巷"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('弄')"
-            class="q-mt-md"
-             label="弄"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('衖')"
-            class="q-mt-md"
-             label="衖"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('號')"
-            class="q-mt-md"
-             label="號"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('棟')"
-            class="q-mt-md"
-             label="棟"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('樓')"
-            class="q-mt-md"
-             label="樓"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('大樓')"
-            class="q-mt-md"
-             label="大樓"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('房')"
-            class="q-mt-md"
-             label="房"/>
-             <q-btn
-            style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
-            color="primary"
-            @click="run2('室')"
-            class="q-mt-md"
-             label="室"/>
+              <q-select
 
+                style="padding: 2px;width: 120px;font-size: 20px"
+                outlined
+                v-model="personForm.address2"
+                label="區"
+                :options="address2Options"
+              />
+              <q-select
+              outlined
+               v-model="personForm.road"
+               type="text"
+               label="路名"
+               style="padding: 2px;width: 290px;font-size: 20px"
+                :options="roadOptions"
+                use-input
+               />
+
+              <q-input
+              style="padding: 2px;width: 200px;"
+              id="road2"
+              outlined
+               v-model="personForm.road2"
+               type="text"
+               label="門牌號碼"
+               clearable
+               :input-style="{ fontSize: '20px' }"
+                />
+          <h5 class="row justify-center" style="font-size: 1.2rem; margin: 0 5px;align-items: center;padding: 0;">輔助按鍵</h5>
+              <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('巷')"
+              class="q-mt-md"
+               label="巷"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('弄')"
+              class="q-mt-md"
+               label="弄"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('衖')"
+              class="q-mt-md"
+               label="衖"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('號')"
+              class="q-mt-md"
+               label="號"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('棟')"
+              class="q-mt-md"
+               label="棟"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('樓')"
+              class="q-mt-md"
+               label="樓"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('大樓')"
+              class="q-mt-md"
+               label="大樓"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('房')"
+              class="q-mt-md"
+               label="房"/>
+               <q-btn
+              style="padding: 2px;width: 70px;font-size: 20px;border:#000000 1px solid;height: 15px;"
+              color="primary"
+              @click="run2('室')"
+              class="q-mt-md"
+               label="室"/>
+
+              </div>
             </div>
           </div>
-        </div>
+    </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <q-input
+              outlined
+               v-model="personForm.email"
+               type="email"
+               label="電子郵件"
+               :input-style="{ fontSize: '20px' }" />
+
   </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <q-input
-            outlined
-             v-model="personForm.email"
-             type="email"
-             label="電子郵件"
-             :input-style="{ fontSize: '20px' }" />
+            <td >
+              <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
 
-</td>
-          <td >
-            <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
+  <q-radio
+  v-model="personForm.gender"
+  val="先生"
+  label="先生" />
+  <q-radio
 
-<q-radio
-v-model="personForm.gender"
-val="gentleman"
-label="先生" />
-<q-radio
-
-v-model="personForm.gender"
-val="lady"
-label="女士" />
-</div>
-
-          </td>
-
-        </tr>
-        <tr>
-          <td>
-            <q-input
-            outlined
-            v-model="personForm.recipient"
-            type="text"
-            label="收件人"
-            :input-style="{ fontSize: '20px' }"/>
-
-          </td>
-          <td>
-            <q-input
-            outlined
-             v-model="personForm.recipientTel"
-             type="tel"
-             label="收件人電話"
-             :input-style="{ fontSize: '20px' }" />
-
-          </td>
-          <td>
-            <div class="row justify-start" style="font-size: 20px; display: flex; ">
-        <div >
-      <q-checkbox
-      size="xs"
-      v-model="personForm.sameOrderCustomer"
-      val="xs"
-      label="同訂購人"
-      />
-    </div>
-    <div >
-      <q-checkbox
-      size="xs"
-      v-model="personForm.sameOrderCompany"
-      val="xs"
-      label="同訂購公司"
-      />
-      <q-checkbox
-      size="xs"
-      val="xs"
-      v-model="personForm.noCompilation"
-      label="不需要統編"
-
-    />
-    </div>
+  v-model="personForm.gender"
+  val="小姐"
+  label="小姐" />
   </div>
 
             </td>
 
-          <td colspan="5">
-            <q-select
-    filled
-    v-model="personForm.event"
-    multiple
-    :options="eventOptions"
-    use-chips
-    stack-label
-    label="活動事件"
-    use-input
-  />
-
-          </td>
-        </tr>
-        <tr>
-          <td colspan="8">
-            <div class="row">
-
-              <div class="row justify-start  col-6">
-                <q-input
-                outlined
-                style="width:100%;margin-left: 20px;"
-                v-model="personForm.remark"
-                type="text"
-                label="客戶備註"
-                :input-style="{ fontSize: '20px' }"
-                @input="showDialog2"
-                />
-
-              </div>
-              <!-- 客戶備註 -->
-              <q-dialog v-model="dialogVisible2" persistent>
-    <q-card>
-      <q-card-section>
-        <q-input v-model="searchTerm2" placeholder="搜尋..." dense class="q-mb-md" />
-        <q-item v-for="option2 in filteredOption2s" :key="option2" clickable @click="selectOption2(option2)">
-          <q-item-section>
-            <q-item-label>{{ option2 }}</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-pagination v-if="totalPage2s > 1" v-model="currentPage2" :min="1" :max="totalPage2s" :input="true" />
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn label="取消" color="primary" @click="closeDialog2" />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
-              <div class="row justify-end  col-3">
-                <q-select
-                outlined
-                v-model="personForm.orderStatu"
-                label="訂單狀態"
-                :options="orderStatus"
-                lazy-rules
-                :rules="[val => !!val || '請選擇取貨方式']"
-                style="padding: 0;width: 100%;font-size: 20px;"
-            />
-            </div>
-              <div class="row justify-end  col-3">
-                <q-btn v-if="show" color="blue"  @click="show = !show"   class="q-ml-sm">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
-        <q-btn
-              label="清除"
-              type="reset"
-              color="red"
-
-              class="q-ml-sm"
-              />
-              <q-btn label="儲存" type="submit" color="primary"
-              @click="savePerson"
-              />
-            </div>
-          </div>
-          </td>
-        </tr>
-
-      </table>
-
-  </q-form>
-
-</div>
-
-    <!-- 點單按鈕 -->
-    <div class="row menu text-left" data-order-panel>
-  <h5>請選擇餐點</h5>
-  <q-btn
-    @click="openbangdong"
-    color="blue"
-    >便當</q-btn>
-
-        <q-btn
-          color="blue"
-          label="盒餐"
-          @click="openlunchBox"
-
-        />
-        <q-btn
-          color="blue"
-          label="單點"
-          @click="opensolo"
-
-        />
-        <q-btn
-          color="blue"
-          label="客製便當"
-          @click="openCustomBangdong"
-
-        />
-        <q-btn
-          color="blue"
-          label="客製盒餐"
-          @click="openCustomLunchBox"
-        />
-        <q-btn
-          color="green"
-          @click="logout"
-          label="加入訂單"
-
-        />
-
-        <!-- 便當dailog -->
-        <q-dialog v-model="showbangdong" class="lunchBoxdailog" >
-        <q-card class="  items-start " id="dialogbtnCard">
-          <!-- 便當按鈕 -->
-          <div class="  items-center" id="lunchboxbtn" >
-            <q-btn color="blue" label="招牌便當"  @click="showbangdong1 = true; showbangdong=false" />
-            <q-btn color="blue" label="雞腿便當"  @click="showbangdong2 = true; showbangdong=false" />
-            <q-btn color="blue" label="雞胸便當"  @click="showbangdong3 = true; showbangdong=false" />
-            <q-btn color="blue" label="滷牛便當"  @click="showbangdong4 = true; showbangdong=false" />
-          </div>
-         <div  class="row justify-end q-ma-lg"> <q-btn color="red" label="取消" class="q-mt-md" @click="showbangdong = false" />
-          </div>
-        </q-card>
-      </q-dialog>
-      <!-- 招牌便當dialog -->
-        <q-dialog v-model="showbangdong1"  >
-          <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-            <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">主餐</h5>
-            </div>
-            <div v-for="bandong1 in bandon1s" :key="bandong1.id" class="row">
-            <q-input
+          </tr>
+          <tr>
+            <td>
+              <q-input
               outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Vegetable"
-              label="鮮蔬(全)"
+              v-model="personForm.recipient"
+              type="text"
+              label="收件人"
+              :input-style="{ fontSize: '20px' }"/>
 
-            />
-            <q-input
+            </td>
+            <td>
+              <q-input
               outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Egg"
-              label="鮮蔬(蛋)"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Potato"
-              label="薯泥"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Shrimp"
-              label="炸蝦"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Chicken"
-              label="炒雞"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Fish"
-              label="酥魚"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Pig"
-              label="培根"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Meet"
-              label="滷肉"
-
-            />
-          </div>
-          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-          <h5 style="line-height: 0;">副餐</h5>
-          </div>
-            <div class="row">
-
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Drumstick"
-              label="雞腿"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Breast"
-              label="雞胸"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Beef"
-              label="滷牛"
-
-            />
-          </div>
-          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-          <h5 style="line-height: 0;">飲料</h5>
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1SugarZero"
-              label="無豆"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1SugarSome"
-              label="微豆"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1BlackTea"
-              label="紅茶"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1MilkTea"
-              label="奶茶"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Sweetsoup"
-              label="甜湯"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              style="width: 130px;"
-              v-model="bangdong1Form.bangdong1Soup"
-              label="濃湯"
-
-            />
-          </div>
-          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-          <h5 style="line-height: 0;">招牌便當</h5>
-          </div>
-
-          <div class="row">
-<q-input
-  outlined
-  type="number"
-  :input-style="{ fontSize: '20px' }"
-  style="width: 130px;"
-  v-model="bangdong1Form.bangdong1Quantity"
-  label="數量總計"
-  :rules="[val => !!val || '此欄位為必填']"
-  readonly
-/>
-</div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-    <h5 style="line-height: 0;">配菜</h5>
-  </div>
-  <div class="row">
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.tomato"
-        label="梅汁番茄"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.egg"
-        label="鹽水煮蛋"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.vegetable"
-        label="季節時蔬"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.fried_mushroom"
-        label="酥炸菇菇"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.braised_dried"
-        label="滷豆干"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.oil_rice"
-        label="油飯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.fried_potato"
-        label="炸地瓜"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.eggtart"
-        label="手工蛋塔"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.shortbread"
-        label="香蔥酥餅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.chicken_wing"
-        label="香滷雞翅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.fruit"
-        label="水果"
-        style="width: 130px;"
-      />
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="bangdong1Form.bake_potato"
-        label="烤地瓜"
-        style="width: 130px;"
-      />
-    </div>
-          <div class="row justify-end" style="width: 100%;">
-            <q-btn
-              color="primary"
-              label="送出"
-              type="submit"
-              class="q-mt-md"
-              @click="submitBandong1Form"
-            />
-            <q-btn
-              color="red"
-              label="取消"
-              @click="showbangdong1 = false"
-              class="q-mt-md"
-            />
-
-          </div >
-
-          </q-card>
-      </q-dialog>
-      <!-- 雞腿便當dailog -->
-      <q-dialog v-model="showbangdong2"  >
-  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">主餐</h5>
-</div>
-    <div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Vegetable"
-      label="鮮蔬(全)"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Egg"
-      label="鮮蔬(蛋)"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Potato"
-      label="薯泥"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Shrimp"
-      label="炸蝦"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Chicken"
-      label="炒雞"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Fish"
-      label="酥魚"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Pig"
-      label="培根"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Meet"
-      label="滷肉"
-
-    />
-  </div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">副餐</h5>
-</div>
-    <div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Drumstick"
-      label="雞腿"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Breast"
-      label="雞胸"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Beef"
-      label="滷牛"
-
-    />
-  </div>
-
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">飲料</h5>
-</div>
-  <div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1SugarZero"
-      label="無豆"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1SugarSome"
-      label="微豆"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1BlackTea"
-      label="紅茶"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1MilkTea"
-      label="奶茶"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Sweetsoup"
-      label="甜湯"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong2Form.bangdong1Soup"
-      label="濃湯"
-
-    />
-  </div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">雞腿便當</h5>
-</div>
-  <div class="row">
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="bangdong2Form.bangdong1Quantity"
-label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
-readonly
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">配菜</h5>
-</div>
-<div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.tomato"
-      label="梅汁番茄"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.egg"
-      label="鹽水煮蛋"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.vegetable"
-      label="季節時蔬"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.fried_mushroom"
-      label="酥炸菇菇"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.braised_dried"
-      label="滷豆干"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.oil_rice"
-      label="油飯"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.fried_potato"
-      label="炸地瓜"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.eggtart"
-      label="手工蛋塔"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.shortbread"
-      label="香蔥酥餅"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.chicken_wing"
-      label="香滷雞翅"
-      style="width: 130px;"
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.fruit"
-      label="水果"
-      style="width: 130px;"
-    />
-
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      v-model="bangdong2Form.bake_potato"
-      label="烤地瓜"
-      style="width: 130px;"
-    />
-  </div>
-  <div class="row justify-end" style="width: 100%;">
-    <q-btn
-      color="primary"
-      label="送出"
-      type="submit"
-      class="q-mt-md"
-      @click="submitForm"
-    />
-    <q-btn
-      color="red"
-      label="取消"
-      @click="showbangdong2 = false"
-      class="q-mt-md"
-    />
-
-  </div >
-
-  </q-card>
-</q-dialog>
-      <!-- 雞胸便當dailog -->
-      <q-dialog v-model="showbangdong3"  >
-  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">主餐</h5>
-</div>
-    <div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Vegetable"
-      label="鮮蔬(全)"
-
-    />
-
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Potato"
-      label="薯泥"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Shrimp"
-      label="炸蝦"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Chicken"
-      label="炒雞"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Fish"
-      label="酥魚"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Pig"
-      label="培根"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Meet"
-      label="滷肉"
-
-    />
-  </div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">副餐</h5>
-</div>
-    <div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Drumstick"
-      label="雞腿"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Breast"
-      label="雞胸"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Beef"
-      label="滷牛"
-
-    />
-  </div>
-
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">飲料</h5>
-</div>
-    <div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1SugarZero"
-      label="無豆"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1SugarSome"
-      label="微豆"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1BlackTea"
-      label="紅茶"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1MilkTea"
-      label="奶茶"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Sweetsoup"
-      label="甜湯"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong3Form.bangdong1Soup"
-      label="濃湯"
-
-    />
-  </div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">雞胸便當</h5>
-</div>
-    <div class="row">
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="bangdong3Form.bangdong1Quantity"
-label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
-readonly
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">配菜</h5>
-</div>
-<div class="row">
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.tomato" label="梅汁番茄"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.egg" label="鹽水煮蛋"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.vegetable" label="季節時蔬"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.fried_mushroom"
-    label="酥炸菇菇" style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.braised_dried" label="滷豆干"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.oil_rice" label="油飯"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.fried_potato" label="炸地瓜"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.eggtart" label="手工蛋塔"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.shortbread" label="香蔥酥餅"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.chicken_wing" label="香滷雞翅"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.fruit" label="水果"
-    style="width: 130px;" />
-
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong3Form.bake_potato" label="烤地瓜"
-    style="width: 130px;" />
-</div>
-
-  <div class="row justify-end" style="width: 100%;">
-    <q-btn
-      color="primary"
-      label="送出"
-      type="submit"
-      class="q-mt-md"
-      @click="submitForm"
-    />
-    <q-btn
-      color="red"
-      label="取消"
-      @click="showbangdong3 = false"
-      class="q-mt-md"
-    />
-
-  </div >
-
-  </q-card>
-</q-dialog>
-       <!-- 滷牛便當dailog -->
-       <q-dialog v-model="showbangdong4"  >
-  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">主餐</h5>
-</div>
-<div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Vegetable"
-      label="鮮蔬(全)"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Egg"
-      label="鮮蔬(蛋)"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Potato"
-      label="薯泥"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Shrimp"
-      label="炸蝦"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Chicken"
-      label="炒雞"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Fish"
-      label="酥魚"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Pig"
-      label="培根"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Meet"
-      label="滷肉"
-
-    />
-  </div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">副餐</h5>
-</div>
-<div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Drumstick"
-      label="雞腿"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Breast"
-      label="雞胸"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Beef"
-      label="滷牛"
-
-    />
-  </div>
-
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">飲料</h5>
-</div>
-<div class="row">
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1SugarZero"
-      label="無豆"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1SugarSome"
-      label="微豆"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1BlackTea"
-      label="紅茶"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1MilkTea"
-      label="奶茶"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Sweetsoup"
-      label="甜湯"
-
-    />
-    <q-input
-      outlined
-      type="number"
-      :input-style="{ fontSize: '20px' }"
-      style="width: 130px;"
-      v-model="bangdong4Form.bangdong1Soup"
-      label="濃湯"
-
-    />
-  </div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">滷牛便當</h5>
-</div>
-<div class="row">
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="bangdong4Form.bangdong1Quantity"
-label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
-readonly
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-  <h5 style="line-height: 0;">配菜</h5>
-</div>
-<div class="row">
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.tomato" label="梅汁番茄"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.egg" label="鹽水煮蛋"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.vegetable" label="季節時蔬"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.fried_mushroom"
-    label="酥炸菇菇" style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.braised_dried" label="滷豆干"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.oil_rice" label="油飯"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.fried_potato" label="炸地瓜"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.eggtart" label="手工蛋塔"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.shortbread" label="香蔥酥餅"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.chicken_wing" label="香滷雞翅"
-    style="width: 130px;" />
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.fruit" label="水果"
-    style="width: 130px;" />
-
-  <q-input outlined type="number" :input-style="{ fontSize: '20px' }" v-model="bangdong4Form.bake_potato" label="烤地瓜"
-    style="width: 130px;" />
-</div>
-
-  <div class="row justify-end" style="width: 100%;">
-    <q-btn
-      color="primary"
-      label="送出"
-      type="submit"
-      class="q-mt-md"
-      @click="submitForm"
-    />
-    <q-btn
-      color="red"
-      label="取消"
-      @click="showbangdong4 = false"
-      class="q-mt-md"
-    />
-
-  </div >
-
-  </q-card>
-</q-dialog>
-      <!-- 盒餐dailog -->
-      <q-dialog v-model="showlunchBox" class="lunchBoxdailog" >
-  <q-card class="  items-start " id="dialogbtnCard">
-    <!-- 盒餐按鈕 -->
-    <div class="col  items-center" id="lunchboxbtn" >
-      <q-btn color="blue" label="經濟盒餐"  @click="showlunchBox1 = true; showlunchBox=false" />
-      <q-btn color="blue" label="會議盒餐"  @click="showlunchBox2 = true; showlunchBox=false" />
-      <q-btn color="blue" label="貴賓盒餐"  @click="showlunchBox3 = true; showlunchBox=false" />
-      <q-btn color="blue" label="首席盒餐"  @click="showlunchBox4 = true; showlunchBox=false" />
-    </div>
-   <div  class="row justify-end q-ma-lg"> <q-btn color="red" label="取消" class="q-mt-md" @click="showlunchBox = false" />
-    </div>
-  </q-card>
-</q-dialog>
-
-      <!-- 經濟盒餐dailog -->
-      <q-dialog v-model="showlunchBox1"   full-width >
-        <q-card >
-          <div class="q-gutter-xs row items-start justify-center" id="lunchbox">
-
+               v-model="personForm.recipientTel"
+               type="tel"
+               label="收件人電話"
+               :input-style="{ fontSize: '20px' }" />
+
+            </td>
+            <td>
+              <div class="row justify-start" style="font-size: 20px; display: flex; ">
           <div >
-              <h5>全素薯泥</h5>
+        <q-checkbox
+        size="xs"
+        v-model="personForm.sameOrderCustomer"
+        val="xs"
+        label="同訂購人"
+        />
+      </div>
+      <div >
+        <q-checkbox
+        size="xs"
+        v-model="personForm.sameOrderCompany"
+        val="xs"
+        label="同訂購公司"
+        />
+        <q-checkbox
+        size="xs"
+        val="xs"
+        v-model="personForm.noCompilation"
+        label="需要統編"
 
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.vegetablePotato"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
-            />
+      />
+      </div>
+    </div>
 
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.vegetablePotato_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.vegetablePotato_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.vegetablePotato_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.vegetablePotato_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.vegetablePotato_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.vegetablePotato_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-          <div>
-              <h5>蛋素薯泥</h5>
+              </td>
 
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggPotato"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
-            />
+            <td colspan="5">
+              <q-select
+      filled
+      v-model="personForm.event"
+      multiple
+      :options="eventOptions"
+      use-chips
+      stack-label
+      label="活動事件"
+      use-input
+    />
 
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggPotato_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggPotato_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggPotato_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggPotato_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggPotato_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggPotato_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-          <div>
-              <h5>薯泥</h5>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="8">
+              <div class="row">
 
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.potato"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
+                <div class="row justify-start  col-6">
+                  <q-input
+                  outlined
+                  style="width:100%;margin-left: 20px;"
+                  v-model="personForm.remark"
+                  type="text"
+                  label="客戶備註"
+                  :input-style="{ fontSize: '20px' }"
+                  @input="showDialog2"
+                  />
 
-            />
-
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.potato_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.potato_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.potato_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.potato_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.potato_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.potato_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-          <div>
-              <h5>炸蝦</h5>
-
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shrimp"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
-            />
-
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shrimp_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shrimp_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shrimp_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shrimp_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shrimp_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shrimp_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-          <div>
-              <h5>炒雞</h5>
-
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
-            />
-
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-          <div>
-              <h5>酥魚</h5>
-
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fish"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
-            />
-
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fish_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fish_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fish_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fish_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fish_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fish_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-          <div>
-              <h5>培根</h5>
-
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.pig"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
-            />
-
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.pig_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.pig_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.pig_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.pig_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.pig_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.pig_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-          <div>
-              <h5>滷肉</h5>
-
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.meet"
-              label="數量"
-              :rules="[val => !!val || '此欄位為必填']"
-              style="width: 130px;"
-            />
-
-            <h>飲料</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.meet_sugarZero"
-              label="無豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.meet_sugarSome"
-              label="微豆"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.meet_blackTea"
-              label="紅茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.meet_milkTea"
-              label="奶茶"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.meet_sweetsoup"
-              label="甜湯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.meet_soup"
-              label="濃湯"
-              style="width: 130px;"
-            />
-          </div>
-
-          <div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-            <h>配菜</h>
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fried_potato"
-              label="炸地瓜"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.eggtart"
-              label="手工蛋塔"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.shortbread"
-              label="香蔥酥餅"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.chicken_wing"
-              label="香滷雞翅"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fruit"
-              label="水果"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.fried_mushroom"
-              label="酥炸菇菇"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              type="number"
-              :input-style="{ fontSize: '20px' }"
-              v-model="lunchbox1Form.bake_potato"
-              label="烤地瓜"
-              style="width: 130px;"
-            />
-
-          </div>
-
-          <div class="row justify-end" style="width: 100%;">
-
-            <q-btn
-            color="primary"
-            label="送出"
-            type="submit"
-            class="q-mt-md"
-            @click="submitLunchBox1Form"
-            />
-            <q-btn
-            color="red"
-            label="取消"
-            @click="showlunchBox1 = false"
-            class="q-mt-md"
-            />
-          </div>
-        </div>
-
-</q-card>
+                </div>
+                <!-- 客戶備註 -->
+                <q-dialog v-model="dialogVisible2" persistent>
+      <q-card>
+        <q-card-section>
+          <q-input v-model="searchTerm2" placeholder="搜尋..." dense class="q-mb-md" />
+          <q-item v-for="option2 in filteredOption2s" :key="option2" clickable @click="selectOption2(option2)">
+            <q-item-section>
+              <q-item-label>{{ option2 }}</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-pagination v-if="totalPage2s > 1" v-model="currentPage2" :min="1" :max="totalPage2s" :input="true" />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn label="取消" color="primary" @click="closeDialog2" />
+        </q-card-actions>
+      </q-card>
     </q-dialog>
+                <div class="row justify-end  col-3">
+                  <q-select
+                  outlined
+                  v-model="personForm.orderStatu"
+                  label="訂單狀態"
+                  :options="orderStatus"
+                  lazy-rules
+                  :rules="[val => !!val || '請選擇取貨方式']"
+                  style="padding: 0;width: 100%;font-size: 20px;"
+              />
+              </div>
+                <div class="row justify-end  col-3">
+                  <q-btn v-if="show" color="blue"  @click="show = !show"   class="q-ml-sm">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
+          <q-btn
+                label="清除"
+                type="reset"
+                color="red"
 
-    <!-- 會議盒餐dailog -->
-    <q-dialog v-model="showlunchBox2"   full-width >
-  <q-card >
-    <div class="q-gutter-xs row items-start justify-center" id="lunchbox">
+                class="q-ml-sm"
+                />
+                <q-btn label="儲存" type="submit" color="primary"
+                @click="savePerson"
+                />
+              </div>
+            </div>
+            </td>
+          </tr>
 
-    <div >
-        <h5>全素薯泥</h5>
+        </table>
 
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.vegetablePotato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
+    </q-form>
 
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.vegetablePotato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.vegetablePotato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.vegetablePotato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.vegetablePotato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.vegetablePotato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.vegetablePotato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>蛋素薯泥</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggPotato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggPotato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggPotato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggPotato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggPotato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggPotato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggPotato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>薯泥</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.potato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.potato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.potato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.potato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.potato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.potato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.potato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>炸蝦</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shrimp"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shrimp_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shrimp_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shrimp_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shrimp_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shrimp_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shrimp_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>炒雞</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>酥魚</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fish"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fish_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fish_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fish_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fish_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fish_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fish_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>培根</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.pig"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.pig_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.pig_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.pig_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.pig_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.pig_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.pig_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>滷肉</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.meet"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.meet_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.meet_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.meet_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.meet_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.meet_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.meet_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-
-    <div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-      <h>配菜</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fried_potato"
-        label="炸地瓜"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.eggtart"
-        label="手工蛋塔"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.shortbread"
-        label="香蔥酥餅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.chicken_wing"
-        label="香滷雞翅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fruit"
-        label="水果"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.fried_mushroom"
-        label="酥炸菇菇"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox2Form.bake_potato"
-        label="烤地瓜"
-        style="width: 130px;"
-      />
-
-    </div>
-
-    <div class="row justify-end" style="width: 100%;">
-
-      <q-btn
-      color="primary"
-      label="送出"
-      type="submit"
-      class="q-mt-md"
-      @click="submitForm"
-      />
-      <q-btn
-      color="red"
-      label="取消"
-      @click="showlunchBox2 = false"
-      class="q-mt-md"
-      />
-    </div>
   </div>
 
-</q-card>
-    </q-dialog>
-        <!-- 貴賓盒餐dailog -->
-        <q-dialog v-model="showlunchBox3"   full-width >
-  <q-card >
-    <div class="q-gutter-xs row items-start justify-center" id="lunchbox">
+      <!-- 點單按鈕 -->
+      <div class="row menu text-left" data-order-panel>
+    <h5>請選擇餐點</h5>
+    <q-btn
+      @click="openbangdong"
+      color="blue"
+      >便當</q-btn>
 
-    <div >
-        <h5>全素薯泥</h5>
+          <q-btn
+            color="blue"
+            label="盒餐"
+            @click="openlunchBox"
 
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.vegetablePotato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
+          />
+          <q-btn
+            color="blue"
+            label="單點"
+            @click="opensolo"
 
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.vegetablePotato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.vegetablePotato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.vegetablePotato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.vegetablePotato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.vegetablePotato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.vegetablePotato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>蛋素薯泥</h5>
+          />
+          <q-btn
+            color="blue"
+            label="客製便當"
+            @click="openCustomBangdong"
 
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggPotato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
+          />
+          <q-btn
+            color="blue"
+            label="客製盒餐"
+            @click="openCustomLunchBox"
+          />
+          <q-btn
+            color="green"
+            @click="addOrder"
+            label="加入訂單"
 
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggPotato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggPotato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggPotato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggPotato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggPotato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggPotato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>薯泥</h5>
+          />
 
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.potato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.potato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.potato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.potato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.potato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.potato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.potato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>炸蝦</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shrimp"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shrimp_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shrimp_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shrimp_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shrimp_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shrimp_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shrimp_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>炒雞</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>酥魚</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fish"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fish_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fish_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fish_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fish_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fish_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fish_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>培根</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.pig"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.pig_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.pig_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.pig_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.pig_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.pig_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.pig_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>滷肉</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.meet"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.meet_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.meet_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.meet_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.meet_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.meet_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.meet_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-
-    <div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-      <h>配菜</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fried_potato"
-        label="炸地瓜"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.eggtart"
-        label="手工蛋塔"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.shortbread"
-        label="香蔥酥餅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.chicken_wing"
-        label="香滷雞翅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fruit"
-        label="水果"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.fried_mushroom"
-        label="酥炸菇菇"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox3Form.bake_potato"
-        label="烤地瓜"
-        style="width: 130px;"
-      />
-
-    </div>
-
-    <div class="row justify-end" style="width: 100%;">
-
-      <q-btn
-      color="primary"
-      label="送出"
-      type="submit"
-      class="q-mt-md"
-      @click="submitForm"
-      />
-      <q-btn
-      color="red"
-      label="取消"
-      @click="showlunchBox3 = false"
-      class="q-mt-md"
-      />
-    </div>
-  </div>
-
-</q-card>
-        </q-dialog>
-            <!-- 首席盒餐dailog -->
-            <q-dialog v-model="showlunchBox4"   full-width >
-  <q-card >
-    <div class="q-gutter-xs row items-start justify-center" id="lunchbox">
-
-    <div >
-        <h5>全素薯泥</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.vegetablePotato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.vegetablePotato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.vegetablePotato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.vegetablePotato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.vegetablePotato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.vegetablePotato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.vegetablePotato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>蛋素薯泥</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggPotato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggPotato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggPotato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggPotato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggPotato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggPotato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggPotato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>薯泥</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.potato"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.potato_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.potato_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.potato_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.potato_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.potato_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.potato_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>炸蝦</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shrimp"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shrimp_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shrimp_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shrimp_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shrimp_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shrimp_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shrimp_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>炒雞</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>酥魚</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fish"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fish_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fish_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fish_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fish_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fish_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fish_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>培根</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.pig"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.pig_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.pig_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.pig_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.pig_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.pig_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.pig_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-    <div>
-        <h5>滷肉</h5>
-
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.meet"
-        label="數量"
-        :rules="[val => !!val || '此欄位為必填']"
-        style="width: 130px;"
-      />
-
-      <h>飲料</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.meet_sugarZero"
-        label="無豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.meet_sugarSome"
-        label="微豆"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.meet_blackTea"
-        label="紅茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.meet_milkTea"
-        label="奶茶"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.meet_sweetsoup"
-        label="甜湯"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.meet_soup"
-        label="濃湯"
-        style="width: 130px;"
-      />
-    </div>
-
-    <div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-      <h>配菜</h>
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fried_potato"
-        label="炸地瓜"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.eggtart"
-        label="手工蛋塔"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.shortbread"
-        label="香蔥酥餅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.chicken_wing"
-        label="香滷雞翅"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fruit"
-        label="水果"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.fried_mushroom"
-        label="酥炸菇菇"
-        style="width: 130px;"
-      />
-      <q-input
-        outlined
-        type="number"
-        :input-style="{ fontSize: '20px' }"
-        v-model="lunchbox4Form.bake_potato"
-        label="烤地瓜"
-        style="width: 130px;"
-      />
-
-    </div>
-
-    <div class="row justify-end" style="width: 100%;">
-
-      <q-btn
-      color="primary"
-      label="送出"
-      type="submit"
-      class="q-mt-md"
-      @click="submitForm"
-      />
-      <q-btn
-      color="red"
-      label="取消"
-      @click="showlunchBox4 = false"
-      class="q-mt-md"
-      />
-    </div>
-  </div>
-
-</q-card>
-          </q-dialog>
-
-        <!-- 單點dailog -->
-
-      <q-dialog v-model="showsolo" >
-        <q-card class="q-gutter-md row items-start  word-break " id="solocard" >
-          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">6吋潤餅</h5>
+          <!-- 便當dailog -->
+          <q-dialog v-model="showbangdong" class="lunchBoxdailog" >
+          <q-card class="  items-start " id="dialogbtnCard">
+            <!-- 便當按鈕 -->
+            <div class="  items-center" id="lunchboxbtn" >
+              <q-btn color="blue" :label="bangdong1Name"  @click="showbangdong1 = true; showbangdong=false" />
+              <q-btn color="blue" :label="bangdong2Name"  @click="showbangdong2 = true; showbangdong=false" />
+              <q-btn color="blue" :label="bangdong3Name"  @click="showbangdong3 = true; showbangdong=false" />
+              <q-btn color="blue" :label="bangdong4Name"  @click="showbangdong4 = true; showbangdong=false" />
             </div>
-            <div class="row">
-
-            <q-input
-              outlined
-              v-model="soloForm.vegetablePotato"
-              type="number"
-              label="全素薯"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.eggPotato"
-              label="蛋素薯"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.Potato"
-              label="薯泥"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.shrimp"
-              label="炸蝦"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.chicken"
-              label="炒雞"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.fish"
-              label="酥魚"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.pig"
-              label="培根"
-              type="number"
-              style="width: 130px;"
-            />
-
-          </div>
-          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">3吋潤餅</h5>
+           <div  class="row justify-end q-ma-lg"> <q-btn color="red" label="取消" class="q-mt-md" @click="showbangdong = false" />
             </div>
-            <div class="row">
-
-            <q-input
-              outlined
-              v-model="soloForm.vegetablePotatoHalf"
-              label="全素薯"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.eggPotatoHalf"
-              label="蛋素薯"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.PotatoHalf"
-              label="薯泥"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.shrimpHalf"
-              label="炸蝦"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.chickenHalf"
-              label="炒雞"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.fishHalf"
-              label="酥魚"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.pigHalf"
-              label="培根"
-              type="number"
-              style="width: 130px;"
-            />
-
-          </div>
-
-            <div>
-              <h5></h5>
-
-          </div>
-          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">飲料</h5>
-            </div>
-            <div class="row">
-            <q-input
-              outlined
-              v-model="soloForm.sugarZero"
-              label="無豆"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.sugarSome"
-              label="微豆"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.blackTea"
-              label="紅茶"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.milkTea"
-              label="奶茶"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.sweetsoup"
-              label="甜湯"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.soup"
-              label="濃湯"
-              type="number"
-              style="width: 130px;"
-            />
-          </div>
-          <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">環保袋</h5>
-            </div>
-            <div class="row">
-            <q-input
-              outlined
-              v-model="soloForm.smallBag"
-              label="環保袋(小)"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.bigBag"
-              label="環保袋(大)"
-              type="number"
-              style="width: 130px;"
-            />
-            </div>
-            <div  style="width:100%;padding: 0;margin: 0;height: 30px;">
-              <h5 style="line-height: 0;">配菜</h5>
-            </div >
-            <div class="row">
-            <q-input
-              outlined
-              v-model="soloForm.tomato"
-              label="梅汁番茄"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.egg"
-              label="鹽水煮蛋"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.vegetable"
-              label=" 蒜香時蔬"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.fried_mushroom"
-              label="酥炸菇菇"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.braised_dried"
-              label="香滷豆干"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.oil_rice"
-              label="香菇油飯"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.fried_potato"
-              label="炸地瓜"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.eggtart"
-              label="手作蛋塔"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.shortbread"
-              label="香蔥酥餅"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.chicken_wing"
-              label="香滷雞翅"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.fruit"
-              label="水果"
-              type="number"
-              style="width: 130px;"
-            />
-            <q-input
-              outlined
-              v-model="soloForm.bake_potato"
-              label="水果"
-              type="number"
-              style="width: 130px;"
-            />
-            </div>
-          <div class="row justify-end" style="width: 100%;">
-            <q-btn
-              color="primary"
-              label="送出"
-              type="submit"
-              class="q-mt-md"
-              @click="submitForm"
-            />
-            <q-btn
-              color="red"
-              label="取消"
-              @click="showsolo = false"
-              class="q-mt-md"
-            />
-          </div >
-
           </q-card>
-      </q-dialog>
-
-              <!-- 客製便當dailog -->
-              <q-dialog v-model="showCustomBangdong" class="lunchBoxdailog" >
-        <q-card class="  items-start " id="dialogbtnCard">
-          <!-- 客製便當按鈕 -->
-          <div class="  items-center" id="lunchboxbtn" >
-            <q-btn color="blue" label="招牌便當"  @click="showCustomBangdong1 = true; showCustomBangdong=false" />
-            <q-btn color="blue" label="雞腿便當"  @click="showCustomBangdong2 = true; showCustomBangdong=false" />
-            <q-btn color="blue" label="雞胸便當"  @click="showCustomBangdong3 = true; showCustomBangdong=false" />
-            <q-btn color="blue" label="滷牛便當"  @click="showCustomBangdong4 = true; showCustomBangdong=false" />
-          </div>
-         <div  class="row justify-end q-ma-lg"> <q-btn color="red" label="取消" class="q-mt-md" @click="showCustomBangdong = false" />
-          </div>
-        </q-card>
-      </q-dialog>
-      <!-- 客製招牌便當dialog -->
-        <q-dialog v-model="showCustomBangdong1"  >
-          <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-            <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">主餐</h5>
-            </div>
-            <div class="row">
-  <q-input
+        </q-dialog>
+        <!-- 招牌便當dialog -->
+          <q-dialog v-model="showbangdong1"  >
+            <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard"
+            >
+            <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdong1MainName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdong1Main, index) in bangdong1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    v-model="bangdong1Main.quantity"
+    :label="bangdong1Main.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      min="0"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong1DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong1Drink, index) in bangdong1Drinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong1Drink.quantity" :label="bangdong1Drink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong1SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong1SideDish, index) in bangdong1SideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong1SideDish.quantity" :label="bangdong1SideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
+        </div>
+        <div class="row">
+    <q-input
     outlined
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Vegetable"
-    label="鮮蔬(全)"
-
-  />
-  <q-input
+    v-model="bangdong1TotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+    <q-input
+    min="0"
     outlined
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Egg"
-    label="鮮蔬(蛋)"
-
-  />
-  <q-input
+    v-model="bangdong1Price"
+    label="商品單價"
+    readonly
+    />
+    <q-input
     outlined
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Potato"
-    label="薯泥"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Shrimp"
-    label="炸蝦"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Chicken"
-    label="炒雞"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Fish"
-    label="酥魚"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Pig"
-    label="培根"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Meet"
-    label="滷肉"
-
-  />
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">副餐</h5>
-            </div>
-            <div class="row">
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Drumstick"
-    label="雞腿"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Breast"
-    label="雞胸"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Beef"
-    label="滷牛"
-
-  />
-</div>
-
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">飲料</h5>
-            </div>
-            <div class="row">
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1SugarZero"
-    label="無豆"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1SugarSome"
-    label="微豆"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1BlackTea"
-    label="紅茶"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1MilkTea"
-    label="奶茶"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Sweetsoup"
-    label="甜湯"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="customBangdong1Form.bangdong1Soup"
-    label="濃湯"
-
-  />
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">招牌便當</h5>
-            </div>
-            <div class="row">
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong1Form.bangdong1Quantity"
-label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
-readonly
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">配菜</h5>
-</div>
-<div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.tomato"
-label="梅汁番茄"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.egg"
-label="鹽水煮蛋"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.vegetable"
-label="季節時蔬"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.fried_mushroom"
-label="酥炸菇菇"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.braised_dried"
-label="滷豆干"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.oil_rice"
-label="油飯"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.fried_potato"
-label="炸地瓜"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.eggtart"
-label="手工蛋塔"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.shortbread"
-label="香蔥酥餅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.chicken_wing"
-label="香滷雞翅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.fruit"
-label="水果"
-style="width: 130px;"
-/>
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong1Form.bake_potato"
-label="烤地瓜"
-style="width: 130px;"
-/>
-</div>
-<div class="row justify-end" style="width: 100%;">
-  <q-btn
+    v-model="bangdong1TotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+    <q-btn
     color="primary"
     label="送出"
     type="submit"
     class="q-mt-md"
-    @click="submitForm"
-  />
-  <q-btn
+    @click="submitBangdong1"
+    />
+    <q-btn
     color="red"
     label="取消"
-    @click="showCustomBangdong1 = false"
+    @click="showbangdong1 = false"
     class="q-mt-md"
-  />
-
-</div >
-
-</q-card>
-      </q-dialog>
-      <!-- 客製雞腿便當dailog -->
-      <q-dialog v-model="showCustomBangdong2"  >
-  <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">主餐</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Vegetable"
-label="鮮蔬(全)"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Egg"
-label="鮮蔬(蛋)"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Potato"
-label="薯泥"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Shrimp"
-label="炸蝦"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Chicken"
-label="炒雞"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Fish"
-label="酥魚"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Pig"
-label="培根"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Meet"
-label="滷肉"
-
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">副餐</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Drumstick"
-label="雞腿"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Breast"
-label="雞胸"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Beef"
-label="滷牛"
-
-/>
-</div>
-
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">飲料</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1SugarZero"
-label="無豆"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1SugarSome"
-label="微豆"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1BlackTea"
-label="紅茶"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1MilkTea"
-label="奶茶"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Sweetsoup"
-label="甜湯"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Soup"
-label="濃湯"
-
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">雞腿便當</h5>
-            </div>
-            <div class="row">
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong2Form.bangdong1Quantity"
-label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
-readonly
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">配菜</h5>
-</div>
-<div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.tomato"
-label="梅汁番茄"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.egg"
-label="鹽水煮蛋"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.vegetable"
-label="季節時蔬"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.fried_mushroom"
-label="酥炸菇菇"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.braised_dried"
-label="滷豆干"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.oil_rice"
-label="油飯"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.fried_potato"
-label="炸地瓜"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.eggtart"
-label="手工蛋塔"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.shortbread"
-label="香蔥酥餅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.chicken_wing"
-label="香滷雞翅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.fruit"
-label="水果"
-style="width: 130px;"
-/>
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong2Form.bake_potato"
-label="烤地瓜"
-style="width: 130px;"
-/>
-</div>
-<div class="row justify-end" style="width: 100%;">
-<q-btn
-color="primary"
-label="送出"
-type="submit"
-class="q-mt-md"
-@click="submitForm"
-/>
-<q-btn
-color="red"
-label="取消"
-@click="showCustomBangdong2 = false"
-class="q-mt-md"
-/>
-
-</div >
-
-</q-card>
-</q-dialog>
-        <!-- 客製雞腿便當dailog -->
-        <q-dialog v-model="showCustomBangdong3"  >
-  <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">主餐</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Vegetable"
-label="鮮蔬(全)"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Egg"
-label="鮮蔬(蛋)"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Potato"
-label="薯泥"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Shrimp"
-label="炸蝦"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Chicken"
-label="炒雞"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Fish"
-label="酥魚"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Pig"
-label="培根"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Meet"
-label="滷肉"
-
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">副餐</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Drumstick"
-label="雞腿"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Breast"
-label="雞胸"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Beef"
-label="滷牛"
-
-/>
-</div>
-
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">飲料</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1SugarZero"
-label="無豆"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1SugarSome"
-label="微豆"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1BlackTea"
-label="紅茶"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1MilkTea"
-label="奶茶"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Sweetsoup"
-label="甜湯"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Soup"
-label="濃湯"
-
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">雞胸便當</h5>
-            </div>
-            <div class="row">
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong3Form.bangdong1Quantity"
-label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
-readonly
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">配菜</h5>
-</div>
-<div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.tomato"
-label="梅汁番茄"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.egg"
-label="鹽水煮蛋"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.vegetable"
-label="季節時蔬"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.fried_mushroom"
-label="酥炸菇菇"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.braised_dried"
-label="滷豆干"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.oil_rice"
-label="油飯"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.fried_potato"
-label="炸地瓜"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.eggtart"
-label="手工蛋塔"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.shortbread"
-label="香蔥酥餅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.chicken_wing"
-label="香滷雞翅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.fruit"
-label="水果"
-style="width: 130px;"
-/>
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong3Form.bake_potato"
-label="烤地瓜"
-style="width: 130px;"
-/>
-</div>
-<div class="row justify-end" style="width: 100%;">
-<q-btn
-color="primary"
-label="送出"
-type="submit"
-class="q-mt-md"
-@click="submitForm"
-/>
-<q-btn
-color="red"
-label="取消"
-@click="showCustomBangdong3 = false"
-class="q-mt-md"
-/>
-
-</div >
-
-</q-card>
-</q-dialog>
-       <!-- 客製滷牛便當dailog -->
-       <q-dialog v-model="showCustomBangdong4"  >
-  <q-card class="q-gutter-md row items-start  word-break " id="customBangdongcard">
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">主餐</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Vegetable"
-label="鮮蔬(全)"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Egg"
-label="鮮蔬(蛋)"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Potato"
-label="薯泥"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Shrimp"
-label="炸蝦"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Chicken"
-label="炒雞"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Fish"
-label="酥魚"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Pig"
-label="培根"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Meet"
-label="滷肉"
-
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">副餐</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Drumstick"
-label="雞腿"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Breast"
-label="雞胸"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Beef"
-label="滷牛"
-
-/>
-</div>
-
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">飲料</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1SugarZero"
-label="無豆"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1SugarSome"
-label="微豆"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1BlackTea"
-label="紅茶"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1MilkTea"
-label="奶茶"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Sweetsoup"
-label="甜湯"
-
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Soup"
-label="濃湯"
-
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-            <h5  style="line-height: 0;">滷牛便當</h5>
-            </div>
-            <div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-style="width: 130px;"
-v-model="customBangdong4Form.bangdong1Quantity"
-label="數量總計"
-:rules="[val => !!val || '此欄位為必填']"
-readonly
-/>
-</div>
-<div style="width:100%;padding: 0;margin: 0;height: 30px;">
-<h5 style="line-height: 0;">配菜</h5>
-</div>
-<div class="row">
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.tomato"
-label="梅汁番茄"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.egg"
-label="鹽水煮蛋"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.vegetable"
-label="季節時蔬"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.fried_mushroom"
-label="酥炸菇菇"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.braised_dried"
-label="滷豆干"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.oil_rice"
-label="油飯"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.fried_potato"
-label="炸地瓜"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.eggtart"
-label="手工蛋塔"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.shortbread"
-label="香蔥酥餅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.chicken_wing"
-label="香滷雞翅"
-style="width: 130px;"
-/>
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.fruit"
-label="水果"
-style="width: 130px;"
-/>
-
-<q-input
-outlined
-type="number"
-:input-style="{ fontSize: '20px' }"
-v-model="customBangdong4Form.bake_potato"
-label="烤地瓜"
-style="width: 130px;"
-/>
-</div>
-<div class="row justify-end" style="width: 100%;">
-<q-btn
-color="primary"
-label="送出"
-type="submit"
-class="q-mt-md"
-@click="submitForm"
-/>
-<q-btn
-color="red"
-label="取消"
-@click="showCustomBangdong4 = false"
-class="q-mt-md"
-/>
-
-</div >
-
-</q-card>
-</q-dialog>
-
-            <!-- 客製盒餐dailog -->
-            <q-dialog v-model="showCustomLunchBox" class="lunchBoxdailog" >
-  <q-card class="  items-start " id="dialogbtnCard">
-    <!-- 客製盒餐按鈕 -->
-    <div class="col  items-center" id="lunchboxbtn" >
-      <q-btn color="blue" label="經濟盒餐"  @click="showCustomLunchBox1 = true; showCustomLunchBox=false" />
-      <q-btn color="blue" label="會議盒餐"  @click="showCustomLunchBox2 = true; showCustomLunchBox=false" />
-      <q-btn color="blue" label="貴賓盒餐"  @click="showCustomLunchBox3 = true; showCustomLunchBox=false" />
-      <q-btn color="blue" label="首席盒餐"  @click="showCustomLunchBox4 = true; showCustomLunchBox=false" />
-    </div>
-   <div  class="row justify-end q-ma-lg"> <q-btn color="red" label="取消" class="q-mt-md" @click="showCustomLunchBox = false" />
-    </div>
-  </q-card>
-</q-dialog>
-
-      <!-- 經濟盒餐dailog -->
-      <q-dialog v-model="showCustomLunchBox1"   full-width >
-        <q-card >
-          <div class="q-gutter-xs row items-start justify-center" id="customLunchbox">
-
-<div >
-    <h5>全素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.vegetablePotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.vegetablePotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.vegetablePotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.vegetablePotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.vegetablePotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.vegetablePotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.vegetablePotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>蛋素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggPotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggPotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggPotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggPotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggPotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggPotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggPotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.potato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.potato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.potato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.potato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.potato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.potato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.potato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炸蝦</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shrimp"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shrimp_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shrimp_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shrimp_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shrimp_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shrimp_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shrimp_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炒雞</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>酥魚</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fish"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fish_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fish_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fish_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fish_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fish_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fish_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>培根</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.pig"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.pig_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.pig_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.pig_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.pig_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.pig_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.pig_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>滷肉</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.meet"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.meet_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.meet_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.meet_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.meet_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.meet_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.meet_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-
-<div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-  <h>配菜</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fried_potato"
-    label="炸地瓜"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.eggtart"
-    label="手工蛋塔"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.shortbread"
-    label="香蔥酥餅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.chicken_wing"
-    label="香滷雞翅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fruit"
-    label="水果"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.fried_mushroom"
-    label="酥炸菇菇"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox1Form.bake_potato"
-    label="烤地瓜"
-    style="width: 130px;"
-  />
-
-</div>
-
-<div class="row justify-end" style="width: 100%;">
-
-  <q-btn
-  color="primary"
-  label="送出"
-  type="submit"
-  class="q-mt-md"
-  @click="submitForm"
-  />
-  <q-btn
-  color="red"
-  label="取消"
-  @click="showCustomLunchBox1 = false"
-  class="q-mt-md"
-  />
-</div>
-</div>
-
-</q-card>
-    </q-dialog>
-
-    <!-- 會議盒餐dailog -->
-    <q-dialog v-model="showCustomLunchBox2"  full-width>
-      <q-card >
-        <div class="q-gutter-xs row items-start justify-center" id="customLunchbox">
-
-<div >
-    <h5>全素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.vegetablePotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.vegetablePotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.vegetablePotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.vegetablePotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.vegetablePotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.vegetablePotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.vegetablePotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>蛋素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggPotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggPotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggPotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggPotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggPotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggPotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggPotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.potato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.potato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.potato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.potato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.potato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.potato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.potato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炸蝦</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shrimp"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shrimp_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shrimp_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shrimp_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shrimp_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shrimp_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shrimp_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炒雞</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>酥魚</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fish"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fish_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fish_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fish_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fish_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fish_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fish_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>培根</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.pig"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.pig_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.pig_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.pig_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.pig_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.pig_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.pig_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>滷肉</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.meet"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.meet_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.meet_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.meet_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.meet_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.meet_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.meet_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-
-<div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-  <h>配菜</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fried_potato"
-    label="炸地瓜"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.eggtart"
-    label="手工蛋塔"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.shortbread"
-    label="香蔥酥餅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.chicken_wing"
-    label="香滷雞翅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fruit"
-    label="水果"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.fried_mushroom"
-    label="酥炸菇菇"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox2Form.bake_potato"
-    label="烤地瓜"
-    style="width: 130px;"
-  />
-
-</div>
-
-<div class="row justify-end" style="width: 100%;">
-
-  <q-btn
-  color="primary"
-  label="送出"
-  type="submit"
-  class="q-mt-md"
-  @click="submitForm"
-  />
-  <q-btn
-  color="red"
-  label="取消"
-  @click="showCustomLunchBox2 = false"
-  class="q-mt-md"
-  />
-</div>
-</div>
-
-</q-card>
-    </q-dialog>
-        <!-- 貴賓盒餐dailog -->
-        <q-dialog v-model="showCustomLunchBox3"  full-width>
-          <q-card >
-            <div class="q-gutter-xs row items-start justify-center" id="customLunchbox">
-
-<div >
-    <h5>全素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.vegetablePotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.vegetablePotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.vegetablePotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.vegetablePotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.vegetablePotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.vegetablePotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.vegetablePotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>蛋素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggPotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggPotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggPotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggPotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggPotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggPotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggPotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.potato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.potato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.potato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.potato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.potato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.potato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.potato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炸蝦</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shrimp"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shrimp_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shrimp_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shrimp_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shrimp_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shrimp_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shrimp_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炒雞</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>酥魚</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fish"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fish_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fish_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fish_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fish_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fish_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fish_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>培根</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.pig"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.pig_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.pig_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.pig_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.pig_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.pig_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.pig_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>滷肉</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.meet"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.meet_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.meet_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.meet_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.meet_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.meet_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.meet_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-
-<div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-  <h>配菜</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fried_potato"
-    label="炸地瓜"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.eggtart"
-    label="手工蛋塔"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.shortbread"
-    label="香蔥酥餅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.chicken_wing"
-    label="香滷雞翅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fruit"
-    label="水果"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.fried_mushroom"
-    label="酥炸菇菇"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox3Form.bake_potato"
-    label="烤地瓜"
-    style="width: 130px;"
-  />
-
-</div>
-
-<div class="row justify-end" style="width: 100%;">
-
-  <q-btn
-  color="primary"
-  label="送出"
-  type="submit"
-  class="q-mt-md"
-  @click="submitForm"
-  />
-  <q-btn
-  color="red"
-  label="取消"
-  @click="showCustomLunchBox3 = false"
-  class="q-mt-md"
-  />
-</div>
-</div>
-
-</q-card>
-    </q-dialog>
-            <!-- 首席盒餐dailog -->
-            <q-dialog v-model="showCustomLunchBox4"  full-width>
-              <q-card >
-                <div class="q-gutter-xs row items-start justify-center" id="customLunchbox">
-
-<div >
-    <h5>全素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.vegetablePotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.vegetablePotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.vegetablePotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.vegetablePotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.vegetablePotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.vegetablePotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.vegetablePotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>蛋素薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggPotato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggPotato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggPotato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggPotato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggPotato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggPotato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggPotato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>薯泥</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.potato"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.potato_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.potato_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.potato_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.potato_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.potato_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.potato_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炸蝦</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shrimp"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shrimp_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shrimp_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shrimp_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shrimp_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shrimp_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shrimp_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>炒雞</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>酥魚</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fish"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fish_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fish_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fish_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fish_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fish_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fish_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>培根</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.pig"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.pig_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.pig_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.pig_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.pig_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.pig_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.pig_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-<div>
-    <h5>滷肉</h5>
-
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.meet"
-    label="數量"
-    :rules="[val => !!val || '此欄位為必填']"
-    style="width: 130px;"
-  />
-
-  <h>飲料</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.meet_sugarZero"
-    label="無豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.meet_sugarSome"
-    label="微豆"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.meet_blackTea"
-    label="紅茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.meet_milkTea"
-    label="奶茶"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.meet_sweetsoup"
-    label="甜湯"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.meet_soup"
-    label="濃湯"
-    style="width: 130px;"
-  />
-</div>
-
-<div class="row q-mr-lg q-mb-auto justify-center flex-wrap" style="width: 100%; gap: 16px; ">
-  <h>配菜</h>
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fried_potato"
-    label="炸地瓜"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.eggtart"
-    label="手工蛋塔"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.shortbread"
-    label="香蔥酥餅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.chicken_wing"
-    label="香滷雞翅"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fruit"
-    label="水果"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.fried_mushroom"
-    label="酥炸菇菇"
-    style="width: 130px;"
-  />
-  <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    v-model="customLunchbox4Form.bake_potato"
-    label="烤地瓜"
-    style="width: 130px;"
-  />
-
-</div>
-
-<div class="row justify-end" style="width: 100%;">
-
-  <q-btn
-  color="primary"
-  label="送出"
-  type="submit"
-  class="q-mt-md"
-  @click="submitForm"
-  />
-  <q-btn
-  color="red"
-  label="取消"
-  @click="showCustomLunchBox4 = false"
-  class="q-mt-md"
-  />
-</div>
-</div>
-
-</q-card>
-    </q-dialog>
-  </div>
-<!-- 訂單區 -->
-    <div class="row">
-      <!-- 訂單顯示 -->
-      <div class="col p-4 slider" data-order-lists>
-        <!-- table訂單區域 -->
-
-        <div class="row justify-center">
-          <div class="col-12">
-            <div class="q-pa-xs " >
-              <q-table
-              :style="{ maxHeight: show ? 'calc(30vh)' : 'calc(68vh)' }"
-      title="商品訂單"
-      :rows="rows"
-      :columns="columns"
-      row-key="fat"
-      virtual-scroll
-      v-model:pagination="pagination"
-      :rows-per-page-options="[0]"
-      id="sliderTable"
+    />
+
+    </div >
+            </q-card>
+        </q-dialog>
+        <!-- 雞胸便當dailog -->
+        <q-dialog v-model="showbangdong2"  >
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdong2MainName }}</h5>
+    <div class="row items-center"
     >
-    <template v-slot:top>
-              <q-toolbar>
-                <q-toolbar-title>訂單</q-toolbar-title>
-                <q-space />
-         <h>訂購人:{{personForm.name}}
-          訂購人電話:{{personForm.tel}}</h>
+    <q-item  v-for="(bangdong2Main, index) in bangdong2Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    v-model="bangdong2Main.quantity"
+    :label="bangdong2Main.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      min="0"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong2DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong2Drink, index) in bangdong2Drinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong2Drink.quantity" :label="bangdong2Drink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </q-item>
+      </div>
+    </div>
+    <!-- 副主餐 -->
+    <div >
+      <h5 style="margin: 0; padding: 0;">{{ bangdong2BentoMainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong2BentoMain, index) in bangdong2BentoMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong2BentoMain.quantity" :label="bangdong2BentoMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong2SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong2SideDish, index) in bangdong2SideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong2SideDish.quantity" :label="bangdong2SideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5  style="line-height: 0;">{{bangdong2Name}}</h5>
+        </div>
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2TotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2Price"
+    label="金額總計"
+    readonly
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2TotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+    <q-btn
+    color="primary"
+    label="送出"
+    type="submit"
+    class="q-mt-md"
+    @click="submitBangdong2"
+    />
+    <q-btn
+    color="red"
+    label="取消"
+    @click="showbangdong2 = false"
+    class="q-mt-md"
+    />
 
-              </q-toolbar>
-            </template>
-            <template v-slot:body-cell-actions="props">
+    </div >
 
-            <div class="text-center q-gutter-x-sm" :props="props">
+    </q-card>
+  </q-dialog>
+        <!-- 雞腿便當dailog -->
+        <q-dialog v-model="showbangdong3"  >
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdong3MainName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdong3Main, index) in bangdong3Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    v-model="bangdong3Main.quantity"
+    :label="bangdong3Main.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      min="0"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong3DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong3Drink, index) in bangdong3Drinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong3Drink.quantity" :label="bangdong3Drink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 副主餐 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong3BentoMainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong3BentoMain, index) in bangdong3BentoMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong3BentoMain.quantity" :label="bangdong3BentoMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong3SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong3SideDish, index) in bangdong3SideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong3SideDish.quantity" :label="bangdong3SideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5  style="line-height: 0;">{{bangdong3Name}}</h5>
+        </div>
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong3TotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong3Price"
+    label="商品單價"
+    readonly
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong3TotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+    <q-btn
+    color="primary"
+    label="送出"
+    type="submit"
+    class="q-mt-md"
+    @click="submitBangdong3"
+    />
+    <q-btn
+    color="red"
+    label="取消"
+    @click="showbangdong3 = false"
+    class="q-mt-md"
+    />
 
-              <q-btn
-              icon="edit"
-              color="info"
-              fab-mini unelevated size="sm"
-              @click="editRow(props.row.index)" />
-              <q-btn
-              icon="delete"
-              color="red"
-              fab-mini unelevated
-              @click="deleteRow(props.row)" />
-            </div>
+    </div >
 
-        </template>
-              </q-table>
-            </div>
+    </q-card>
+  </q-dialog>
+         <!-- 滷牛便當dailog -->
+         <q-dialog v-model="showbangdong4"  >
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdong4MainName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdong4Main, index) in bangdong4Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    v-model="bangdong4Main.quantity"
+    :label="bangdong4Main.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      min="0"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong4DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong4Drink, index) in bangdong4Drinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong4Drink.quantity" :label="bangdong4Drink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 副主餐 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong4BentoMainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong4BentoMain, index) in bangdong4BentoMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong4BentoMain.quantity" :label="bangdong4BentoMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong4SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong4SideDish, index) in bangdong4SideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong4SideDish.quantity" :label="bangdong4SideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5  style="line-height: 0;">{{bangdong4Name}}</h5>
+        </div>
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong4TotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong4TotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong4Price"
+    label="商品單價"
+    readonly
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+    <q-btn
+    color="primary"
+    label="送出"
+    type="submit"
+    class="q-mt-md"
+    @click="submitBangdong4"
+    />
+    <q-btn
+    color="red"
+    label="取消"
+    @click="showbangdong4 = false"
+    class="q-mt-md"
+    />
+
+    </div >
+
+    </q-card>
+  </q-dialog>
+        <!-- 盒餐dailog -->
+        <q-dialog v-model="showlunchBox" class="lunchBoxdailog" >
+    <q-card class="  items-start " id="dialogbtnCard">
+      <!-- 盒餐按鈕 -->
+      <div class="col  items-center" id="lunchboxbtn" >
+        <q-btn color="blue" :label="lunchBox1Name"  @click="showlunchBox1 = true; showlunchBox=false" />
+        <q-btn color="blue" :label="lunchBox2Name"  @click="showlunchBox2 = true; showlunchBox=false" />
+        <q-btn color="blue" :label="lunchBox3Name"  @click="showlunchBox3 = true; showlunchBox=false" />
+        <q-btn color="blue" :label="lunchBox4Name"  @click="showlunchBox4 = true; showlunchBox=false" />
+      </div>
+     <div  class="row justify-end q-ma-lg"> <q-btn color="red" label="取消" class="q-mt-md" @click="showlunchBox = false" />
+      </div>
+    </q-card>
+  </q-dialog>
+
+        <!-- 經濟盒餐dailog -->
+        <q-dialog v-model="showlunchBox1"   full-width >
+    <!-- 主餐 -->
+    <q-card style="overflow: hidden;">
+      <div class="q-gutter-xs row items-start justify-center" id="lunchbox1">
+        <div v-for="(lunchBox1Main, index) in lunchBox1Mains" :key="index">
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox1Main.name }}</h5>
+          <q-input v-model="lunchBox1Main.quantity" :label="lunchBox1Main.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+             />
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox1DrinkName }}</h5>
+          <div v-for="(lunchBox1Drink, drinkIndex) in lunchBox1Main.drinks" :key="drinkIndex">
+            <q-input v-model="lunchBox1Drink.quantity" :label="lunchBox1Drink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
           </div>
         </div>
-        <!-- 商品備註 -->
-        <div class="row justify-start">
-          <q-input
-      style="width: 100%; margin: 1px 5px; background-color: white;"
-      v-model="mealRemark"
-      type="text"
-      label="餐點備註"
-      :input-style="{ fontSize: '20px' }"
-      @input="showDialog"
-    />
-  </div>
-  <q-dialog v-model="dialogVisible" persistent>
-  <q-card>
-    <q-card-section>
-      <q-input
-        v-model="searchTerm"
-        placeholder="搜尋..."
-        dense
-        class="q-mb-md"
-      />
-      <q-item
-        v-for="option in filteredOptions"
-        :key="option"
-        clickable
-        @click="selectOption(option)"
-      >
-        <q-item-section>
-          <q-item-label>{{ option }}</q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-pagination
-        v-if="totalPages > 1"
-        v-model="currentPage"
-        :min="1"
-        :max="totalPages"
-        :input="true"
-      />
-    </q-card-section>
-    <q-card-actions align="right">
-      <q-btn label="取消" color="primary" @click="closeDialog" />
-    </q-card-actions>
-  </q-card>
-</q-dialog>
+      </div>
+      <!-- 配菜 -->
+      <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox1SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(lunchBox1SideDish, index) in lunchBox1SideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="lunchBox1SideDish.quantity" :label="lunchBox1SideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+              min="0"
+               />
+          </q-item>
+        </div>
+      </div>
+      <!-- 總計 -->
+      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{lunchBox1Name}}</h5>
+        <div class="row">
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1TotalQuantity" label="數量總計" readonly
+            min="0"
+            />
+            <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox1Price"
+            label="商品單價"
+            readonly
+            />
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1TotalQuantityPrice" label="金額總計" readonly
+            min="0"
+            />
+        </div>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn color="primary"
+        label="送出"
+        type="submit"
+        class="q-mt-md"
+        @click="submitLunchbox1"
+        />
+        <q-btn
+        color="red"
+        label="取消"
+        @click="showlunchBox1 = false"
+        class="q-mt-md"
+        />
+      </div>
+    </q-card>
+      </q-dialog>
 
-        <!-- 結帳金額區域 -->
-        <div class="row justify-center">
-  <div class="col-12">
-    <div class="q-pa-xs row justify-around ">
-      <q-radio v-model="paymentMethod" val="cash" label="現金"  class="radio-option"/>
-      <q-radio v-model="paymentMethod" val="wire" label="電匯" class="radio-option" />
-      <q-radio v-model="paymentMethod" val="credit" label="信用卡" class="radio-option" />
-      <q-radio v-model="paymentMethod" val="withindays30" label="收貨後30天"  class="radio-option"/>
-      <div class="q-field row no-wrap items-center">
-        <div class="col-auto" style="font-size: 20px;">總金額</div>
-        <q-input outlined v-model="total" readonly style="width:160px"  />
+      <!-- 會議盒餐dailog -->
+      <q-dialog v-model="showlunchBox2"   full-width >
+         <!-- 主餐 -->
+    <q-card style="overflow: hidden;">
+      <div class="q-gutter-xs row items-start justify-center" id="lunchbox2">
+        <div v-for="(lunchBox2Main, index) in lunchBox2Mains" :key="index">
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox2Main.name }}</h5>
+          <q-input v-model="lunchBox2Main.quantity" :label="lunchBox2Main.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox2DrinkName }}</h5>
+          <div v-for="(lunchBox2Drink, drinkIndex) in lunchBox2Main.drinks" :key="drinkIndex">
+            <q-input v-model="lunchBox2Drink.quantity" :label="lunchBox2Drink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+          </div>
+        </div>
       </div>
-      <div class="q-field row no-wrap items-center">
-        <div class="col-auto" style="font-size: 20px;">已付金額</div>
-        <q-input outlined v-model="paid" style="width:160px"  />
+      <!-- 配菜 -->
+      <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox2SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(lunchBox2SideDish, index) in lunchBox2SideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="lunchBox2SideDish.quantity" :label="lunchBox2SideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+              min="0"
+               />
+          </q-item>
+        </div>
       </div>
-      <div class="q-field row no-wrap items-center">
-        <div class="col-auto" style="font-size: 20px;">未付餘額</div>
-        <q-input outlined v-model="unpaid" readonly style="width:160px"   />
+      <!-- 總計 -->
+      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{lunchBox2Name}}</h5>
+        <div class="row">
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2TotalQuantity" label="數量總計" readonly
+            min="0"
+             />
+             <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox2Price"
+            label="商品單價"
+            readonly
+            />
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2TotalQuantityPrice" label="金額總計" readonly
+            min="0"
+            />
+        </div>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn color="primary"
+        label="送出"
+        type="submit"
+        class="q-mt-md"
+        @click="submitLunchbox2"
+        />
+        <q-btn
+        color="red"
+        label="取消"
+        @click="showlunchBox2 = false"
+        class="q-mt-md"
+        />
+      </div>
+    </q-card>
+      </q-dialog>
+          <!-- 貴賓盒餐dailog -->
+          <q-dialog v-model="showlunchBox3"   full-width >
+    <!-- 主餐 -->
+    <q-card style="overflow: hidden;">
+      <div class="q-gutter-xs row items-start justify-center" id="lunchbox3">
+        <div v-for="(lunchBox3Main, index) in lunchBox3Mains" :key="index">
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox3Main.name }}</h5>
+          <q-input v-model="lunchBox3Main.quantity" :label="lunchBox3Main.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox3DrinkName }}</h5>
+          <div v-for="(lunchBox3Drink, drinkIndex) in lunchBox3Main.drinks" :key="drinkIndex">
+            <q-input v-model="lunchBox3Drink.quantity" :label="lunchBox3Drink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+              min="0"/>
+          </div>
+        </div>
+      </div>
+      <!-- 配菜 -->
+      <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox3SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(lunchBox3SideDish, index) in lunchBox3SideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="lunchBox3SideDish.quantity" :label="lunchBox3SideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+              min="0"
+               />
+          </q-item>
+        </div>
+      </div>
+      <!-- 總計 -->
+      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{lunchBox3Name}}</h5>
+        <div class="row">
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3TotalQuantity" label="數量總計" readonly
+            min="0"/>
+            <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox3Price"
+            label="商品單價"
+            readonly
+            />
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3TotalQuantityPrice" label="金額總計" readonly
+            min="0"/>
+        </div>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn color="primary"
+        label="送出"
+        type="submit"
+        class="q-mt-md"
+        @click="submitLunchbox3"
+        />
+        <q-btn
+        color="red"
+        label="取消"
+        @click="showlunchBox3 = false"
+        class="q-mt-md"
+        />
+      </div>
+    </q-card>
+          </q-dialog>
+              <!-- 首席盒餐dailog -->
+              <q-dialog v-model="showlunchBox4"   full-width >
+   <!-- 主餐 -->
+   <q-card style="overflow: hidden;">
+      <div class="q-gutter-xs row items-start justify-center" id="lunchbox4">
+        <div v-for="(lunchBox4Main, index) in lunchBox4Mains" :key="index">
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox4Main.name }}</h5>
+          <q-input v-model="lunchBox4Main.quantity" :label="lunchBox4Main.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+          <h5 style="margin: 0; padding: 0;">{{ lunchBox4DrinkName }}</h5>
+          <div v-for="(lunchBox4Drink, drinkIndex) in lunchBox4Main.drinks" :key="drinkIndex">
+            <q-input v-model="lunchBox4Drink.quantity" :label="lunchBox4Drink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+              min="0"
+              />
+          </div>
+        </div>
+      </div>
+      <!-- 配菜 -->
+      <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox4SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(lunchBox4SideDish, index) in lunchBox4SideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="lunchBox4SideDish.quantity" :label="lunchBox4SideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+              min="0"
+               />
+          </q-item>
+        </div>
+      </div>
+      <!-- 總計 -->
+      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{lunchBox4Name}}</h5>
+        <div class="row">
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4TotalQuantity" label="數量總計" readonly
+            min="0"
+            />
+            <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox4Price"
+            label="商品單價"
+            readonly
+            />
+          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4TotalQuantityPrice" label="金額總計" readonly
+            min="0"
+            />
+        </div>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn color="primary"
+        label="送出"
+        type="submit"
+        class="q-mt-md"
+        @click="submitLunchbox4"
+        />
+        <q-btn
+        color="red"
+        label="取消"
+        @click="showlunchBox4 = false"
+        class="q-mt-md"
+        />
+      </div>
+    </q-card>
+            </q-dialog>
+
+          <!-- 單點dailog -->
+
+        <q-dialog v-model="showbangdongSolo" >
+          <q-card class="q-gutter-md row items-start  word-break " >
+   <!-- 6吋潤餅 -->
+   <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdongSolo6inchName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdongSolo6inch, index) in bangdongSolo6inchs" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    min="0"
+
+    v-model="bangdongSolo6inch.quantity"
+    :label="bangdongSolo6inch.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 3吋潤餅 -->
+      <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdongSolo3inchName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdongSolo3inch, index) in bangdongSolo3inchs" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    min="0"
+
+    v-model="bangdongSolo3inch.quantity"
+    :label="bangdongSolo3inch.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongSoloDrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongSoloDrink, index) in bangdongSoloDrinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input
+          min="0"
+           v-model="bangdongSoloDrink.quantity" :label="bangdongSoloDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 副主餐 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongSoloBentoMainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongSoloBentoMain, index) in bangdongSoloBentoMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input
+          min="0"
+           v-model="bangdongSoloBentoMain.quantity" :label="bangdongSoloBentoMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+        </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongSoloSideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongSoloSideDish, index) in bangdongSoloSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input
+          min="0"
+           v-model="bangdongSoloSideDish.quantity" :label="bangdongSoloSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+      <!-- 環保袋 -->
+      <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongSoloEcoBagName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongSoloEcoBag, index) in bangdongSoloEcoBags" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input
+          min="0"
+           v-model="bangdongSoloEcoBag.quantity" :label="bangdongSoloEcoBag.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+        </q-item>
+        </div>
+      </div>
+    <!-- 總計 -->
+    <div  style="width:100%">
+        <h5  style="margin: 0; padding: 0;">{{bangdongSoloName}}</h5>
+        </div>
+        <div class="row">
+    <q-input
+    min="0"
+
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongSoloTotalQuantity"
+    label="數量總計"
+    readonly
+    />
+
+    <q-input
+    min="0"
+
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongSoloTotalQuantityPrice"
+    label="金額總計"
+    readonly
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+    <q-btn
+    color="primary"
+    label="送出"
+    type="submit"
+    class="q-mt-md"
+    @click="submitBangdongSolo"
+    />
+    <q-btn
+    color="red"
+    label="取消"
+    @click="showbangdongSolo = false"
+    class="q-mt-md"
+    />
+
+    </div >
+
+            </q-card>
+        </q-dialog>
+
+                <!-- 客製便當dailog -->
+                <q-dialog v-model="showbangdongCustom1" class="lunchBoxdailog"  >
+                  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard"
+            >
+  <!-- 主餐 -->
+  <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1MainName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdongCustom1Main, index) in bangdongCustom1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    min="0"
+
+    v-model="bangdongCustom1Main.quantity"
+    :label="bangdongCustom1Main.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongCustom1Drink, index) in bangdongCustom1Drinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input
+          min="0"
+           v-model="bangdongCustom1Drink.quantity" :label="bangdongCustom1Drink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 副主餐 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1BentoMainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongCustom1BentoMain, index) in bangdongCustom1BentoMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input
+          min="0" v-model="bangdongCustom1BentoMain.quantity" :label="bangdongCustom1BentoMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+        </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongCustom1SideDish, index) in bangdongCustom1SideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input
+          min="0"
+           v-model="bangdongCustom1SideDish.quantity" :label="bangdongCustom1SideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5  style="line-height: 0;">{{bangdongCustom1Name}}</h5>
+        </div>
+        <div class="row">
+    <q-input
+    min="0"
+
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongCustom1TotalQuantity"
+    label="數量總計"
+    readonly
+    />
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongCustom1Price"
+    label="商品單價"
+    />
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongCustom1TotalQuantityPrice"
+    label="金額總計"
+    readonly
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+    <q-btn
+    color="primary"
+    label="送出"
+    type="submit"
+    class="q-mt-md"
+    @click="submitBangdongCustom1"
+    />
+    <q-btn
+    color="red"
+    label="取消"
+    @click="showbangdongCustom1 = false"
+    class="q-mt-md"
+    />
+
+    </div >
+            </q-card>
+        </q-dialog>
+
+              <!-- 客製盒餐dailog -->
+              <q-dialog v-model="showLunchBoxCustom1" class="lunchBoxdailog"  full-width >
+     <!-- 主餐 -->
+     <q-card style="overflow: hidden;">
+      <div class="q-gutter-xs row items-start justify-center" id="lunchboxCustom1">
+        <div v-for="(lunchBoxCustom1Main, index) in lunchBoxCustom1Mains" :key="index">
+          <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1Main.name }}</h5>
+          <q-input
+          min="0"
+           v-model="lunchBoxCustom1Main.quantity" :label="lunchBoxCustom1Main.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+          <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1DrinkName }}</h5>
+          <div v-for="(lunchBoxCustom1Drink, drinkIndex) in lunchBoxCustom1Main.drinks" :key="drinkIndex">
+            <q-input
+            min="0"
+             v-model="lunchBoxCustom1Drink.quantity" :label="lunchBoxCustom1Drink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+          </div>
+        </div>
+      </div>
+      <!-- 配菜 -->
+      <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(lunchBoxCustom1SideDish, index) in lunchBoxCustom1SideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input
+            min="0"
+             v-model="lunchBoxCustom1SideDish.quantity" :label="lunchBoxCustom1SideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+          </q-item>
+        </div>
+      </div>
+      <!-- 總計 -->
+      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1Name}}</h5>
+        <div class="row">
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBoxCustom1TotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBoxCustom1Price" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBoxCustom1TotalQuantityPrice" label="金額總計" readonly />
+        </div>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn color="primary"
+        label="送出"
+        type="submit"
+        class="q-mt-md"
+        @click="submitLunchboxCustom1"
+        />
+        <q-btn
+        color="red"
+        label="取消"
+        @click="showLunchBoxCustom1 = false"
+        class="q-mt-md"
+        />
+      </div>
+    </q-card>
+  </q-dialog>
+
+    </div>
+  <!-- 訂單區 -->
+      <div class="row">
+        <!-- 訂單顯示 -->
+        <div class="col p-4 slider" data-order-lists>
+          <!-- table訂單區域 -->
+
+          <div class="row justify-center">
+            <div class="col-12">
+              <div class="q-pa-xs " >
+     <q-table :rows="tableRows"
+    :style="{ maxHeight: show ? 'calc(30vh)' : 'calc(68vh)' }"
+        title="商品訂單"
+        row-key="fat"
+        virtual-scroll
+        v-model:pagination="pagination"
+        :rows-per-page-options="[0]"
+        id="sliderTable" >
+        <template v-slot:top>
+                <q-toolbar>
+                  <q-toolbar-title>訂單</q-toolbar-title>
+                  <q-space />
+           <h>訂購人:{{personForm.name}}
+            訂購人電話:{{personForm.tel}}</h>
+
+                </q-toolbar>
+              </template>
+      <template #header>
+        <q-tr>
+          <q-th style="font-size:15px;width:100px">順序</q-th>
+          <q-th style="font-size:20px;width:200px">商品</q-th>
+          <q-th style="font-size:20px;width:300px">搭配</q-th>
+          <q-th style="font-size:20px;width:300px">飲料</q-th>
+          <q-th style="font-size:20px;width:300px">配菜</q-th>
+          <q-th style="font-size:20px;width:100px">金額</q-th>
+          <q-th style="font-size:20px;width:100px">操作</q-th>
+        </q-tr>
+      </template>
+
+      <template #body="props">
+        <q-tr :props="props">
+          <q-td style="text-align: center;font-size:20px;max-width:100px">{{ props.row.id }}</q-td>
+          <q-td style="text-align: center;font-size:20px">
+            {{ props.row.name }}
+            <div v-for="(input, index) in props.row.inputs" :key="index" style="text-align: center;font-size:20px">
+              <input type="hidden" :name="input.name" v-model="input.value"
+              >
+            </div>
+          </q-td>
+          <q-td style="text-align: center;font-size:20px;max-width:300px">{{ props.row.Main }}</q-td>
+          <q-td style="text-align: center;font-size:20px;max-width:300px">{{ props.row.drinks }}</q-td>
+          <q-td style="text-align: center;font-size:20px;max-width:300px">{{ props.row.sideDishes }}</q-td>
+          <q-td style="text-align: center;font-size:20px;max-width:100px">{{ props.row.price }}
+            <div v-for="(productInput, index) in props.row.productInputs" :key="index" style="text-align: center;font-size:20px">
+              <input type="value" :name="productInput.name" v-model="productInput.value"
+              >
+            </div>
+          </q-td>
+
+          <q-td style="text-align: center;max-width:100px">
+            <q-btn icon="delete"
+            color="red"
+            fab-mini
+            unelevated
+            size="sm"
+            @click="deleteRow(props.row.id)" />
+            <q-btn icon="edit"
+            fab-mini
+            unelevated size="sm"
+            color="info"
+            @click="editRowDialog(props.row)"/>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+              </div>
+            </div>
+          </div>
+    <!-- 招牌便當修改dialog -->
+    <q-dialog v-model="editDialog1"   >
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdong1MainName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdong1EditMain, index) in bangdong1EditMains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    v-model="bangdong1EditMain.quantity"
+    :label="bangdong1EditMain.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      min="0"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong1DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong1EditDrink, index) in bangdong1EditDrinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong1EditDrink.quantity" :label="bangdong1EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong1SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong1EditSideDish, index) in bangdong1EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong1EditSideDish.quantity" :label="bangdong1EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
+        </div>
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong1EditTotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+    <q-input
+      min="0"
+       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdong1EditPrice" label="商品單價" readonly />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong1EditTotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn label="取消" color="red" @click="closeEditDialog1" />
+      <q-btn label="儲存" color="primary" @click="saveEditDialog1" />
+
+    </div >
+
+    </q-card>
+  </q-dialog>
+
+        <!-- 雞胸便當修改dialog -->
+        <q-dialog v-model="editDialog2"   >
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+    <h5 style="margin: 0; padding: 0;">{{ bangdong2MainName }}</h5>
+    <div class="row items-center"
+    >
+    <q-item  v-for="(bangdong2EditMain, index) in bangdong2EditMains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+    <q-input
+    v-model="bangdong2EditMain.quantity"
+    :label="bangdong2EditMain.name"
+    outlined
+    type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }"
+      :label-style="{ fontSize: '20px' }"
+      style="width: 130px;"
+      min="0"
+      />
+    </q-item>
+    </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong2DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong2EditDrink, index) in bangdong2EditDrinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong2EditDrink.quantity" :label="bangdong2EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 副主餐 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong2BentoMainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong2EditBentoMain, index) in bangdong2EditBentoMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong2EditBentoMain.quantity" :label="bangdong2EditBentoMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong2SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong2EditSideDish, index) in bangdong2EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong2EditSideDish.quantity" :label="bangdong2EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"
+            />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5  style="line-height: 0;">{{bangdong3Name}}</h5>
+        </div>
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2EditTotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+    <q-input
+      min="0"
+       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdong2EditPrice" label="商品單價" readonly />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2EditTotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn label="取消" color="red" @click="closeEditDialog2" />
+      <q-btn label="儲存" color="primary" @click="saveEditDialog2" />
+
+    </div >
+
+    </q-card>
+  </q-dialog>
+
+        <!-- 雞腿便當修改dialog -->
+        <q-dialog v-model="editDialog3">
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong3MainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong3EditMain, index) in bangdong3EditMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong3EditMain.quantity" :label="bangdong3EditMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+      <!-- 飲料 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong3DrinkName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong3EditDrink, index) in bangdong3EditDrinks" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong3EditDrink.quantity" :label="bangdong3EditDrink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+      <!-- 副主餐 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong3BentoMainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong3EditBentoMain, index) in bangdong3EditBentoMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong3EditBentoMain.quantity" :label="bangdong3EditBentoMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+      <!-- 配菜 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong3SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong3EditSideDish, index) in bangdong3EditSideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong3EditSideDish.quantity" :label="bangdong3EditSideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+      <!-- 總計 -->
+      <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5 style="line-height: 0;">{{bangdong3Name}}</h5>
+      </div>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="bangdong3EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+      min="0"
+       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdong3EditPrice" label="商品單價" readonly />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="bangdong3EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn label="取消" color="red" @click="closeEditDialog3" />
+        <q-btn label="儲存" color="primary" @click="saveEditDialog3" />
+
+      </div>
+
+    </q-card>
+  </q-dialog>
+
+       <!-- 滷牛修改dialog -->
+       <q-dialog v-model="editDialog4">
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong4MainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong4EditMain, index) in bangdong4EditMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong4EditMain.quantity" :label="bangdong4EditMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"/>
+          </q-item>
+        </div>
+      </div>
+      <!-- 飲料 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong4DrinkName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong4EditDrink, index) in bangdong4EditDrinks" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong4EditDrink.quantity" :label="bangdong4EditDrink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0" />
+          </q-item>
+        </div>
+      </div>
+      <!-- 副主餐 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong4BentoMainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong4EditBentoMain, index) in bangdong4EditBentoMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong4EditBentoMain.quantity" :label="bangdong4EditBentoMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"/>
+          </q-item>
+        </div>
+      </div>
+      <!-- 配菜 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdong4SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdong4EditSideDish, index) in bangdong4EditSideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdong4EditSideDish.quantity" :label="bangdong4EditSideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"/>
+          </q-item>
+        </div>
+      </div>
+      <!-- 總計 -->
+      <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5 style="line-height: 0;">{{bangdong4Name}}</h5>
+      </div>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="bangdong4EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+      min="0"
+       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdong4EditPrice" label="商品單價" readonly />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="bangdong4EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn label="取消" color="red" @click="closeEditDialog4" />
+        <q-btn label="儲存" color="primary" @click="saveEditDialog4" />
+
+      </div>
+
+    </q-card>
+  </q-dialog>
+   <!-- 客製招牌便當修改dialog -->
+   <q-dialog v-model="editDialog9">
+    <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1MainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongCustom1EditMain, index) in bangdongCustom1EditMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongCustom1EditMain.quantity" :label="bangdongCustom1EditMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"/>
+          </q-item>
+        </div>
+      </div>
+      <!-- 飲料 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1DrinkName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongCustom1EditDrink, index) in bangdongCustom1EditDrinks" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongCustom1EditDrink.quantity" :label="bangdongCustom1EditDrink.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0" />
+          </q-item>
+        </div>
+      </div>
+      <!-- 副主餐 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1BentoMainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongCustom1EditBentoMain, index) in bangdongCustom1EditBentoMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongCustom1EditBentoMain.quantity" :label="bangdongCustom1EditBentoMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"/>
+          </q-item>
+        </div>
+      </div>
+      <!-- 配菜 -->
+      <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongCustom1SideDishName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongCustom1EditSideDish, index) in bangdongCustom1EditSideDishes" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongCustom1EditSideDish.quantity" :label="bangdongCustom1EditSideDish.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"/>
+          </q-item>
+        </div>
+      </div>
+      <!-- 總計 -->
+      <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+        <h5 style="line-height: 0;">{{bangdongCustom1Name}}</h5>
+      </div>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="bangdongCustom1EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+      min="0"
+       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongCustom1EditPrice" label="商品單價"  />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="bangdongCustom1EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+      <!-- 按鈕 -->
+      <div class="row justify-end" style="width: 100%;">
+        <q-btn label="取消" color="red" @click="closeEditDialog9" />
+        <q-btn label="儲存" color="primary" @click="saveEditDialog9" />
+
+      </div>
+
+    </q-card>
+  </q-dialog>
+  <!-- 經濟盒餐修改dialog -->
+  <q-dialog v-model="editDialog5" full-width>
+      <q-card >
+    <div class="q-gutter-xs row items-start justify-center" id="lunchbox1">
+      <div v-for="(lunchBox1EditMain, index) in lunchBox1EditMains" :key="index">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditMain.name }}</h5>
+        <q-input v-model="lunchBox1EditMain.quantity" :label="lunchBox1EditMain.name" outlined type="number"
+          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+          min="0"
+          />
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditDrinkName }}</h5>
+        <div v-for="(lunchBox1EditDrink, drinkIndex) in lunchBox1EditMain.drinks" :key="drinkIndex">
+          <q-input v-model="lunchBox1EditDrink.quantity" :label="lunchBox1EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </div>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditSideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(lunchBox1EditSideDish, index) in lunchBox1EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="lunchBox1EditSideDish.quantity" :label="lunchBox1EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{lunchBox1EditName}}</h5>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox1EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox1EditPrice"
+            label="商品單價"
+            readonly
+            />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn color="primary"
+      label="送出"
+      type="submit"
+      class="q-mt-md"
+      @click="saveEditDialog5"
+      />
+      <q-btn
+      color="red"
+      label="取消"
+      @click="closeEditDialog5"
+      class="q-mt-md"
+      />
+    </div>
+  </q-card>
+
+    </q-dialog>
+  <!-- 會議盒餐 -->
+  <q-dialog v-model="editDialog6" full-width>
+      <q-card >
+    <div class="q-gutter-xs row items-start justify-center" id="lunchbox2Edit">
+      <div v-for="(lunchBox2EditMain, index) in lunchBox2EditMains" :key="index">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox2EditMain.name }}</h5>
+        <q-input v-model="lunchBox2EditMain.quantity" :label="lunchBox2EditMain.name" outlined type="number"
+          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+          min="0"/>
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox2EditDrinkName }}</h5>
+        <div v-for="(lunchBox2EditDrink, drinkIndex) in lunchBox2EditMain.drinks" :key="drinkIndex">
+          <q-input v-model="lunchBox2EditDrink.quantity" :label="lunchBox2EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </div>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{ lunchBox2EditSideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(lunchBox2EditSideDish, index) in lunchBox2EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="lunchBox2EditSideDish.quantity" :label="lunchBox2EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{lunchBox2EditName}}</h5>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox2EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox2EditPrice"
+            label="商品單價"
+            readonly
+            />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox2EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn color="primary"
+      label="送出"
+      type="submit"
+      class="q-mt-md"
+      @click="saveEditDialog6"
+      />
+      <q-btn
+      color="red"
+      label="取消"
+      @click="closeEditDialog6"
+      class="q-mt-md"
+      />
+    </div>
+  </q-card>
+
+    </q-dialog>
+    <!-- 貴賓盒餐 -->
+    <q-dialog v-model="editDialog7" full-width>
+      <q-card >
+    <div class="q-gutter-xs row items-start justify-center" id="lunchbox3Edit">
+      <div v-for="(lunchBox3EditMain, index) in lunchBox3EditMains" :key="index">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox3EditMain.name }}</h5>
+        <q-input v-model="lunchBox3EditMain.quantity" :label="lunchBox3EditMain.name" outlined type="number"
+          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+          min="0"/>
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox3EditDrinkName }}</h5>
+        <div v-for="(lunchBox3EditDrink, drinkIndex) in lunchBox3EditMain.drinks" :key="drinkIndex">
+          <q-input v-model="lunchBox3EditDrink.quantity" :label="lunchBox3EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </div>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{ lunchBox3EditSideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(lunchBox3EditSideDish, index) in lunchBox3EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="lunchBox3EditSideDish.quantity" :label="lunchBox3EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{lunchBox3EditName}}</h5>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox3EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox3EditPrice"
+            label="商品單價"
+            readonly
+            />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox3EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn color="primary"
+      label="送出"
+      type="submit"
+      class="q-mt-md"
+      @click="saveEditDialog7"
+      />
+      <q-btn
+      color="red"
+      label="取消"
+      @click="closeEditDialog7"
+      class="q-mt-md"
+      />
+    </div>
+  </q-card>
+
+    </q-dialog>
+    <!-- 首席盒餐 -->
+    <q-dialog v-model="editDialog8" full-width>
+      <q-card >
+    <div class="q-gutter-xs row items-start justify-center" id="lunchbox1Edit">
+      <div v-for="(lunchBox1EditMain, index) in lunchBox1EditMains" :key="index">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditMain.name }}</h5>
+        <q-input v-model="lunchBox1EditMain.quantity" :label="lunchBox1EditMain.name" outlined type="number"
+          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+          min="0"/>
+        <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditDrinkName }}</h5>
+        <div v-for="(lunchBox1EditDrink, drinkIndex) in lunchBox1EditMain.drinks" :key="drinkIndex">
+          <q-input v-model="lunchBox1EditDrink.quantity" :label="lunchBox1EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </div>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditSideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(lunchBox1EditSideDish, index) in lunchBox1EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="lunchBox1EditSideDish.quantity" :label="lunchBox1EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{lunchBox1EditName}}</h5>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox1EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+            min="0"
+            outlined
+            type="number"
+            :input-style="{ fontSize: '20px' }"
+            style="width: 130px;"
+            v-model="lunchBox4EditPrice"
+            label="商品單價"
+            readonly
+            />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn color="primary"
+      label="送出"
+      type="submit"
+      class="q-mt-md"
+      @click="saveEditDialog8"
+      />
+      <q-btn
+      color="red"
+      label="取消"
+      @click="closeEditDialog8"
+      class="q-mt-md"
+      />
+    </div>
+  </q-card>
+
+    </q-dialog>
+     <!-- 客製盒餐修改dialog -->
+     <q-dialog v-model="editDialog0" full-width>
+      <q-card >
+    <div class="q-gutter-xs row items-start justify-center" id="lunchBoxCustom1Edit">
+      <div v-for="(lunchBoxCustom1EditMain, index) in lunchBoxCustom1EditMains" :key="index">
+        <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1EditMain.name }}</h5>
+        <q-input v-model="lunchBoxCustom1EditMain.quantity" :label="lunchBoxCustom1EditMain.name" outlined type="number"
+          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+          min="0"/>
+        <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1EditDrinkName }}</h5>
+        <div v-for="(lunchBoxCustom1EditDrink, drinkIndex) in lunchBoxCustom1EditMain.drinks" :key="drinkIndex">
+          <q-input v-model="lunchBoxCustom1EditDrink.quantity" :label="lunchBoxCustom1EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </div>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div class="row q-mr-lg q-mb-auto  flex-wrap" style="width: 100%; gap: 16px; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1EditSideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(lunchBoxCustom1EditSideDish, index) in lunchBoxCustom1EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="lunchBoxCustom1EditSideDish.quantity" :label="lunchBoxCustom1EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0"/>
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
+      <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1EditName}}</h5>
+      <div class="row">
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBoxCustom1EditTotalQuantity" label="數量總計" readonly
+          min="0"/>
+          <q-input
+      min="0"
+       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="lunchBoxCustom1EditPrice" label="商品單價"  />
+        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+          v-model="lunchBoxCustom1EditTotalQuantityPrice" label="金額總計" readonly
+          min="0"/>
+      </div>
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn color="primary"
+      label="送出"
+      type="submit"
+      class="q-mt-md"
+      @click="saveEditDialog0"
+      />
+      <q-btn
+      color="red"
+      label="取消"
+      @click="closeEditDialog0"
+      class="q-mt-md"
+      />
+    </div>
+  </q-card>
+
+    </q-dialog>
+      <!-- 單點修改dialog -->
+      <q-dialog v-model="editDialog10" >
+    <q-card class="q-gutter-md row items-start  word-break " >
+  <!-- 6吋潤餅 -->
+  <div>
+  <h5 style="margin: 0; padding: 0;">{{ bangdongSolo6inchName }}</h5>
+  <div class="row items-center"
+  >
+  <q-item  v-for="(bangdongSoloEdit6inch, index) in bangdongSoloEdit6inchs" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+  <q-input
+  min="0"
+
+  v-model="bangdongSoloEdit6inch.quantity"
+  :label="bangdongSoloEdit6inch.name"
+  outlined
+  type="number"
+  :input-style="{ fontSize: '20px', margin: '0' }"
+  :label-style="{ fontSize: '20px' }"
+  style="width: 130px;"
+  />
+  </q-item>
+  </div>
+  </div>
+  <!-- 3吋潤餅 -->
+  <div>
+  <h5 style="margin: 0; padding: 0;">{{ bangdongSolo3inchName }}</h5>
+  <div class="row items-center"
+  >
+  <q-item  v-for="(bangdongSoloEdit3inch, index) in bangdongSoloEdit3inchs" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
+  <q-input
+  min="0"
+
+  v-model="bangdongSoloEdit3inch.quantity"
+  :label="bangdongSoloEdit3inch.name"
+  outlined
+  type="number"
+  :input-style="{ fontSize: '20px', margin: '0' }"
+  :label-style="{ fontSize: '20px' }"
+  style="width: 130px;"
+  />
+  </q-item>
+  </div>
+  </div>
+  <!-- 飲料 -->
+  <div>
+  <h5 style="margin: 0; padding: 0;">{{ bangdongSoloDrinkName }}</h5>
+  <div class="row items-center">
+  <q-item v-for="(bangdongSoloEditDrink, index) in bangdongSoloEditDrinks" :key="index" class="flex-auto "
+    style="margin: 0; padding: 0;">
+    <q-input
+    min="0"
+     v-model="bangdongSoloEditDrink.quantity" :label="bangdongSoloEditDrink.name" outlined type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+  </q-item>
+  </div>
+  </div>
+  <!-- 副主餐 -->
+  <div>
+  <h5 style="margin: 0; padding: 0;">{{ bangdongSoloBentoMainName }}</h5>
+  <div class="row items-center">
+  <q-item v-for="(bangdongSoloEditBentoMain, index) in bangdongSoloEditBentoMains" :key="index" class="flex-auto "
+    style="margin: 0; padding: 0;">
+    <q-input
+    min="0"
+     v-model="bangdongSoloEditBentoMain.quantity" :label="bangdongSoloEditBentoMain.name" outlined type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+  </q-item>
+  </div>
+  </div>
+  <!-- 配菜 -->
+  <div>
+  <h5 style="margin: 0; padding: 0;">{{ bangdongSoloSideDishName }}</h5>
+  <div class="row items-center">
+  <q-item v-for="(bangdongSoloEditSideDish, index) in bangdongSoloEditSideDishes" :key="index" class="flex-auto "
+    style="margin: 0; padding: 0;">
+    <q-input
+    min="0"
+     v-model="bangdongSoloEditSideDish.quantity" :label="bangdongSoloEditSideDish.name" outlined type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+  </q-item>
+  </div>
+  </div>
+  <!-- 環保袋 -->
+  <div>
+  <h5 style="margin: 0; padding: 0;">{{ bangdongSoloEcoBagName }}</h5>
+  <div class="row items-center">
+  <q-item v-for="(bangdongSoloEditEcoBag, index) in bangdongSoloEditEcoBags" :key="index" class="flex-auto "
+    style="margin: 0; padding: 0;">
+    <q-input
+    min="0"
+     v-model="bangdongSoloEditEcoBag.quantity" :label="bangdongSoloEditEcoBag.name" outlined type="number"
+      :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
+  </q-item>
+  </div>
+  </div>
+  <!-- 總計 -->
+  <div  style="width:100%">
+  <h5  style="margin: 0; padding: 0;">{{bangdongSoloName}}</h5>
+  </div>
+  <div class="row">
+  <q-input
+  min="0"
+
+  outlined
+  type="number"
+  :input-style="{ fontSize: '20px' }"
+  style="width: 130px;"
+  v-model="bangdongSoloEditTotalQuantity"
+  label="數量總計"
+  readonly
+  />
+
+  <q-input
+  min="0"
+
+  outlined
+  type="number"
+  :input-style="{ fontSize: '20px' }"
+  style="width: 130px;"
+  v-model="bangdongSoloEditTotalQuantityPrice"
+  label="金額總計"
+  readonly
+  />
+  </div>
+  <!-- 按鈕 -->
+  <div class="row justify-end" style="width: 100%;">
+  <q-btn
+  color="primary"
+  label="送出"
+  type="submit"
+  class="q-mt-md"
+  @click="saveEditDialog10"
+  />
+  <q-btn
+  color="red"
+  label="取消"
+  @click="closeEditDialog10"
+  class="q-mt-md"
+  />
+
+  </div >
+
+      </q-card>
+  </q-dialog>
+          <!-- 商品備註 -->
+          <div class="row justify-start">
+            <q-input
+        style="width: 100%; margin: 1px 5px; background-color: white;"
+        v-model="mealRemark"
+        type="text"
+        label="餐點備註"
+        :input-style="{ fontSize: '20px' }"
+        @input="showDialog"
+      />
+    </div>
+    <q-dialog v-model="dialogVisible" persistent>
+    <q-card>
+      <q-card-section>
+        <q-input
+          v-model="searchTerm"
+          placeholder="搜尋..."
+          dense
+          class="q-mb-md"
+        />
+        <q-item
+          v-for="option in filteredOptions"
+          :key="option"
+          clickable
+          @click="selectOption(option)"
+        >
+          <q-item-section>
+            <q-item-label>{{ option }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-pagination
+          v-if="totalPages > 1"
+          v-model="currentPage"
+          :min="1"
+          :max="totalPages"
+          :input="true"
+        />
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn label="取消" color="primary" @click="closeDialog" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+          <!-- 結帳金額區域 -->
+          <div class="row justify-center">
+    <div class="col-12">
+      <div class="q-pa-xs row justify-around ">
+        <q-radio v-model="paymentMethod" val="cash" label="現金"  class="radio-option"/>
+        <q-radio v-model="paymentMethod" val="wire" label="電匯" class="radio-option" />
+        <q-radio v-model="paymentMethod" val="credit" label="信用卡" class="radio-option" />
+        <q-radio v-model="paymentMethod" val="withindays30" label="收貨後30天"  class="radio-option"/>
+        <div class="q-field row no-wrap items-center">
+          <div class="col-auto" style="font-size: 20px;">總金額</div>
+          <q-input outlined v-model="total" readonly style="width:160px"  />
+        </div>
+        <div class="q-field row no-wrap items-center">
+          <div class="col-auto" style="font-size: 20px;">已付金額</div>
+          <q-input outlined v-model="paid" style="width:160px"  />
+        </div>
+        <div class="q-field row no-wrap items-center">
+          <div class="col-auto" style="font-size: 20px;">未付餘額</div>
+          <q-input outlined v-model="unpaid" readonly style="width:160px"   />
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-      </div>
+        </div>
 
-</div>
-</div>
+  </div>
+  </div>
 
-</template>
+  </template>
 
 <script setup>
 import { ref, watch, computed, reactive } from 'vue'
@@ -8081,14 +2698,23 @@ watch(isCompilationReadonly, (newVal) => {
   }
 })
 // 結帳區
+const tableRows = reactive([])
 const paymentMethod = ref('cash')
-const total = ref(0)
 const paid = ref(0)
+const total = ref(0)
 const unpaid = ref(0)
+
+const totalPrice = computed(() => {
+  return tableRows.reduce((accumulator, row) => accumulator + row.price, 0)
+})
+
+watch(totalPrice, (newTotalPrice) => {
+  total.value = newTotalPrice
+}, { immediate: true })
 
 watch([total, paid], () => {
   unpaid.value = total.value - paid.value
-})
+}, { immediate: true })
 // 抓取當日日期
 function updateDateTime () {
   const now = new Date()
@@ -8358,13 +2984,21 @@ const filterTel = async (search, update, abort) => {
   }
 }
 
+// const selectTel = (value) => {
+//   // 驗證電話號碼格式
+//   const phoneRegex = /^[0-9]{11}$/
+//   if (phoneRegex.test(value.target.value)) {
+//     personForm.tel = value.target.value
+//   } else {
+//     personForm.tel = ''
+//   }
+// }
 const selectTel = (value) => {
   // 驗證電話號碼格式
   const phoneRegex = /^[0-9]{10}$/
   if (phoneRegex.test(value.target.value)) {
     personForm.tel = value.target.value
-  } else {
-    personForm.tel = ''
+    // 在這裡更新其他的欄位
   }
 }
 
@@ -8398,25 +3032,20 @@ watch(
         personForm.email = data.data[0].email
         personForm.road = data.data[0].shipping_road
         personForm.road2 = data.data[0].shipping_address1
+        personForm.hometel = data.data[0].telephone_prefix + data.data[0].telephone
         // 導入舊資料縣市
         const stateObject = await apiAuth.get('localization/division/state')
           .then(response => response.data.find(item => item.id === data.data[0].shipping_state_id))
 
         personForm.address = stateObject.name
-        // console.log(stateObject.id)
         // 導入舊資料區域
         const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${stateObject.id}`)
           .then(response => response.data.find(item => item.city_id === data.data[0].shipping_city_id))
 
         personForm.address2 = cities.name
       } else {
-        // 如果沒有找到對應的資料，清空表單中的其他資料
-        personForm.name = ''
-        personForm.email = ''
-        personForm.road = ''
-        personForm.road2 = ''
-        personForm.address = ''
-        personForm.address2 = ''
+        // 如果沒有找到對應的資料，不清空輸入的號碼
+        return
       }
     } catch (error) {
       // 處理錯誤
@@ -8575,107 +3204,97 @@ const getCustomers = async () => {
     throw new Error('Unable to fetch customers')
   }
 }
+
 const savePerson = async () => {
-  // 導入資料縣市
-  const states = await apiAuth.get('localization/division/state')
+  try {
+    // 導入資料縣市
+    const states = await apiAuth.get('localization/division/state')
 
-  // 搜索
-  const state = states.data.find(s => s.name === personForm.address)
-  const stateId = state.id
-  console.log(stateId)
+    // 搜索
+    const state = states.data.find(s => s.name === personForm.address)
+    const stateId = state.id
+    console.log(stateId)
 
-  // 導入資料區域
-  const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${state.id}`)
-  const city = cities.data.find(c => c.name === personForm.address2)
-  const address2Id = city.city_id
-  console.log(address2Id)
+    // 導入資料區域
+    const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${state.id}`)
+    const city = cities.data.find(c => c.name === personForm.address2)
+    const address2Id = city.city_id
+    console.log(address2Id)
 
-  const customers = await getCustomers()
-  const customer = customers.find(c => c.mobile.replace('-', '') === personForm.tel.replace('-', ''))
+    const customers = await getCustomers()
+    const customer = customers.find(c => c.mobile.replace('-', '') === personForm.tel.replace('-', ''))
 
-  if (customer) {
-    // 如果已經存在客戶資料，就更新它
-    // await apiAuth.put(`/member/member/${customer.id}`,
-    await apiAuth.post('/member/member/save',
-      {
-        member_id: customer.id, // id
-        name: personForm.name, // 訂購人
-        mobile: personForm.tel, // 訂購人電話
-        email: personForm.email, // 訂購人email
-        shipping_personal_name: personForm.recipient, // 收件人
-        shipping_phone: personForm.recipientTel, // 收件人電話
-        payment_tin: personForm.compilation, // 統編
-        payment_company: personForm.company, // 公司名稱
-        shipping_company: personForm.getCompany, // 取貨公司
-        shipping_state_id: stateId, // 縣市id
-        shipping_city_id: address2Id, // 區域id
-        shipping_road: personForm.road, // 路名
-        shipping_address1: personForm.replenishAdress // 地址
+    if (customer) {
+      // 如果已經存在客戶資料，就更新它
+      // await apiAuth.put(`/member/member/${customer.id}`,
+      await apiAuth.post('/member/member/save',
+        {
+          member_id: customer.id, // id
+          telephone_prefix: personForm.hometel.substring(0, 2),
+          telephone: personForm.hometel.substring(2),
+          name: personForm.name, // 訂購人
+          mobile: personForm.tel, // 訂購人電話
+          email: personForm.email, // 訂購人email
+          shipping_personal_name: personForm.recipient, // 收件人
+          shipping_phone: personForm.recipientTel, // 收件人電話
+          payment_tin: personForm.compilation, // 統編
+          payment_company: personForm.company, // 公司名稱
+          shipping_company: personForm.getCompany, // 取貨公司
+          shipping_state_id: stateId, // 縣市id
+          shipping_city_id: address2Id, // 區域id
+          shipping_road: personForm.road, // 路名
+          shipping_address1: personForm.replenishAdress // 地址
 
+        })
+      await $q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'check-circle',
+        message: '是老客戶,已更新資料'
       })
-    await $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'check-circle',
-      message: '是老客戶,已更新資料'
-    })
-  } else {
-    // 如果不存在客戶資料，就新增一筆新的客戶資料
-    await apiAuth.post('/member/member/save', {
-      member_id: '',
-      name: personForm.name,
-      mobile: personForm.tel,
-      email: personForm.email,
-      shipping_personal_name: personForm.recipient,
-      shipping_phone: personForm.recipientTel,
-      payment_tin: personForm.compilation,
-      payment_company: personForm.company,
-      shipping_company: personForm.getCompany,
-      shipping_country_code: stateId, // 推入對應的ID
-      shipping_city_id: address2Id,
-      shipping_road: personForm.road,
-      shipping_address1: personForm.replenishAdress,
+    } else {
+      // 如果不存在客戶資料，就新增一筆新的客戶資料
+      await apiAuth.post('/member/member/save', {
+        member_id: '',
+        name: personForm.name,
+        mobile: personForm.tel,
+        email: personForm.email,
+        shipping_personal_name: personForm.recipient,
+        shipping_phone: personForm.recipientTel,
+        payment_tin: personForm.compilation,
+        payment_company: personForm.company,
+        shipping_company: personForm.getCompany,
+        shipping_country_code: stateId, // 推入對應的ID
+        shipping_city_id: address2Id,
+        shipping_road: personForm.road,
+        shipping_address1: personForm.replenishAdress,
 
-      is_active: 1,
-      is_admin: 0
-    })
+        is_active: 1,
+        is_admin: 0
+      })
+      await $q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'check-circle',
+        message: '是新客戶,已加入資料'
+      })
+    }
+    // 介面上顯示原本的地址名稱
+    personForm.address = state.name
+    personForm.address2 = city.name
+  } catch (error) {
+    console.error(error)
     await $q.notify({
-      color: 'green-4',
+      color: 'red-4',
       textColor: 'white',
-      icon: 'check-circle',
-      message: '是新客戶,已加入資料'
+      icon: 'error',
+      message: 'An error occurred: ' + error.message
     })
   }
-  // 介面上顯示原本的地址名稱
-  personForm.address = state.name
-  personForm.address2 = city.name
 }
 
-/// //
-// const valid = ref(false)
+/// ///////////////便當盒餐/////////////////////
 const loading = ref(false)
-// const onSubmit = async () => {
-//   await apiAuth.post('/users', personForm)
-//   // await apiAuth.post('/orders', form)
-//   if (!valid.value) return
-//   loading.value = true
-//   try {
-// await $q.notify({
-//   color: 'green-4',
-//   textColor: 'white  ',
-//   icon: 'check-circle',
-//   message: '新增訂單聯絡人，請繼續點餐'
-// })
-//   } catch (error) {
-//     $q.notify({
-//       color: 'red-4',
-//       textColor: 'white',
-//       icon: 'error',
-//       message: error.message || '發生錯誤'
-//     })
-//   }
-//   loading.value = false
-// }
 // 便當盒餐開關
 const showbangdong = ref(false)
 
@@ -8683,244 +3302,5738 @@ const openbangdong = () => {
   showbangdong.value = true
 }
 // 招牌便當
+const bangdong1Mains = reactive([])
+const bangdong1MainName = ref('')
+const bangdong1Drinks = reactive([])
+const bangdong1DrinkName = ref('')
+const bangdong1SideDishes = reactive([])
+const bangdong1SideDishName = ref('')
+const bangdong1Name = ref('')
+const bangdong1Price = ref(0)
+const bangdong1ProductId = ref('')
+const bangdong1MainMealId = ref('')
+const bangdong1DrinkId = ref('')
+const bangdong1SideDishId = ref('')
+// const editDialog = ref(false)
+// 抓取招牌便當主餐形成input
+const loadBangdong1 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1001')
+    const productOptions = response.data.product_options
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
 
-const bangdong1Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
+    for (const mainMealValue of mainMealValues) {
+      bangdong1Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
 
-})
+    for (const DrinkValue of DrinkValues) {
+      bangdong1Drinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
 
-function totalbangdong1 () {
-  return parseInt(bangdong1Form.bangdong1Vegetable) +
-    parseInt(bangdong1Form.bangdong1Egg) +
-    parseInt(bangdong1Form.bangdong1Potato) +
-    parseInt(bangdong1Form.bangdong1Shrimp) +
-    parseInt(bangdong1Form.bangdong1Chicken) +
-    parseInt(bangdong1Form.bangdong1Fish) +
-    parseInt(bangdong1Form.bangdong1Pig) +
-    parseInt(bangdong1Form.bangdong1Meet)
+    for (const sideDishValue of sideDishValues) {
+      bangdong1SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 監聽主餐的數量變化
+    bangdong1Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          bangdong1SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+        }
+      })
+    })
+
+    bangdong1Name.value = response.data.name
+    bangdong1MainName.value = mainMeal.name
+    bangdong1DrinkName.value = Drink.name
+    bangdong1SideDishName.value = sideDish.name
+    bangdong1Price.value = parseInt(response.data.price)
+    bangdong1ProductId.value = response.data.id
+    bangdong1MainMealId.value = mainMeal.id
+    bangdong1DrinkId.value = Drink.id
+    bangdong1SideDishId.value = sideDish.id
+  } catch (error) {
+    console.error(error)
+  }
 }
-// console.log(totalbangdong1())
 
-watch(() => totalbangdong1(), (newValue) => {
-  bangdong1Form.bangdong1Quantity = newValue
-})
-// 蛋素招牌自動補配菜
-watch(() => bangdong1Form.bangdong1Egg, (newValue, oldValue) => {
-  const increment = newValue - oldValue // 每多1的變化量
-  bangdong1Form.tomato += increment
-  bangdong1Form.egg += increment
-  bangdong1Form.vegetable += increment
-  bangdong1Form.fried_mushroom += increment
-  bangdong1Form.braised_dried += increment
-  bangdong1Form.fried_potato += increment
-  bangdong1Form.bake_potato += increment
-})
-// 全素招牌自動補配菜
-watch(() => bangdong1Form.bangdong1Vegetable, (newValue, oldValue) => {
-  const increment = newValue - oldValue // 每多1的變化量
-  bangdong1Form.tomato += increment
-  bangdong1Form.egg += increment
-  bangdong1Form.vegetable += increment
-  bangdong1Form.fried_mushroom += increment
-  bangdong1Form.braised_dried += increment
-  bangdong1Form.fried_potato += increment
-  bangdong1Form.bake_potato += increment
-})
-// 薯泥自動補配菜
-watch(() => bangdong1Form.bangdong1Potato, (newValue, oldValue) => {
-  const increment = newValue - oldValue // 每多1的變化量
-  bangdong1Form.tomato += increment
-  bangdong1Form.egg += increment
-  bangdong1Form.vegetable += increment
-  bangdong1Form.fried_mushroom += increment
-  bangdong1Form.oil_rice += increment
-  bangdong1Form.fried_potato += increment
-  bangdong1Form.bake_potato += increment
-})
-// 雞腿便當
+loadBangdong1()
 
-const bangdong2Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
-
+// 計算總數量
+const bangdong1TotalQuantity = computed(() => {
+  return bangdong1Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
 })
 
-function totalbangdong2 () {
-  return parseInt(bangdong2Form.bangdong1Vegetable) +
-    parseInt(bangdong2Form.bangdong1Egg) +
-    parseInt(bangdong2Form.bangdong1Potato) +
-    parseInt(bangdong2Form.bangdong1Shrimp) +
-    parseInt(bangdong2Form.bangdong1Chicken) +
-    parseInt(bangdong2Form.bangdong1Fish) +
-    parseInt(bangdong2Form.bangdong1Pig) +
-    parseInt(bangdong2Form.bangdong1Meet)
+// 計算總價格
+const bangdong1TotalQuantityPrice = computed(() => {
+  return bangdong1TotalQuantity.value * bangdong1Price.value
+})
+// 將資料推進tableRows
+const submitBangdong1 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 1,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    sideDishDefault: '',
+    price: bangdong1TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdong1TotalQuantity.value
+
+  for (const bangdong1Main of bangdong1Mains) {
+    if (bangdong1Main.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong1Name.value + totalQuantity + '份'
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdong1MainMealId.value,
+        productTypeName: bangdong1MainName.value
+      }
+      row.productInputs.push(productInput)
+      row.Main += bangdong1Main.name + 'x' + parseInt(bangdong1Main.quantity).toString() + ' '
+
+      const input = {
+        id: bangdong1Main.id,
+        name: bangdong1Main.name,
+        value: parseInt(bangdong1Main.quantity)
+
+      }
+      console.log(parseInt(bangdong1Main.quantity).toString())
+      row.inputs.push(input)
+      bangdong1Main.quantity = 0
+    }
+  }
+  for (const bangdong1Drink of bangdong1Drinks) {
+    if (bangdong1Drink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong1Drink.name + 'x' + parseInt(bangdong1Drink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong1DrinkName.value,
+        productTypeId: bangdong1DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        id: bangdong1Drink.id,
+        name: bangdong1Drink.name,
+        value: parseInt(bangdong1Drink.quantity)
+
+      }
+      row.inputs.push(input)
+      bangdong1Drink.quantity = 0
+    }
+  }
+
+  for (const bangdong1SideDish of bangdong1SideDishes) {
+    if (bangdong1SideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong1SideDish.name + 'x' + parseInt(bangdong1SideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong1SideDishName.value,
+        productTypeId: bangdong1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong1SideDish.is_default + ' '
+      const input = {
+        id: bangdong1SideDish.id,
+        name: bangdong1SideDish.name,
+        value: parseInt(bangdong1SideDish.quantity),
+        is_default: bangdong1SideDish.is_default
+
+      }
+      row.inputs.push(input)
+      bangdong1SideDish.quantity = 0
+    }
+  }
+  // 保留 招牌便當、1001、數量
+  const productInput = {
+    id: bangdong1ProductId.value,
+    name: bangdong1Name.value,
+    value: parseInt(totalQuantity),
+    price: bangdong1Price.value,
+    totalPrice: bangdong1TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  console.log(JSON.stringify(row))
+  console.log(JSON.stringify(row.inputs))
+  console.log(JSON.stringify(row.inputs.id))
+  console.log(JSON.stringify(row.inputs.mainId))
+
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdong1.value = false
 }
-// console.log(totalbangdong2())
 
-watch(() => totalbangdong2(), (newValue) => {
-  bangdong2Form.bangdong1Quantity = newValue
-})
+// 修改欄位導入
+const bangdong1EditMains = reactive([])
+const bangdong1EditDrinks = reactive([])
+const bangdong1EditSideDishes = reactive([])
+const bangdong1EditBentoMains = reactive([])
+const loadBangdong1Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1001')
+    const productOptions = response.data.product_options
 
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+
+    for (const value of values) {
+      const bangdong1EditMain = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong1EditMains.push(bangdong1EditMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdong1EditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong1EditDrinks.push(bangdong1EditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdong1EditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdong1EditSideDishes.push(bangdong1EditSideDish)
+    }
+    // 修改修改欄位配菜跟著變
+
+    bangdong1MainName.value = mainMeal.name
+    bangdong1DrinkName.value = Drink.name
+    bangdong1SideDishName.value = sideDish.name
+    bangdong1Price.value = parseInt(response.data.price)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdong1Edit()
 // 雞胸便當
+const bangdong2Mains = reactive([])
+const bangdong2MainName = ref('')
+const bangdong2Drinks = reactive([])
+const bangdong2DrinkName = ref('')
+const bangdong2SideDishes = reactive([])
+const bangdong2SideDishName = ref('')
+const bangdong2BentoMains = reactive([])
+const bangdong2BentoMainName = ref('')
+const bangdong2Name = ref('')
+const bangdong2ProductId = ref('')
+const bangdong2MainMealId = ref('')
+const bangdong2DrinkId = ref('')
+const bangdong2SideDishId = ref('')
+const bangdong2BentoMainId = ref('')
+const bangdong2Price = ref(0)
+// 抓取雞胸便當主餐形成input
+const loadBangdong2 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1002')
+    const productOptions = response.data.product_options
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
 
-const bangdong3Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
+    for (const mainMealValue of mainMealValues) {
+      bangdong2Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
 
-})
+    for (const DrinkValue of DrinkValues) {
+      bangdong2Drinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
 
-function totalbangdong3 () {
-  return parseInt(bangdong3Form.bangdong1Vegetable) +
-    parseInt(bangdong3Form.bangdong1Egg) +
-    parseInt(bangdong3Form.bangdong1Potato) +
-    parseInt(bangdong3Form.bangdong1Shrimp) +
-    parseInt(bangdong3Form.bangdong1Chicken) +
-    parseInt(bangdong3Form.bangdong1Fish) +
-    parseInt(bangdong3Form.bangdong1Pig) +
-    parseInt(bangdong3Form.bangdong1Meet)
+    for (const sideDishValue of sideDishValues) {
+      bangdong2SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      bangdong2BentoMains.push({
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0
+      })
+    }
+    // 監聽主餐的數量變化
+    bangdong2Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          bangdong2SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+          // 副主餐的數量跟著主餐的數量變化
+          bangdong2BentoMains.forEach(bentoMain => {
+            const diff = Number(newVal) - Number(oldVal)
+            const newQuantity = Number(bentoMain.quantity) + diff
+
+            // 確保副主餐數量不會變成負數
+            bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+          })
+        }
+      })
+    })
+    bangdong2Name.value = response.data.name
+    bangdong2MainName.value = mainMeal.name
+    bangdong2DrinkName.value = Drink.name
+    bangdong2SideDishName.value = sideDish.name
+    bangdong2BentoMainName.value = bentoMain.name
+    bangdong2Price.value = parseInt(response.data.price)
+    bangdong2ProductId.value = response.data.id
+    bangdong2MainMealId.value = mainMeal.id
+    bangdong2DrinkId.value = Drink.id
+    bangdong2SideDishId.value = sideDish.id
+    bangdong2BentoMainId.value = bentoMain.id
+  } catch (error) {
+    console.error(error)
+  }
 }
-// console.log(totalbangdong3())
 
-watch(() => totalbangdong3(), (newValue) => {
-  bangdong3Form.bangdong1Quantity = newValue
+loadBangdong2()
+
+// 計算總數量
+const bangdong2TotalQuantity = computed(() => {
+  return bangdong2Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
 })
 
+// 計算總價格
+const bangdong2TotalQuantityPrice = computed(() => {
+  return bangdong2TotalQuantity.value * bangdong2Price.value
+})
+// 將資料推進tableRows
+const submitBangdong2 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 2,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdong2TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdong2TotalQuantity.value
+  // 主餐
+  for (const bangdong2Main of bangdong2Mains) {
+    if (bangdong2Main.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong2Name.value + totalQuantity + '份'
+      row.Main += bangdong2Main.name + 'x' + parseInt(bangdong2Main.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdong2MainMealId.value,
+        productTypeName: bangdong2MainName.value
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        name: bangdong2Main.name,
+        value: parseInt(bangdong2Main.quantity)
+      }
+      console.log(parseInt(bangdong2Main.quantity).toString())
+      row.inputs.push(input)
+      bangdong2Main.quantity = 0
+    }
+  }
+  // 飲料
+  for (const bangdong2Drink of bangdong2Drinks) {
+    if (bangdong2Drink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong2Drink.name + 'x' + parseInt(bangdong2Drink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong2DrinkName.value,
+        productTypeId: bangdong2DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong2Drink.name,
+        value: parseInt(bangdong2Drink.quantity)
+      }
+      row.inputs.push(input)
+      bangdong2Drink.quantity = 0
+    }
+  }
+  // 配菜
+  for (const bangdong2SideDish of bangdong2SideDishes) {
+    if (bangdong2SideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong2SideDish.name + 'x' + parseInt(bangdong2SideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong2SideDishName.value,
+        productTypeId: bangdong2SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong2SideDish.is_default + ' '
+      const input = {
+        name: bangdong2SideDish.name,
+        value: parseInt(bangdong2SideDish.quantity),
+        is_default: bangdong2SideDish.is_default
+      }
+      row.inputs.push(input)
+      bangdong2SideDish.quantity = 0
+    }
+  }
+  // 副主餐
+  for (const bangdong2BentoMain of bangdong2BentoMains) {
+    if (bangdong2BentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdong2BentoMain.name + 'x' + parseInt(bangdong2BentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdong2BentoMainName.value,
+        productTypeId: bangdong2BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        name: bangdong2BentoMain.name,
+        value: parseInt(bangdong2BentoMain.quantity)
+      }
+      row.inputs.push(input)
+      bangdong2BentoMain.quantity = 0
+    }
+  }
+  // 保留 雞胸便當、1002、數量
+  const productInput = {
+    id: bangdong2ProductId.value,
+    name: bangdong2Name.value,
+    value: parseInt(totalQuantity),
+    price: bangdong2Price.value,
+    totalPrice: bangdong2TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdong2.value = false
+}
+
+// 修改欄位
+const bangdong2EditMains = reactive([])
+const bangdong2EditDrinks = reactive([])
+const bangdong2EditSideDishes = reactive([])
+const bangdong2EditBentoMains = reactive([])
+const loadBangdong2Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1002')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+
+    for (const value of values) {
+      const bangdong2EditMain = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong2EditMains.push(bangdong2EditMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdong2EditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong2EditDrinks.push(bangdong2EditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdong2EditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdong2EditSideDishes.push(bangdong2EditSideDish)
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      const bangdong2EditBentoMain = {
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong2EditBentoMains.push(bangdong2EditBentoMain)
+      console.log(bangdong2EditBentoMain)
+    }
+    bangdong2MainName.value = mainMeal.name
+    bangdong2DrinkName.value = Drink.name
+    bangdong2SideDishName.value = sideDish.name
+    bangdong2BentoMainName.value = bentoMain.name
+    bangdong2Price.value = parseInt(response.data.price)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdong2Edit()
+
+// 雞腿便當
+const bangdong3Mains = reactive([])
+const bangdong3MainName = ref('')
+const bangdong3Drinks = reactive([])
+const bangdong3DrinkName = ref('')
+const bangdong3SideDishes = reactive([])
+const bangdong3SideDishName = ref('')
+const bangdong3BentoMains = reactive([])
+const bangdong3BentoMainName = ref('')
+const bangdong3Name = ref('')
+const bangdong3Price = ref('')
+const bangdong3ProductId = ref('')
+const bangdong3MainMealId = ref('')
+const bangdong3DrinkId = ref('')
+const bangdong3SideDishId = ref('')
+const bangdong3BentoMainId = ref('')
+// 抓取雞腿便當主餐形成input
+const loadBangdong3 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1003')
+    const productOptions = response.data.product_options
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      bangdong3Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+
+    for (const DrinkValue of DrinkValues) {
+      bangdong3Drinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      bangdong3SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      bangdong3BentoMains.push({
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0
+      })
+    }
+    // 監聽主餐的數量變化
+    bangdong3Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          bangdong3SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+          // 副主餐的數量跟著主餐的數量變化
+          bangdong3BentoMains.forEach(bentoMain => {
+            const diff = Number(newVal) - Number(oldVal)
+            const newQuantity = Number(bentoMain.quantity) + diff
+
+            // 確保副主餐數量不會變成負數
+            bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+          })
+        }
+      })
+    })
+    bangdong3Name.value = response.data.name
+    bangdong3MainName.value = mainMeal.name
+    bangdong3DrinkName.value = Drink.name
+    bangdong3SideDishName.value = sideDish.name
+    bangdong3BentoMainName.value = bentoMain.name
+    bangdong3Price.value = parseInt(response.data.price)
+    bangdong3ProductId.value = response.data.id
+    bangdong3MainMealId.value = mainMeal.id
+    bangdong3DrinkId.value = Drink.id
+    bangdong3SideDishId.value = sideDish.id
+    bangdong3BentoMainId.value = bentoMain.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdong3()
+
+// 計算總數量
+const bangdong3TotalQuantity = computed(() => {
+  return bangdong3Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 計算總價格
+const bangdong3TotalQuantityPrice = computed(() => {
+  return bangdong3TotalQuantity.value * bangdong3Price.value
+})
+// 將資料推進tableRows
+const submitBangdong3 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 3,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdong3TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdong3TotalQuantity.value
+  // 主餐
+  for (const bangdong3Main of bangdong3Mains) {
+    if (bangdong3Main.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong3Name.value + totalQuantity + '份'
+      row.Main += bangdong3Main.name + 'x' + parseInt(bangdong3Main.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdong3MainMealId.value,
+        productTypeName: bangdong3MainName.value
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        id: bangdong3Main.id,
+        name: bangdong3Main.name,
+        value: parseInt(bangdong3Main.quantity)
+      }
+      console.log(parseInt(bangdong3Main.quantity).toString())
+      row.inputs.push(input)
+      bangdong3Main.quantity = 0
+    }
+  }
+  // 飲料
+  for (const bangdong3Drink of bangdong3Drinks) {
+    if (bangdong3Drink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong3Drink.name + 'x' + parseInt(bangdong3Drink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong3DrinkName.value,
+        productTypeId: bangdong3DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong3Drink.name,
+        value: parseInt(bangdong3Drink.quantity)
+      }
+      row.inputs.push(input)
+      bangdong3Drink.quantity = 0
+    }
+  }
+  // 配菜
+  for (const bangdong3SideDish of bangdong3SideDishes) {
+    if (bangdong3SideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong3SideDish.name + 'x' + parseInt(bangdong3SideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong1SideDishName.value,
+        productTypeId: bangdong1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong3SideDish.is_default + ' '
+      const input = {
+        name: bangdong3SideDish.name,
+        value: parseInt(bangdong3SideDish.quantity),
+        is_default: bangdong3SideDish.is_default
+      }
+      row.inputs.push(input)
+      bangdong3SideDish.quantity = 0
+    }
+  }
+  // 副主餐
+  for (const bangdong3BentoMain of bangdong3BentoMains) {
+    if (bangdong3BentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdong3BentoMain.name + 'x' + parseInt(bangdong3BentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdong3BentoMainName.value,
+        productTypeId: bangdong3BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        name: bangdong3BentoMain.name,
+        value: parseInt(bangdong3BentoMain.quantity)
+      }
+      row.inputs.push(input)
+      bangdong3BentoMain.quantity = 0
+    }
+  }
+  // 保留 雞腿便當、1003、數量
+  const productInput = {
+    id: bangdong3ProductId.value,
+    name: bangdong3Name.value,
+    value: parseInt(totalQuantity),
+    price: bangdong3Price.value,
+    totalPrice: bangdong3TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdong3.value = false
+}
+
+// 修改欄位
+const bangdong3EditMains = reactive([])
+const bangdong3EditDrinks = reactive([])
+const bangdong3EditSideDishes = reactive([])
+const bangdong3EditBentoMains = reactive([])
+const loadBangdong3Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1003')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+
+    for (const value of values) {
+      const bangdong3EditMain = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong3EditMains.push(bangdong3EditMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdong3EditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong3EditDrinks.push(bangdong3EditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdong3EditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdong3EditSideDishes.push(bangdong3EditSideDish)
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      const bangdong3EditBentoMain = {
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong3EditBentoMains.push(bangdong3EditBentoMain)
+      console.log(bangdong3EditBentoMain)
+    }
+    bangdong3MainName.value = mainMeal.name
+    bangdong3DrinkName.value = Drink.name
+    bangdong3SideDishName.value = sideDish.name
+    bangdong3BentoMainName.value = bentoMain.name
+    bangdong3Price.value = parseInt(response.data.price)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdong3Edit()
 // 滷牛便當
+const bangdong4Mains = reactive([])
+const bangdong4MainName = ref('')
+const bangdong4Drinks = reactive([])
+const bangdong4DrinkName = ref('')
+const bangdong4SideDishes = reactive([])
+const bangdong4SideDishName = ref('')
+const bangdong4BentoMains = reactive([])
+const bangdong4BentoMainName = ref('')
+const bangdong4Name = ref('')
+const bangdong4ProductId = ref('')
+const bangdong4Price = ref(0)
+const bangdong4MainMealId = ref('')
+const bangdong4DrinkId = ref('')
+const bangdong4SideDishId = ref('')
+const bangdong4BentoMainId = ref('')
+// 抓取滷牛便當主餐形成input
+const loadBangdong4 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1004')
+    const productOptions = response.data.product_options
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
 
-const bangdong4Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
+    for (const mainMealValue of mainMealValues) {
+      bangdong4Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
 
-})
+    for (const DrinkValue of DrinkValues) {
+      bangdong4Drinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
 
-function totalbangdong4 () {
-  return parseInt(bangdong4Form.bangdong1Vegetable) +
-    parseInt(bangdong4Form.bangdong1Egg) +
-    parseInt(bangdong4Form.bangdong1Potato) +
-    parseInt(bangdong4Form.bangdong1Shrimp) +
-    parseInt(bangdong4Form.bangdong1Chicken) +
-    parseInt(bangdong4Form.bangdong1Fish) +
-    parseInt(bangdong4Form.bangdong1Pig) +
-    parseInt(bangdong4Form.bangdong1Meet)
+    for (const sideDishValue of sideDishValues) {
+      bangdong4SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      bangdong4BentoMains.push({
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0
+      })
+    }
+    // 監聽主餐的數量變化
+    bangdong4Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          bangdong4SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+          // 副主餐的數量跟著主餐的數量變化
+          bangdong4BentoMains.forEach(bentoMain => {
+            const diff = Number(newVal) - Number(oldVal)
+            const newQuantity = Number(bentoMain.quantity) + diff
+
+            // 確保副主餐數量不會變成負數
+            bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+          })
+        }
+      })
+    })
+    bangdong4Name.value = response.data.name
+    bangdong4MainName.value = mainMeal.name
+    bangdong4DrinkName.value = Drink.name
+    bangdong4SideDishName.value = sideDish.name
+    bangdong4BentoMainName.value = bentoMain.name
+    bangdong4Price.value = parseInt(response.data.price)
+    bangdong4ProductId.value = response.data.id
+    bangdong4MainMealId.value = mainMeal.id
+    bangdong4DrinkId.value = Drink.id
+    bangdong4SideDishId.value = sideDish.id
+    bangdong4BentoMainId.value = bentoMain.id
+  } catch (error) {
+    console.error(error)
+  }
 }
-// console.log(totalbangdong4())
 
-watch(() => totalbangdong4(), (newValue) => {
-  bangdong4Form.bangdong1Quantity = newValue
+loadBangdong4()
+
+// 計算總數量
+const bangdong4TotalQuantity = computed(() => {
+  return bangdong4Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
 })
+
+// 計算總價格
+const bangdong4TotalQuantityPrice = computed(() => {
+  return bangdong4TotalQuantity.value * bangdong4Price.value
+})
+// 將資料推進tableRows
+const submitBangdong4 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 4,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdong4TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdong4TotalQuantity.value
+  // 主餐
+  for (const bangdong4Main of bangdong4Mains) {
+    if (bangdong4Main.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong4Name.value + totalQuantity + '份'
+      row.Main += bangdong4Main.name + 'x' + parseInt(bangdong4Main.quantity).toString()
+      const productInput = {
+        productTypeId: bangdong4MainMealId.value,
+        productTypeName: bangdong4MainName.value
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        name: bangdong4Main.name,
+        value: parseInt(bangdong4Main.quantity)
+      }
+      console.log(parseInt(bangdong4Main.quantity).toString())
+      row.inputs.push(input)
+      bangdong4Main.quantity = 0
+    }
+  }
+  // 飲料
+  for (const bangdong4Drink of bangdong4Drinks) {
+    if (bangdong4Drink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong4Drink.name + 'x' + parseInt(bangdong4Drink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong4DrinkName.value,
+        productTypeId: bangdong4DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong4Drink.name,
+        value: parseInt(bangdong4Drink.quantity)
+      }
+      row.inputs.push(input)
+      bangdong4Drink.quantity = 0
+    }
+  }
+  // 配菜
+  for (const bangdong4SideDish of bangdong4SideDishes) {
+    if (bangdong4SideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong4SideDish.name + 'x' + parseInt(bangdong4SideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong4SideDishName.value,
+        productTypeId: bangdong4SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong4SideDish.is_default + ' '
+      const input = {
+        name: bangdong4SideDish.name,
+        value: parseInt(bangdong4SideDish.quantity),
+        is_default: bangdong4SideDish.is_default
+      }
+      row.inputs.push(input)
+      bangdong4SideDish.quantity = 0
+    }
+  }
+  // 副主餐
+  for (const bangdong4BentoMain of bangdong4BentoMains) {
+    if (bangdong4BentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdong4BentoMain.name + 'x' + parseInt(bangdong4BentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdong4BentoMainName.value,
+        productTypeId: bangdong4BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        name: bangdong4BentoMain.name,
+        value: parseInt(bangdong4BentoMain.quantity)
+      }
+      row.inputs.push(input)
+      bangdong4BentoMain.quantity = 0
+    }
+  }
+  const productInput = {
+    id: bangdong4ProductId.value,
+    name: bangdong4Name.value,
+    value: parseInt(totalQuantity),
+    price: bangdong4Price.value,
+    totalPrice: bangdong4TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdong4.value = false
+}
+
+// 修改欄位
+const bangdong4EditMains = reactive([])
+const bangdong4EditDrinks = reactive([])
+const bangdong4EditSideDishes = reactive([])
+const bangdong4EditBentoMains = reactive([])
+const loadBangdong4Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1004')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+
+    for (const value of values) {
+      const bangdong4EditMain = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong4EditMains.push(bangdong4EditMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdong4EditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong4EditDrinks.push(bangdong4EditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdong4EditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdong4EditSideDishes.push(bangdong4EditSideDish)
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      const bangdong4EditBentoMain = {
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdong4EditBentoMains.push(bangdong4EditBentoMain)
+      console.log(bangdong4EditBentoMain)
+    }
+
+    bangdong4MainName.value = mainMeal.name
+    bangdong4DrinkName.value = Drink.name
+    bangdong4SideDishName.value = sideDish.name
+    bangdong4BentoMainName.value = bentoMain.name
+    bangdong4Price.value = parseInt(response.data.price)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdong4Edit()
+
+// ---------------------------------------------------------
+// 經濟盒餐
+const lunchBox1Mains = reactive([])
+const lunchBox1SideDishes = reactive([])
+const lunchBox1SideDishName = ref('')
+const lunchBox1DrinkName = ref('')
+const lunchBox1MainName = ref('')
+const lunchBox1Name = ref('')
+const lunchBox1Price = ref(0)
+const lunchBox1ProductId = ref('')
+const lunchBox1MainMealId = ref('')
+const lunchBox1DrinkId = ref('')
+const lunchBox1SideDishId = ref('')
+const loadLunchBox1 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1005')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox1Mains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox1SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 監聽主餐的數量變化
+    lunchBox1Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          lunchBox1SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+        }
+      })
+    })
+    lunchBox1Name.value = response.data.name
+    lunchBox1MainName.value = mainMeal.name
+    lunchBox1DrinkName.value = drink.name
+    lunchBox1SideDishName.value = sideDish.name
+    lunchBox1Price.value = parseInt(response.data.price)
+    lunchBox1ProductId.value = response.data.id
+    lunchBox1MainMealId.value = mainMeal.id
+    lunchBox1DrinkId.value = drink.id
+    lunchBox1SideDishId.value = sideDish.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox1()
+// 計算總數量
+const lunchBox1TotalQuantity = computed(() => {
+  return lunchBox1Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 計算總價格
+const lunchBox1TotalQuantityPrice = computed(() => {
+  return lunchBox1TotalQuantity.value * lunchBox1Price.value
+})
+
+const submitLunchbox1 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+  const row = {
+    bentoType: 5,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox1TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalQuantity = lunchBox1TotalQuantity.value
+  for (const option of lunchBox1Mains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox1DrinkName.value,
+            productTypeId: lunchBox1DrinkId.value
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            id: drink.id,
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox1Name.value + totalQuantity + '份'
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox1MainMealId.value,
+        productTypeName: lunchBox1MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        mainId: option.id,
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  // 推進配菜
+  for (const sideDish of lunchBox1SideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox1SideDishName.value,
+        productTypeId: lunchBox1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        id: sideDish.id,
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default,
+        mainId: sideDish.mainId
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 經濟盒餐、1005、數量
+  const productInput = {
+    id: lunchBox1ProductId.value,
+    name: lunchBox1Name.value,
+    value: parseInt(totalQuantity),
+    price: lunchBox1Price.value,
+    totalPrice: lunchBox1TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+
+  if (row.Main !== '' || row.sideDishes !== '') {
+    // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
+    tableRows.push(row)
+    showlunchBox1.value = false
+  }
+}
+
+// editDialog5導入欄位
+const lunchBox1EditMains = reactive([])
+const lunchBox1EditSideDishes = reactive([])
+const lunchBox1EditSideDishName = ref('')
+const lunchBox1EditDrinkName = ref('')
+const lunchBox1EditMainName = ref('')
+const lunchBox1EditName = ref('')
+
+const loadLunchBox1Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1005')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox1EditMains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox1EditSideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    lunchBox1EditName.value = response.data.name
+    lunchBox1EditMainName.value = mainMeal.name
+    lunchBox1EditDrinkName.value = drink.name
+    lunchBox1EditSideDishName.value = sideDish.name
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox1Edit()
+
+// 會議盒餐
+const lunchBox2Mains = reactive([])
+const lunchBox2SideDishes = reactive([])
+const lunchBox2SideDishName = ref('')
+const lunchBox2DrinkName = ref('')
+const lunchBox2MainName = ref('')
+const lunchBox2Name = ref('')
+const lunchBox2Price = ref(0)
+const lunchBox2MainMealId = ref('')
+const lunchBox2ProductId = ref('')
+const lunchBox2DrinkId = ref('')
+const lunchBox2SideDishId = ref('')
+
+const loadLunchBox2 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1006')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox2Mains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox2SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 監聽主餐的數量變化
+    lunchBox2Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          lunchBox2SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+        }
+      })
+    })
+    lunchBox2Name.value = response.data.name
+    lunchBox2MainName.value = mainMeal.name
+    lunchBox2DrinkName.value = drink.name
+    lunchBox2SideDishName.value = sideDish.name
+    lunchBox2Price.value = parseInt(response.data.price)
+    lunchBox2MainMealId.value = mainMeal.id
+    lunchBox2ProductId.value = response.data.id
+    lunchBox2DrinkId.value = drink.id
+    lunchBox2SideDishId.value = sideDish.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox2()
+// 計算總數量
+const lunchBox2TotalQuantity = computed(() => {
+  return lunchBox2Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 計算總價格
+const lunchBox2TotalQuantityPrice = computed(() => {
+  return lunchBox2TotalQuantity.value * lunchBox2Price.value
+})
+
+const submitLunchbox2 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+  const row = {
+    bentoType: 6,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox2TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalQuantity = lunchBox2TotalQuantity.value
+  for (const option of lunchBox2Mains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox2DrinkName.value,
+            productTypeId: lunchBox2DrinkId.value
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox2Name.value + totalQuantity + '份'
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox2MainMealId.value,
+        productTypeName: lunchBox2MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  // 推進配菜
+  for (const sideDish of lunchBox2SideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox2SideDishName.value,
+        productTypeId: lunchBox2SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 會議盒餐、1005、數量
+  const productInput = {
+    id: lunchBox2ProductId.value,
+    name: lunchBox2Name.value,
+    value: parseInt(totalQuantity),
+    price: lunchBox2Price.value,
+    totalPrice: lunchBox2TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
+    tableRows.push(row)
+    showlunchBox2.value = false
+  }
+}
+// editDialog6導入欄位
+const lunchBox2EditMains = reactive([])
+const lunchBox2EditSideDishes = reactive([])
+const lunchBox2EditSideDishName = ref('')
+const lunchBox2EditDrinkName = ref('')
+const lunchBox2EditMainName = ref('')
+const lunchBox2EditName = ref('')
+
+const loadLunchBox2Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1006')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox2EditMains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox2EditSideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // // 監聽主餐的數量變化
+    // lunchBox2EditMains.forEach(main => {
+    //   watch(() => main.quantity, (newVal, oldVal) => {
+    //     if (newVal !== oldVal) {
+    //       // 配菜的數量跟著主餐的數量變化
+    //       lunchBox2EditSideDishes.forEach(sideDish => {
+    //         if (sideDish.is_default) {
+    //           const diff = Number(newVal) - Number(oldVal)
+    //           if (newVal === 0) {
+    //             sideDish.quantity = 0
+    //           } else {
+    //             sideDish.quantity = Number(sideDish.quantity) + diff
+    //           }
+    //         }
+    //       })
+    //     }
+    //   })
+    // })
+    lunchBox2EditName.value = response.data.name
+    lunchBox2EditMainName.value = mainMeal.name
+    lunchBox2EditDrinkName.value = drink.name
+    lunchBox2EditSideDishName.value = sideDish.name
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox2Edit()
+
+// 貴賓盒餐
+const lunchBox3Mains = reactive([])
+const lunchBox3SideDishes = reactive([])
+const lunchBox3SideDishName = ref('')
+const lunchBox3DrinkName = ref('')
+const lunchBox3MainName = ref('')
+const lunchBox3Name = ref('')
+const lunchBox3Price = ref(0)
+const lunchBox3ProductId = ref('')
+const lunchBox3MainMealId = ref('')
+const lunchBox3DrinkId = ref('')
+const lunchBox3SideDishId = ref('')
+
+const loadLunchBox3 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1007')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox3Mains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox3SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 監聽主餐的數量變化
+    lunchBox3Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          lunchBox3SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+        }
+      })
+    })
+    lunchBox3Name.value = response.data.name
+    lunchBox3MainName.value = mainMeal.name
+    lunchBox3DrinkName.value = drink.name
+    lunchBox3SideDishName.value = sideDish.name
+    lunchBox3Price.value = parseInt(response.data.price)
+    lunchBox3ProductId.value = response.data.id
+    lunchBox3MainMealId.value = mainMeal.id
+    lunchBox3DrinkId.value = drink.id
+    lunchBox3SideDishId.value = sideDish.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox3()
+// 計算總數量
+const lunchBox3TotalQuantity = computed(() => {
+  return lunchBox3Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 計算總價格
+const lunchBox3TotalQuantityPrice = computed(() => {
+  return lunchBox3TotalQuantity.value * lunchBox3Price.value
+})
+
+const submitLunchbox3 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+  const row = {
+    bentoType: 7,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox3TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalQuantity = lunchBox3TotalQuantity.value
+  for (const option of lunchBox3Mains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox3DrinkName.value,
+            productTypeId: lunchBox3DrinkId.value
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox3Name.value + totalQuantity + '份'
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox3MainMealId.value,
+        productTypeName: lunchBox3MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  // 推進配菜
+  for (const sideDish of lunchBox3SideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox3SideDishName.value,
+        productTypeId: lunchBox3SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 貴賓盒餐、1007、數量
+  const productInput = {
+    id: lunchBox3ProductId.value,
+    name: lunchBox3Name.value,
+    value: parseInt(totalQuantity),
+    price: lunchBox3Price.value,
+    totalPrice: lunchBox3TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
+    tableRows.push(row)
+    showlunchBox3.value = false
+  }
+}
+// editDialog7導入欄位
+const lunchBox3EditMains = reactive([])
+const lunchBox3EditSideDishes = reactive([])
+const lunchBox3EditSideDishName = ref('')
+const lunchBox3EditDrinkName = ref('')
+const lunchBox3EditMainName = ref('')
+const lunchBox3EditName = ref('')
+
+const loadLunchBox3Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1007')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox3EditMains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox3EditSideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    lunchBox3EditName.value = response.data.name
+    lunchBox3EditMainName.value = mainMeal.name
+    lunchBox3EditDrinkName.value = drink.name
+    lunchBox3EditSideDishName.value = sideDish.name
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox3Edit()
+
+// 首席盒餐
+const lunchBox4Mains = reactive([])
+const lunchBox4SideDishes = reactive([])
+const lunchBox4SideDishName = ref('')
+const lunchBox4DrinkName = ref('')
+const lunchBox4MainName = ref('')
+const lunchBox4Name = ref('')
+const lunchBox4Price = ref(0)
+const lunchBox4ProductId = ref('')
+const lunchBox4MainMealId = ref('')
+const lunchBox4DrinkId = ref('')
+const lunchBox4SideDishId = ref('')
+const loadLunchBox4 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1005')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox4Mains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox4SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 監聽主餐的數量變化
+    lunchBox4Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          lunchBox4SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '全潤' || main.name === '蛋潤') {
+              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+        }
+      })
+    })
+    lunchBox4Name.value = response.data.name
+    lunchBox4MainName.value = mainMeal.name
+    lunchBox4DrinkName.value = drink.name
+    lunchBox4SideDishName.value = sideDish.name
+    lunchBox4Price.value = parseInt(response.data.price)
+    lunchBox4ProductId.value = response.data.id
+    lunchBox4MainMealId.value = mainMeal.id
+    lunchBox4DrinkId.value = drink.id
+    lunchBox4SideDishId.value = sideDish.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox4()
+// 計算總數量
+const lunchBox4TotalQuantity = computed(() => {
+  return lunchBox4Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 計算總價格
+const lunchBox4TotalQuantityPrice = computed(() => {
+  return lunchBox4TotalQuantity.value * lunchBox4Price.value
+})
+
+const submitLunchbox4 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+  const row = {
+    bentoType: 8,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox4TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalQuantity = lunchBox4TotalQuantity.value
+  for (const option of lunchBox4Mains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox4DrinkName.value,
+            productTypeId: lunchBox4DrinkId.value
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox4Name.value + totalQuantity + '份'
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox4MainMealId.value,
+        productTypeName: lunchBox4MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  // 推進配菜
+  for (const sideDish of lunchBox4SideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox4SideDishName.value,
+        productTypeId: lunchBox4SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 首席盒餐、1008、數量
+  const productInput = {
+    id: lunchBox4ProductId.value,
+    name: lunchBox4Name.value,
+    value: parseInt(totalQuantity),
+    price: lunchBox4Price.value,
+    totalPrice: lunchBox4TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
+    tableRows.push(row)
+    showlunchBox4.value = false
+  }
+}
+
+// editDialog8導入欄位
+const lunchBox4EditMains = reactive([])
+const lunchBox4EditSideDishes = reactive([])
+const lunchBox4EditSideDishName = ref('')
+const lunchBox4EditDrinkName = ref('')
+const lunchBox4EditMainName = ref('')
+const lunchBox4EditName = ref('')
+
+const loadLunchBox4Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1005')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBox4EditMains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBox4EditSideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    lunchBox4EditName.value = response.data.name
+    lunchBox4EditMainName.value = mainMeal.name
+    lunchBox4EditDrinkName.value = drink.name
+    lunchBox4EditSideDishName.value = sideDish.name
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBox4Edit()
+
+// ------------------------客製便當、盒餐、單點---------------------------------
+// 客製便當
+const bangdongCustom1Mains = reactive([])
+const bangdongCustom1MainName = ref('')
+const bangdongCustom1Drinks = reactive([])
+const bangdongCustom1DrinkName = ref('')
+const bangdongCustom1SideDishes = reactive([])
+const bangdongCustom1SideDishName = ref('')
+const bangdongCustom1Name = ref('')
+const bangdongCustom1BentoMains = reactive([])
+const bangdongCustom1BentoMainName = ref('')
+const bangdongCustom1Price = ref(0)
+const bangdongCustom1ProductId = ref('')
+const bangdongCustom1MainMealId = ref('')
+const bangdongCustom1DrinkId = ref('')
+const bangdongCustom1SideDishId = ref('')
+const bangdongCustom1BentoMainId = ref('')
+const editDialog9 = ref(false)
+// 抓取客製招牌便當主餐形成input
+const loadBangdongCustom1 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1043')
+    const productOptions = response.data.product_options
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      bangdongCustom1Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+
+    for (const DrinkValue of DrinkValues) {
+      bangdongCustom1Drinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      bangdongCustom1SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      bangdongCustom1BentoMains.push({
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0
+      })
+    }
+
+    bangdongCustom1Name.value = response.data.name
+    bangdongCustom1MainName.value = mainMeal.name
+    bangdongCustom1DrinkName.value = Drink.name
+    bangdongCustom1SideDishName.value = sideDish.name
+    bangdongCustom1BentoMainName.value = bentoMain.name
+    bangdongCustom1ProductId.value = response.data.id
+    bangdongCustom1MainMealId.value = mainMeal.id
+    bangdongCustom1DrinkId.value = Drink.id
+    bangdongCustom1SideDishId.value = sideDish.id
+    bangdongCustom1BentoMainId.value = bentoMain.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdongCustom1()
+
+// 計算總數量
+const bangdongCustom1TotalQuantity = computed(() => {
+  return bangdongCustom1Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 計算總價格
+const bangdongCustom1TotalQuantityPrice = computed(() => {
+  return bangdongCustom1TotalQuantity.value * bangdongCustom1Price.value
+})
+// 將資料推進tableRows
+const submitBangdongCustom1 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 9,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    sideDishDefault: '',
+    price: bangdongCustom1TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdongCustom1TotalQuantity.value
+
+  for (const bangdongCustom1Main of bangdongCustom1Mains) {
+    if (bangdongCustom1Main.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = bangdongCustom1Name.value + totalQuantity + '份'
+      row.Main += bangdongCustom1Main.name + 'x' + parseInt(bangdongCustom1Main.quantity).toString()
+      const productInput = {
+        productTypeId: bangdongCustom1MainMealId.value,
+        productTypeName: bangdongCustom1MainName.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongCustom1Main.name,
+        value: parseInt(bangdongCustom1Main.quantity)
+      }
+      row.inputs.push(input)
+      bangdongCustom1Main.quantity = 0
+    }
+  }
+  for (const bangdongCustom1Drink of bangdongCustom1Drinks) {
+    if (bangdongCustom1Drink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ', '
+      }
+      row.drinks += bangdongCustom1Drink.name + 'x' + parseInt(bangdongCustom1Drink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdongCustom1DrinkName.value,
+        productTypeId: bangdongCustom1DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongCustom1Drink.name,
+        value: parseInt(bangdongCustom1Drink.quantity)
+      }
+      row.inputs.push(input)
+      bangdongCustom1Drink.quantity = 0
+    }
+  }
+
+  for (const bangdongCustom1SideDish of bangdongCustom1SideDishes) {
+    if (bangdongCustom1SideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += bangdongCustom1SideDish.name + 'x' + parseInt(bangdongCustom1SideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdongCustom1SideDishName.value,
+        productTypeId: bangdongCustom1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdongCustom1SideDish.is_default + ' '
+
+      const input = {
+        name: bangdongCustom1SideDish.name,
+        value: parseInt(bangdongCustom1SideDish.quantity),
+        is_default: bangdongCustom1SideDish.is_default
+      }
+      row.inputs.push(input)
+      bangdongCustom1SideDish.quantity = 0
+    }
+  }
+
+  // 副主餐
+  for (const bangdongCustom1BentoMain of bangdongCustom1BentoMains) {
+    if (bangdongCustom1BentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdongCustom1BentoMain.name + 'x' + parseInt(bangdongCustom1BentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdongCustom1BentoMainName.value,
+        productTypeId: bangdongCustom1BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        name: bangdongCustom1BentoMain.name,
+        value: parseInt(bangdongCustom1BentoMain.quantity)
+      }
+      row.inputs.push(input)
+      bangdongCustom1BentoMain.quantity = 0
+    }
+  }
+  const productInput = {
+    id: bangdongCustom1ProductId.value,
+    name: bangdongCustom1Name.value,
+    value: parseInt(totalQuantity),
+    price: bangdongCustom1Price.value,
+    totalPrice: bangdongCustom1TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  bangdongCustom1Price.value = 0
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdongCustom1.value = false
+}
+
+// editDialog9導入欄位
+const bangdongCustom1EditMains = reactive([])
+const bangdongCustom1EditDrinks = reactive([])
+const bangdongCustom1EditSideDishes = reactive([])
+const bangdongCustom1EditBentoMains = reactive([])
+const loadBangdongCustom1Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1043')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+
+    for (const value of values) {
+      const bangdongCustom1EditMain = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongCustom1EditMains.push(bangdongCustom1EditMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdongCustom1EditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongCustom1EditDrinks.push(bangdongCustom1EditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdongCustom1EditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdongCustom1EditSideDishes.push(bangdongCustom1EditSideDish)
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      const bangdongCustom1EditBentoMain = {
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongCustom1EditBentoMains.push(bangdongCustom1EditBentoMain)
+      console.log(bangdongCustom1EditBentoMain)
+    }
+
+    bangdongCustom1MainName.value = mainMeal.name
+    bangdongCustom1DrinkName.value = Drink.name
+    bangdongCustom1SideDishName.value = sideDish.name
+    bangdongCustom1BentoMainName.value = bentoMain.name
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdongCustom1Edit()
+// 客製盒餐
+const lunchBoxCustom1Mains = reactive([])
+const lunchBoxCustom1SideDishes = reactive([])
+const lunchBoxCustom1SideDishName = ref('')
+const lunchBoxCustom1DrinkName = ref('')
+const lunchBoxCustom1MainName = ref('')
+const lunchBoxCustom1Name = ref('')
+const lunchBoxCustom1Price = ref(0)
+const lunchBoxCustom1ProductId = ref('')
+const lunchBoxCustom1MainMealId = ref('')
+const lunchBoxCustom1DrinkId = ref('')
+const lunchBoxCustom1SideDishId = ref('')
+const loadLunchBoxCustom1 = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1006')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBoxCustom1Mains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBoxCustom1SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    lunchBoxCustom1Name.value = response.data.name
+    lunchBoxCustom1MainName.value = mainMeal.name
+    lunchBoxCustom1DrinkName.value = drink.name
+    lunchBoxCustom1SideDishName.value = sideDish.name
+    lunchBoxCustom1ProductId.value = response.data.id
+    lunchBoxCustom1MainMealId.value = mainMeal.id
+    lunchBoxCustom1DrinkId.value = drink.id
+    lunchBoxCustom1SideDishId.value = sideDish.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBoxCustom1()
+// 計算總數量
+const lunchBoxCustom1TotalQuantity = computed(() => {
+  return lunchBoxCustom1Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+// 計算總價格
+const lunchBoxCustom1TotalQuantityPrice = computed(() => {
+  return lunchBoxCustom1TotalQuantity.value * lunchBoxCustom1Price.value
+})
+
+const submitLunchboxCustom1 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+  const row = {
+    bentoType: 0,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBoxCustom1TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalQuantity = lunchBoxCustom1TotalQuantity.value
+  for (const option of lunchBoxCustom1Mains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBoxCustom1DrinkName.value,
+            productTypeId: lunchBoxCustom1DrinkId.value
+          }
+          row.inputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBoxCustom1Name.value + totalQuantity + '份'
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBoxCustom1MainMealId.value,
+        productTypeName: lunchBoxCustom1MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+      showLunchBoxCustom1.value = false
+    }
+  }
+
+  // 推進配菜
+  for (const sideDish of lunchBoxCustom1SideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBoxCustom1SideDishName.value,
+        productTypeId: lunchBoxCustom1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 客製盒餐、數量、
+  const productInput = {
+    id: lunchBoxCustom1ProductId.value,
+    name: lunchBoxCustom1Name.value,
+    value: parseInt(totalQuantity),
+    price: lunchBoxCustom1Price.value,
+    totalPrice: lunchBoxCustom1TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
+    tableRows.push(row)
+  }
+}
+// editDialog0導入欄位
+const lunchBoxCustom1EditMains = reactive([])
+const lunchBoxCustom1EditSideDishes = reactive([])
+const lunchBoxCustom1EditSideDishName = ref('')
+const lunchBoxCustom1EditDrinkName = ref('')
+const lunchBoxCustom1EditMainName = ref('')
+const lunchBoxCustom1EditName = ref('')
+
+const loadLunchBoxCustom1Edit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1006')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    // 飲料
+    const drink = productOptions.drink
+    const drinkValues = drink.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      const main = {
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      }
+
+      main.drinks = drinkValues.map(drinkValue => ({
+        id: drinkValue.id,
+        name: drinkValue.name,
+        quantity: 0
+      }))
+
+      lunchBoxCustom1EditMains.push(main)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      lunchBoxCustom1EditSideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    lunchBoxCustom1EditName.value = response.data.name
+    lunchBoxCustom1EditMainName.value = mainMeal.name
+    lunchBoxCustom1EditDrinkName.value = drink.name
+    lunchBoxCustom1EditSideDishName.value = sideDish.name
+  } catch (error) {
+    console.error(error)
+  }
+}
+loadLunchBoxCustom1Edit()
+
+// 單點
+const bangdongSolo6inchs = reactive([])
+const bangdongSolo6inchName = ref('')
+const bangdongSolo3inchs = reactive([])
+const bangdongSolo3inchName = ref('')
+const bangdongSoloDrinks = reactive([])
+const bangdongSoloDrinkName = ref('')
+const bangdongSoloSideDishes = reactive([])
+const bangdongSoloSideDishName = ref('')
+const bangdongSoloBentoMains = reactive([])
+const bangdongSoloBentoMainName = ref('')
+const bangdongSoloEcoBags = reactive([])
+const bangdongSoloEcoBagName = ref('')
+const bangdongSoloName = ref('')
+const bangdongSoloProductId = ref('')
+const bangdongSolo6inchId = ref('')
+const bangdongSolo3inchId = ref('')
+const bangdongSoloDrinkId = ref('')
+const bangdongSoloSideDishId = ref('')
+const bangdongSoloBentoMainId = ref('')
+const bangdongSoloEcoBagId = ref('')
+const editDialog10 = ref(false)
+// 抓取單點商品形成input
+const loadBangdongSolo = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1062')
+    const productOptions = response.data.product_options
+    // 6吋
+    const burrito6inch = productOptions.burrito_6inch
+    const burrito6inchValues = burrito6inch.product_option_values
+
+    for (const burrito6inchValue of burrito6inchValues) {
+      bangdongSolo6inchs.push({
+        id: burrito6inchValue.id,
+        name: burrito6inchValue.name,
+        price: burrito6inchValue.price,
+        quantity: 0
+      })
+    }
+    // 6吋
+    const burrito3inch = productOptions.burrito_3inch
+    const burrito3inchValues = burrito3inch.product_option_values
+
+    for (const burrito3inchValue of burrito3inchValues) {
+      bangdongSolo3inchs.push({
+        id: burrito3inchValue.id,
+        name: burrito3inchValue.name,
+        price: burrito3inchValue.price,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+
+    for (const DrinkValue of DrinkValues) {
+      bangdongSoloDrinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        price: DrinkValue.price,
+        quantity: 0
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      bangdongSoloSideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        price: sideDishValue.price,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      bangdongSoloBentoMains.push({
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        price: bentoMainValue.price,
+        quantity: 0
+      })
+    }
+    // 環保袋
+    const ecoBag = productOptions.eco_bag
+    const ecoBagValues = ecoBag.product_option_values
+    for (const ecoBagValue of ecoBagValues) {
+      bangdongSoloEcoBags.push({
+        id: ecoBagValue.id,
+        name: ecoBagValue.name,
+        price: ecoBagValue.price,
+        quantity: 0
+      })
+    }
+    bangdongSoloName.value = response.data.name
+    bangdongSolo6inchName.value = burrito6inch.name
+    bangdongSolo3inchName.value = burrito3inch.name
+    bangdongSoloDrinkName.value = Drink.name
+    bangdongSoloSideDishName.value = sideDish.name
+    bangdongSoloBentoMainName.value = bentoMain.name
+    bangdongSoloEcoBagName.value = ecoBag.name
+    bangdongSoloProductId.value = response.data.id
+    bangdongSolo6inchId.value = burrito6inch.id
+    bangdongSolo3inchId.value = burrito3inch.id
+    bangdongSoloDrinkId.value = Drink.id
+    bangdongSoloSideDishId.value = sideDish.id
+    bangdongSoloBentoMainId.value = bentoMain.id
+    bangdongSoloEcoBagId.value = ecoBag.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdongSolo()
+
+// 計算總數量
+const bangdongSoloTotalQuantity = computed(() => {
+  let total = 0
+  total += bangdongSolo6inchs.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSolo3inchs.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloDrinks.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloSideDishes.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloBentoMains.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloEcoBags.reduce((sum, item) => sum + Number(item.quantity), 0)
+
+  return total
+})
+// 計算總價格
+const bangdongSoloTotalQuantityPrice = computed(() => {
+  let total = 0
+  total += bangdongSolo6inchs.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSolo3inchs.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloDrinks.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloSideDishes.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloBentoMains.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloEcoBags.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+
+  return total
+})
+// 將資料推進tableRows
+const submitBangdongSolo = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 10,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdongSoloTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdongSoloTotalQuantity.value
+  // 6吋潤餅
+  const bangdongSolo6inchCompositions = []
+  for (const bangdongSolo6inch of bangdongSolo6inchs) {
+    if (bangdongSolo6inch.quantity > 0) {
+      const bangdongSolo6inchComposition = `${bangdongSolo6inch.name} x${bangdongSolo6inch.quantity}`
+      bangdongSolo6inchCompositions.push(bangdongSolo6inchComposition)
+      // 保留6吋潤餅名稱、ID
+      const productInput = {
+        productTypeName: bangdongSolo6inchName.value,
+        productTypeId: bangdongSolo6inchId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSolo6inch.name,
+        value: parseInt(bangdongSolo6inch.quantity)
+      }
+      row.inputs.push(input)
+
+      bangdongSolo6inch.quantity = 0
+    }
+  }
+  // 3吋潤餅
+  const bangdongSolo3inchCompositions = []
+  for (const bangdongSolo3inch of bangdongSolo3inchs) {
+    if (bangdongSolo3inch.quantity > 0) {
+      const bangdongSolo3inchComposition = `${bangdongSolo3inch.name} x${bangdongSolo3inch.quantity}`
+      bangdongSolo3inchCompositions.push(bangdongSolo3inchComposition)
+
+      // 保留3吋潤餅名稱、ID
+      const productInput = {
+        productTypeName: bangdongSolo3inchName.value,
+        productTypeId: bangdongSolo3inchId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSolo3inch.name,
+        value: parseInt(bangdongSolo3inch.quantity)
+      }
+      row.inputs.push(input)
+
+      bangdongSolo3inch.quantity = 0
+    }
+  }
+
+  if (bangdongSolo6inchCompositions.length > 0) {
+    row.Main += `${bangdongSolo6inchName.value}  (${bangdongSolo6inchCompositions.join(', ')})`
+  }
+
+  if (bangdongSolo3inchCompositions.length > 0) {
+    if (bangdongSolo6inchCompositions.length > 0) {
+      row.Main += ', '
+    }
+    row.Main += `${bangdongSolo3inchName.value}  (${bangdongSolo3inchCompositions.join(', ')})`
+  }
+
+  // 飲料
+  for (const bangdongSoloDrink of bangdongSoloDrinks) {
+    if (bangdongSoloDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdongSoloDrink.name + 'x' + parseInt(bangdongSoloDrink.quantity).toString()
+      // 保留飲料名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloDrink.name,
+        productTypeId: bangdongSoloDrink.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloDrink.name,
+        price: bangdongSoloDrink.price,
+        value: parseInt(bangdongSoloDrink.quantity)
+      }
+      row.inputs.push(input)
+      bangdongSoloDrink.quantity = 0
+    }
+  }
+  // 配菜
+  const bangdongSoloSideDishCompositions = []
+  for (const bangdongSoloSideDish of bangdongSoloSideDishes) {
+    if (bangdongSoloSideDish.quantity > 0) {
+      const bangdongSoloSideDishComposition = `${bangdongSoloSideDish.name} x${bangdongSoloSideDish.quantity}`
+      bangdongSoloSideDishCompositions.push(bangdongSoloSideDishComposition)
+      // console.log(bangdongSoloSideDishComposition)
+      // 保留配菜名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloSideDish.name,
+        productTypeId: bangdongSoloSideDish.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloSideDish.name,
+        price: bangdongSoloSideDish.price,
+        value: parseInt(bangdongSoloSideDish.quantity),
+        is_default: bangdongSoloSideDish.is_default
+      }
+      row.inputs.push(input)
+
+      bangdongSoloSideDish.quantity = 0
+    }
+  }
+  // 副主餐
+  const bangdongSoloBentoMainCompositions = []
+  for (const bangdongSoloBentoMain of bangdongSoloBentoMains) {
+    if (bangdongSoloBentoMain.quantity > 0) {
+      const bangdongSoloBentoMainComposition = `${bangdongSoloBentoMain.name} x${bangdongSoloBentoMain.quantity}`
+      bangdongSoloBentoMainCompositions.push(bangdongSoloBentoMainComposition)
+      // console.log(bangdongSoloBentoMainComposition)
+      // 保留副主餐名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloBentoMain.name,
+        productTypeId: bangdongSoloBentoMain.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloBentoMain.name,
+        price: bangdongSoloBentoMain.price,
+        value: parseInt(bangdongSoloBentoMain.quantity)
+      }
+      row.inputs.push(input)
+
+      bangdongSoloBentoMain.quantity = 0
+    }
+  }
+
+  if (bangdongSoloSideDishCompositions.length > 0) {
+    row.sideDishes += `配菜 (${bangdongSoloSideDishCompositions.join(', ')})`
+  }
+
+  if (bangdongSoloBentoMainCompositions.length > 0) {
+    if (bangdongSoloSideDishCompositions.length > 0) {
+      row.sideDishes += ', '
+    }
+    row.sideDishes += `副主餐 (${bangdongSoloBentoMainCompositions.join(', ')})`
+  }
+  row.name = bangdongSoloName.value + totalQuantity + '份'
+
+  // 購物袋
+  const ecoBagCompositions = []
+  for (const bangdongSoloEcoBag of bangdongSoloEcoBags) {
+    if (bangdongSoloEcoBag.quantity > 0) {
+      const ecoBagComposition = `${bangdongSoloEcoBag.name} x${bangdongSoloEcoBag.quantity}`
+      ecoBagCompositions.push(ecoBagComposition)
+      // 保留購物袋名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloEcoBag.name,
+        productTypeId: bangdongSoloEcoBag.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloEcoBag.name,
+        price: bangdongSoloEcoBag.price,
+        value: parseInt(bangdongSoloEcoBag.quantity)
+      }
+      row.inputs.push(input)
+      bangdongSoloEcoBag.quantity = 0
+    }
+  }
+
+  if (ecoBagCompositions.length > 0) {
+    row.name += ` (${ecoBagCompositions.join(', ')})`
+  }
+  const productInput = {
+    id: bangdongSoloProductId.value,
+    name: bangdongSoloName.value,
+    value: parseInt(bangdongSoloTotalQuantity),
+    totalPrice: bangdongSoloTotalQuantityPrice.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdongSolo.value = false
+}
+// editDialog10導入欄位
+const bangdongSoloEdit6inchs = reactive([])
+const bangdongSoloEdit3inchs = reactive([])
+const bangdongSoloEditDrinks = reactive([])
+const bangdongSoloEditSideDishes = reactive([])
+const bangdongSoloEditBentoMains = reactive([])
+const bangdongSoloEditEcoBags = reactive([])
+const bangdongSoloEditName = ref('')
+const loadBangdongSoloEdit = async () => {
+  try {
+    const response = await apiAuth.get('catalog/product/1062')
+    const productOptions = response.data.product_options
+
+    // 6吋潤餅
+    const burrito6inch = productOptions.burrito_6inch
+    const values = burrito6inch.product_option_values
+
+    for (const value of values) {
+      const bangdongSoloEdit6inch = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        price: value.price,
+        hidenquantity: 0
+      }
+      bangdongSoloEdit6inchs.push(bangdongSoloEdit6inch)
+    }
+    // 3吋潤餅
+    const burrito3inch = productOptions.burrito_3inch
+    const burrito3inchValues = burrito3inch.product_option_values
+    for (const burrito3inchValue of burrito3inchValues) {
+      const bangdongSoloEditBentoMain = {
+        id: burrito3inchValue.id,
+        name: burrito3inchValue.name,
+        quantity: 0,
+        price: burrito3inchValue.price,
+        hidenquantity: 0
+      }
+      bangdongSoloEdit3inchs.push(bangdongSoloEditBentoMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdongSoloEditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        price: DrinkValue.price,
+        hidenquantity: 0
+      }
+      bangdongSoloEditDrinks.push(bangdongSoloEditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdongSoloEditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        price: sideDishValue.price,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdongSoloEditSideDishes.push(bangdongSoloEditSideDish)
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      const bangdongSoloEditBentoMain = {
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0,
+        price: bentoMainValue.price,
+        hidenquantity: 0
+      }
+      bangdongSoloEditBentoMains.push(bangdongSoloEditBentoMain)
+    }
+    // 環保袋
+    const ecoBag = productOptions.eco_bag
+    const ecoBagValues = ecoBag.product_option_values
+    for (const ecoBagValue of ecoBagValues) {
+      const bangdongSoloEditEcoBag = {
+        id: ecoBagValue.id,
+        name: ecoBagValue.name,
+        price: ecoBagValue.price,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongSoloEditEcoBags.push(bangdongSoloEditEcoBag)
+    }
+    bangdongSolo6inchName.value = burrito6inch.name
+    bangdongSoloDrinkName.value = Drink.name
+    bangdongSoloSideDishName.value = sideDish.name
+    bangdongSoloBentoMainName.value = bentoMain.name
+    bangdongSoloEditName.value = response.data.name
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+loadBangdongSoloEdit()
+// -------------------------------------刪除新增膗存----------------------
+
+// 刪除該行
+const deleteRow = (id) => {
+  const index = tableRows.findIndex((row) => row.id === id)
+  if (index >= 0) {
+    tableRows.splice(index, 1)
+
+    // 重新生成 ID
+    for (let i = index; i < tableRows.length; i++) {
+      tableRows[i].id = tableRows[i].id - 1
+    }
+  }
+}
+
+// 將table資料拆解放回修正欄位
+
+let editingRow = null
+let watchers = []
+// 找到對應的dialog
+function editRowDialog (row) {
+  if (row.bentoType === 1) {
+    editBangdong1(row)
+  } else if (row.bentoType === 2) {
+    editBangdong2(row)
+  } else if (row.bentoType === 3) {
+    editBangdong3(row)
+  } else if (row.bentoType === 4) {
+    editBangdong4(row)
+  } else if (row.bentoType === 5) {
+    editRowDialog5(row)
+  } else if (row.bentoType === 6) {
+    editRowDialog6(row)
+  } else if (row.bentoType === 7) {
+    editRowDialog7(row)
+  } else if (row.bentoType === 8) {
+    editRowDialog8(row)
+  } else if (row.bentoType === 9) {
+    editRowDialog9(row)
+  } else if (row.bentoType === 0) {
+    editRowDialog0(row)
+  } else if (row.bentoType === 10) {
+    editBangdongSolo(row)
+  }
+}
+// 招牌便當修改
+const editDialog1 = ref(false)
+function editBangdong1 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  // 招牌便當主餐歸零
+  for (const bangdong1EditMain of bangdong1EditMains) {
+    bangdong1EditMain.quantity = 0
+  }
+  // 招牌便當飲料歸零
+  for (const bangdong1EditDrink of bangdong1EditDrinks) {
+    bangdong1EditDrink.quantity = 0
+  }
+  // 招牌便當配菜歸零
+  for (const bangdong1EditSideDish of bangdong1EditSideDishes) {
+    bangdong1EditSideDish.quantity = 0
+  }
+  // 招牌便當副主餐歸零
+  for (const bangdong1EditBentoMain of bangdong1EditBentoMains) {
+    bangdong1EditBentoMain.quantity = 0
+  }
+  // 招牌便當主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 招牌便當  主餐  推入input數值
+    const mainIndex = bangdong1EditMains.findIndex(
+      (bangdong1EditMain) => bangdong1EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      bangdong1EditMains[mainIndex].quantity = parseInt(value)
+    }
+    // 招牌便當  飲料  推入input數值
+    const drinkIndex = bangdong1EditDrinks.findIndex(
+      (bangdong1EditDrink) => bangdong1EditDrink.name === name
+    )
+    if (drinkIndex >= 0) {
+      bangdong1EditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 招牌便當  配菜  推入input數值
+    const sideDishIndex = bangdong1EditSideDishes.findIndex(
+      (bangdong1EditSideDish) => bangdong1EditSideDish.name === name
+    )
+    if (sideDishIndex >= 0) {
+      bangdong1EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 招牌便當  副主餐  推入input數值
+    const bentoMainIndex = bangdong1EditBentoMains.findIndex(
+      (bangdong1EditBentoMain) => bangdong1EditBentoMain.name === name
+    )
+    if (bentoMainIndex >= 0) {
+      bangdong1EditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  bangdong1EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        bangdong1EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog1.value = true
+}
+
+// 招牌便當修正欄位總數量計算
+const bangdong1EditTotalQuantity = computed(() => {
+  return bangdong1EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 招牌便當單價
+const bangdong1EditPrice = computed(() => {
+  return bangdong1Price.value
+})
+
+// 招牌便當總價格
+const bangdong1EditTotalQuantityPrice = computed(() => {
+  return bangdong1EditTotalQuantity.value * bangdong1Price.value
+})
+
+// 關閉修正欄位
+function closeEditDialog1 () {
+  editDialog1.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialog1 () {
+  const row = {
+    bentoType: 1,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    sideDishDefault: '',
+    price: bangdong1EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalEditQuantity = bangdong1EditTotalQuantity.value // 計算總數量
+  for (const bangdong1EditMain of bangdong1EditMains) {
+    if (bangdong1EditMain.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong1Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += bangdong1EditMain.name + 'x' + parseInt(bangdong1EditMain.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdong1MainMealId.value,
+        productTypeName: bangdong1MainName.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong1EditMain.name,
+        value: parseInt(bangdong1EditMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+
+  for (const bangdong1EditDrink of bangdong1EditDrinks) {
+    if (bangdong1EditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong1EditDrink.name + 'x' + parseInt(bangdong1EditDrink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong1DrinkName.value,
+        productTypeId: bangdong1DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong1EditDrink.name,
+        value: parseInt(bangdong1EditDrink.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+
+  for (const bangdong1EditSideDish of bangdong1EditSideDishes) {
+    if (bangdong1EditSideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong1EditSideDish.name + 'x' + parseInt(bangdong1EditSideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong1SideDishName.value,
+        productTypeId: bangdong1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong1EditSideDish.is_default + ' '
+      const input = {
+        name: bangdong1EditSideDish.name,
+        value: parseInt(bangdong1EditSideDish.quantity),
+        is_default: bangdong1EditSideDish.is_default
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 保留 招牌便當、1001、數量
+  const productInput = {
+    id: bangdong1ProductId.value,
+    name: bangdong1Name.value,
+    value: parseInt(totalEditQuantity),
+    price: bangdong1EditPrice.value,
+    totalPrice: bangdong1TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  console.log('productInput:', productInput)
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialog1.value = false
+}
+
+// 雞胸便當修改
+
+const editDialog2 = ref(false)
+
+function editBangdong2 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  // 雞胸便當主餐歸零
+  for (const bangdong2EditMain of bangdong2EditMains) {
+    bangdong2EditMain.quantity = 0
+  }
+  // 雞胸便當飲料歸零
+  for (const bangdong2EditDrink of bangdong2EditDrinks) {
+    bangdong2EditDrink.quantity = 0
+  }
+  // 雞胸便當配菜歸零
+  for (const bangdong2EditSideDish of bangdong2EditSideDishes) {
+    bangdong2EditSideDish.quantity = 0
+  }
+  // 雞胸便當副主餐歸零
+  for (const bangdong2EditBentoMain of bangdong2EditBentoMains) {
+    bangdong2EditBentoMain.quantity = 0
+  }
+  // 雞胸便當主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 雞胸便當  主餐  推入input數值
+    const mainIndex = bangdong2EditMains.findIndex(
+      (bangdong2EditMain) => bangdong2EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      bangdong2EditMains[mainIndex].quantity = parseInt(value)
+    }
+    // 雞胸便當  飲料  推入input數值
+    const drinkIndex = bangdong2EditDrinks.findIndex(
+      (bangdong2EditDrink) => bangdong2EditDrink.name === name
+    )
+    if (drinkIndex >= 0) {
+      bangdong2EditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 雞胸便當  配菜  推入input數值
+    const sideDishIndex = bangdong2EditSideDishes.findIndex(
+      (bangdong2EditSideDish) => bangdong2EditSideDish.name === name
+    )
+    if (sideDishIndex >= 0) {
+      bangdong2EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 雞胸便當  副主餐  推入input數值
+    const bentoMainIndex = bangdong2EditBentoMains.findIndex(
+      (bangdong2EditBentoMain) => bangdong2EditBentoMain.name === name
+    )
+    if (bentoMainIndex >= 0) {
+      bangdong2EditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  bangdong2EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        bangdong2EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+        // 副主餐的數量跟著主餐的數量變化
+        bangdong2EditBentoMains.forEach(bentoMain => {
+          const diff = Number(newVal) - Number(oldVal)
+          const newQuantity = Number(bentoMain.quantity) + diff
+
+          // 確保副主餐數量不會變成負數
+          bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog2.value = true
+}
+
+// 雞胸便當總數量
+const bangdong2EditTotalQuantity = computed(() => {
+  return bangdong2EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+// 雞胸便當單價
+const bangdong2EditPrice = computed(() => {
+  return bangdong2Price.value
+})
+// 雞胸便當總價格
+const bangdong2EditTotalQuantityPrice = computed(() => {
+  return bangdong2EditTotalQuantity.value * bangdong2Price.value
+})
+
+// 關閉修正欄位
+function closeEditDialog2 () {
+  editDialog2.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialog2 () {
+  const row = {
+    bentoType: 2,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdong2EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalEditQuantity = bangdong2EditTotalQuantity.value // 計算總數量
+
+  // 儲存推入主餐置入table
+  for (const bangdong2EditMain of bangdong2EditMains) {
+    if (bangdong2EditMain.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong2Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += bangdong2EditMain.name + 'x' + parseInt(bangdong2EditMain.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdong2MainMealId.value,
+        productTypeName: bangdong2MainName.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong2EditMain.name,
+        value: parseInt(bangdong2EditMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入飲料置入table
+  for (const bangdong2EditDrink of bangdong2EditDrinks) {
+    if (bangdong2EditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong2EditDrink.name + 'x' + parseInt(bangdong2EditDrink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong2DrinkName.value,
+        productTypeId: bangdong2DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong2EditDrink.name,
+        value: parseInt(bangdong2EditDrink.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入配菜置入table
+  for (const bangdong2EditSideDish of bangdong2EditSideDishes) {
+    if (bangdong2EditSideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong2EditSideDish.name + 'x' + parseInt(bangdong2EditSideDish.quantity).toString()
+      // 保留配菜名稱、ID
+      const productInput = {
+        productTypeName: bangdong2SideDishName.value,
+        productTypeId: bangdong2SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong2EditSideDish.is_default + ' '
+      const input = {
+        name: bangdong2EditSideDish.name,
+        value: parseInt(bangdong2EditSideDish.quantity),
+        is_default: bangdong2EditSideDish.is_default
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入副主餐置入table
+  for (const bangdong2EditBentoMain of bangdong2EditBentoMains) {
+    if (bangdong2EditBentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdong2EditBentoMain.name + 'x' + parseInt(bangdong2EditBentoMain.quantity).toString()
+      const productInput = {
+        productTypeName: bangdong2BentoMainName.value,
+        productTypeId: bangdong2BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong2EditBentoMain.name,
+        value: parseInt(bangdong2EditBentoMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 保留 雞胸便當、1002、數量
+  const productInput = {
+    id: bangdong2ProductId.value,
+    name: bangdong2Name.value,
+    value: parseInt(totalEditQuantity),
+    price: bangdong2EditPrice.value,
+    totalPrice: bangdong2TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialog2.value = false
+}
+// 雞腿便當修改
+const editDialog3 = ref(false)
+function editBangdong3 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  // 雞腿便當主餐歸零
+  for (const bangdong3EditMain of bangdong3EditMains) {
+    bangdong3EditMain.quantity = 0
+  }
+  // 雞腿便當飲料歸零
+  for (const bangdong3EditDrink of bangdong3EditDrinks) {
+    bangdong3EditDrink.quantity = 0
+  }
+  // 雞腿便當配菜歸零
+  for (const bangdong3EditSideDish of bangdong3EditSideDishes) {
+    bangdong3EditSideDish.quantity = 0
+  }
+  // 雞腿便當副主餐歸零
+  for (const bangdong3EditBentoMain of bangdong3EditBentoMains) {
+    bangdong3EditBentoMain.quantity = 0
+  }
+  // 雞腿便當主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 雞腿便當  主餐  推入input數值
+    const mainIndex = bangdong3EditMains.findIndex(
+      (bangdong3EditMain) => bangdong3EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      bangdong3EditMains[mainIndex].quantity = parseInt(value)
+    }
+    // 雞腿便當  飲料  推入input數值
+    const drinkIndex = bangdong3EditDrinks.findIndex(
+      (bangdong3EditDrink) => bangdong3EditDrink.name === name
+    )
+    if (drinkIndex >= 0) {
+      bangdong3EditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 雞腿便當  配菜  推入input數值
+    const sideDishIndex = bangdong3EditSideDishes.findIndex(
+      (bangdong3EditSideDish) => bangdong3EditSideDish.name === name
+    )
+    if (sideDishIndex >= 0) {
+      bangdong3EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 雞腿便當  副主餐  推入input數值
+    const bentoMainIndex = bangdong3EditBentoMains.findIndex(
+      (bangdong3EditBentoMain) => bangdong3EditBentoMain.name === name
+    )
+    if (bentoMainIndex >= 0) {
+      bangdong3EditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  bangdong3EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        bangdong3EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+        // 副主餐的數量跟著主餐的數量變化
+        bangdong3EditBentoMains.forEach(bentoMain => {
+          const diff = Number(newVal) - Number(oldVal)
+          const newQuantity = Number(bentoMain.quantity) + diff
+
+          // 確保副主餐數量不會變成負數
+          bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog3.value = true
+}
+
+// 雞腿便當修正區總數量
+const bangdong3EditTotalQuantity = computed(() => {
+  return bangdong3EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 雞腿便當單價
+const bangdong3EditPrice = computed(() => {
+  return bangdong3Price.value
+})
+// 雞腿便當總價格
+const bangdong3EditTotalQuantityPrice = computed(() => {
+  return bangdong3EditTotalQuantity.value * bangdong3Price.value
+})
+
+// 關閉修正欄位
+function closeEditDialog3 () {
+  editDialog3.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialog3 () {
+  const row = {
+    bentoType: 3,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdong3EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalEditQuantity = bangdong3EditTotalQuantity.value // 計算總數量
+
+  // 儲存推入主餐置入table
+  for (const bangdong3EditMain of bangdong3EditMains) {
+    if (bangdong3EditMain.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong3Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += bangdong3EditMain.name + 'x' + parseInt(bangdong3EditMain.quantity).toString()
+      // 保留 雞腿便當、1003、數量、主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdong3MainMealId.value,
+        productTypeName: bangdong3MainName.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong3EditMain.name,
+        value: parseInt(bangdong3EditMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入飲料置入table
+  for (const bangdong3EditDrink of bangdong3EditDrinks) {
+    if (bangdong3EditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong3EditDrink.name + 'x' + parseInt(bangdong3EditDrink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong3DrinkName.value,
+        productTypeId: bangdong3DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong3EditDrink.name,
+        value: parseInt(bangdong3EditDrink.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入配菜置入table
+  for (const bangdong3EditSideDish of bangdong3EditSideDishes) {
+    if (bangdong3EditSideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong3EditSideDish.name + 'x' + parseInt(bangdong3EditSideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong3SideDishName.value,
+        productTypeId: bangdong3SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong3EditSideDish.is_default + ' '
+      const input = {
+        name: bangdong3EditSideDish.name,
+        value: parseInt(bangdong3EditSideDish.quantity),
+        is_default: bangdong3EditSideDish.is_default
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入副主餐置入table
+  for (const bangdong3EditBentoMain of bangdong3EditBentoMains) {
+    if (bangdong3EditBentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdong3EditBentoMain.name + 'x' + parseInt(bangdong3EditBentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdong3BentoMainName.value,
+        productTypeId: bangdong3BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong3EditBentoMain.name,
+        value: parseInt(bangdong3EditBentoMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 保留 雞腿便當、1003、數量
+  const productInput = {
+    id: bangdong3ProductId.value,
+    name: bangdong3Name.value,
+    value: parseInt(totalEditQuantity),
+    price: bangdong3EditPrice.value,
+    totalPrice: bangdong3TotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialog3.value = false
+}
+
+// 滷牛便當修改
+const editDialog4 = ref(false)
+function editBangdong4 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  // 滷牛便當主餐歸零
+  for (const bangdong4EditMain of bangdong4EditMains) {
+    bangdong4EditMain.quantity = 0
+  }
+  // 滷牛便當飲料歸零
+  for (const bangdong4EditDrink of bangdong4EditDrinks) {
+    bangdong4EditDrink.quantity = 0
+  }
+  // 滷牛便當配菜歸零
+  for (const bangdong4EditSideDish of bangdong4EditSideDishes) {
+    bangdong4EditSideDish.quantity = 0
+  }
+  // 滷牛便當副主餐歸零
+  for (const bangdong4EditBentoMain of bangdong4EditBentoMains) {
+    bangdong4EditBentoMain.quantity = 0
+  }
+  // 滷牛便當主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 滷牛便當  主餐  推入input數值
+    const mainIndex = bangdong4EditMains.findIndex(
+      (bangdong4EditMain) => bangdong4EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      bangdong4EditMains[mainIndex].quantity = parseInt(value)
+    }
+    // 滷牛便當  飲料  推入input數值
+    const drinkIndex = bangdong4EditDrinks.findIndex(
+      (bangdong4EditDrink) => bangdong4EditDrink.name === name
+    )
+    if (drinkIndex >= 0) {
+      bangdong4EditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 滷牛便當  配菜  推入input數值
+    const sideDishIndex = bangdong4EditSideDishes.findIndex(
+      (bangdong4EditSideDish) => bangdong4EditSideDish.name === name
+    )
+    if (sideDishIndex >= 0) {
+      bangdong4EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 滷牛便當  副主餐  推入input數值
+    const bentoMainIndex = bangdong4EditBentoMains.findIndex(
+      (bangdong4EditBentoMain) => bangdong4EditBentoMain.name === name
+    )
+    if (bentoMainIndex >= 0) {
+      bangdong4EditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  bangdong4EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        bangdong4EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+        // 副主餐的數量跟著主餐的數量變化
+        bangdong4EditBentoMains.forEach(bentoMain => {
+          const diff = Number(newVal) - Number(oldVal)
+          const newQuantity = Number(bentoMain.quantity) + diff
+
+          // 確保副主餐數量不會變成負數
+          bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog4.value = true
+}
+// 滷牛便當總數量
+const bangdong4EditTotalQuantity = computed(() => {
+  return bangdong4EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+// 滷牛便當單價
+const bangdong4EditPrice = computed(() => {
+  return bangdong4Price.value
+})
+// 滷牛便當總價格
+const bangdong4EditTotalQuantityPrice = computed(() => {
+  return bangdong4EditTotalQuantity.value * bangdong4Price.value
+})
+
+// 關閉修正欄位
+function closeEditDialog4 () {
+  editDialog4.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialog4 () {
+  const row = {
+    bentoType: 4,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdong4EditTotalQuantityPrice.value,
+    inputs: []
+  }
+
+  const totalEditQuantity = bangdong4EditTotalQuantity.value // 計算總數量
+
+  // 儲存推入主餐置入table
+  for (const bangdong4EditMain of bangdong4EditMains) {
+    if (bangdong4EditMain.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+      row.name = bangdong4Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += bangdong4EditMain.name + 'x' + parseInt(bangdong4EditMain.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdong4MainMealId.value,
+        productTypeName: bangdong4MainName.value
+      }
+      row.inputs.push(productInput)
+      const input = {
+        name: bangdong4EditMain.name,
+        value: parseInt(bangdong4EditMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入飲料置入table
+  for (const bangdong4EditDrink of bangdong4EditDrinks) {
+    if (bangdong4EditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdong4EditDrink.name + 'x' + parseInt(bangdong4EditDrink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdong4DrinkName.value,
+        productTypeId: bangdong4DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong4EditDrink.name,
+        value: parseInt(bangdong4EditDrink.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入配菜置入table
+  for (const bangdong4EditSideDish of bangdong4EditSideDishes) {
+    if (bangdong4EditSideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdong4EditSideDish.name + 'x' + parseInt(bangdong4EditSideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong4SideDishName.value,
+        productTypeId: bangdong4SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdong4EditSideDish.is_default + ' '
+      const input = {
+        name: bangdong4EditSideDish.name,
+        value: parseInt(bangdong4EditSideDish.quantity),
+        is_default: bangdong4EditSideDish.is_default
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入副主餐置入table
+  for (const bangdong4EditBentoMain of bangdong4EditBentoMains) {
+    if (bangdong4EditBentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdong4EditBentoMain.name + 'x' + parseInt(bangdong4EditBentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdong4BentoMainName.value,
+        productTypeId: bangdong4BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdong4EditBentoMain.name,
+        value: parseInt(bangdong4EditBentoMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 保留 滷牛便當、1004、數量
+  const productInput = {
+    id: bangdong4ProductId.value,
+    name: bangdong4Name.value,
+    value: parseInt(totalEditQuantity),
+    price: bangdong4EditPrice.value,
+    totalPrice: bangdong4TotalQuantity.value
+  }
+  row.inputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialog4.value = false
+}
+// 客製便當修改
+function editRowDialog9 (row) {
+  // 客製招牌便當主餐歸零
+  for (const bangdongCustom1EditMain of bangdongCustom1EditMains) {
+    bangdongCustom1EditMain.quantity = 0
+  }
+  // 客製招牌便當飲料歸零
+  for (const bangdongCustom1EditDrink of bangdongCustom1EditDrinks) {
+    bangdongCustom1EditDrink.quantity = 0
+  }
+  // 客製招牌便當配菜歸零
+  for (const bangdongCustom1EditSideDish of bangdongCustom1EditSideDishes) {
+    bangdongCustom1EditSideDish.quantity = 0
+  }
+  // 客製招牌便當副主餐歸零
+  for (const bangdongCustom1EditBentoMain of bangdongCustom1EditBentoMains) {
+    bangdongCustom1EditBentoMain.quantity = 0
+  }
+  // 客製招牌便當主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 客製招牌便當  主餐  推入input數值
+    const mainIndex = bangdongCustom1EditMains.findIndex(
+      (bangdongCustom1EditMain) => bangdongCustom1EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      bangdongCustom1EditMains[mainIndex].quantity = parseInt(value)
+    }
+    // 客製招牌便當  飲料  推入input數值
+    const drinkIndex = bangdongCustom1EditDrinks.findIndex(
+      (bangdongCustom1EditDrink) => bangdongCustom1EditDrink.name === name
+    )
+    if (drinkIndex >= 0) {
+      bangdongCustom1EditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 客製招牌便當  配菜  推入input數值
+    const sideDishIndex = bangdongCustom1EditSideDishes.findIndex(
+      (bangdongCustom1EditSideDish) => bangdongCustom1EditSideDish.name === name
+    )
+    if (sideDishIndex >= 0) {
+      bangdongCustom1EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 客製招牌便當  副主餐  推入input數值
+    const bentoMainIndex = bangdongCustom1EditBentoMains.findIndex(
+      (bangdongCustom1EditBentoMain) => bangdongCustom1EditBentoMain.name === name
+    )
+    if (bentoMainIndex >= 0) {
+      bangdongCustom1EditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+  }
+
+  const totalQuantity = parseFloat(row.price) // 获取 bangdongCustom1TotalQuantity 的值
+
+  bangdongCustom1EditPrice.value = totalQuantity / bangdongCustom1EditTotalQuantity.value // 将 rowPrice / totalQuantity 的值赋给 bangdongCustom1EditPrice
+
+  editingRow = row
+  editDialog9.value = true
+}
+// 客製便當總數量
+const bangdongCustom1EditTotalQuantity = computed(() => {
+  return bangdongCustom1EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+// 客製便當總價格
+const bangdongCustom1EditPrice = ref(0)
+const bangdongCustom1EditTotalQuantityPrice = computed(() => {
+  return bangdongCustom1EditTotalQuantity.value * bangdongCustom1EditPrice.value
+})
+
+// 關閉修正欄位
+function closeEditDialog9 () {
+  editDialog9.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialog9 () {
+  const row = {
+    bentoType: 9,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    sideDishDefault: '',
+    price: bangdongCustom1EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalEditQuantity = bangdongCustom1EditTotalQuantity.value // 計算總數量
+  for (const bangdongCustom1EditMain of bangdongCustom1EditMains) {
+    if (bangdongCustom1EditMain.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += '、'
+      }
+      row.name = bangdongCustom1Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += bangdongCustom1EditMain.name + 'x' + parseInt(bangdongCustom1EditMain.quantity).toString()
+      const productInput = {
+        productTypeId: bangdongCustom1MainMealId.value,
+        productTypeName: bangdongCustom1MainName.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongCustom1EditMain.name,
+        value: parseInt(bangdongCustom1EditMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+
+  for (const bangdongCustom1EditDrink of bangdongCustom1EditDrinks) {
+    if (bangdongCustom1EditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += '、'
+      }
+      row.drinks += bangdongCustom1EditDrink.name + 'x' + parseInt(bangdongCustom1EditDrink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdongCustom1DrinkName.value,
+        productTypeId: bangdongCustom1DrinkId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongCustom1EditDrink.name,
+        value: parseInt(bangdongCustom1EditDrink.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+
+  for (const bangdongCustom1EditSideDish of bangdongCustom1EditSideDishes) {
+    if (bangdongCustom1EditSideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += '、'
+      }
+      row.sideDishes += bangdongCustom1EditSideDish.name + 'x' + parseInt(bangdongCustom1EditSideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdongCustom1SideDishName.value,
+        productTypeId: bangdongCustom1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdongCustom1EditSideDish.is_default + ' '
+      const input = {
+        name: bangdongCustom1EditSideDish.name,
+        value: parseInt(bangdongCustom1EditSideDish.quantity),
+        is_default: bangdongCustom1EditSideDish.is_default
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入副主餐置入table
+  for (const bangdongCustom1EditBentoMain of bangdongCustom1EditBentoMains) {
+    if (bangdongCustom1EditBentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdongCustom1EditBentoMain.name + 'x' + parseInt(bangdongCustom1EditBentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdongCustom1BentoMainName.value,
+        productTypeId: bangdongCustom1BentoMainId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongCustom1EditBentoMain.name,
+        value: parseInt(bangdongCustom1EditBentoMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  const productInput = {
+    id: bangdongCustom1ProductId.value,
+    name: bangdongCustom1Name.value,
+    value: parseInt(totalEditQuantity),
+    price: bangdongCustom1Price.value,
+    totalPrice: bangdongCustom1EditTotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialog9.value = false
+}
+
+// 經濟盒餐修改
+const editDialog5 = ref(false)
+function editRowDialog5 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  for (const main of lunchBox1EditMains) {
+    main.quantity = 0
+    for (const drink of main.drinks) {
+      drink.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox1EditSideDishes) {
+    sideDish.quantity = 0
+  }
+  for (const input of row.inputs) {
+    const mainId = input.mainId
+    const name = input.name
+    const value = input.value
+
+    const mainIndex = lunchBox1EditMains.findIndex(
+      (lunchBox1EditMain) => lunchBox1EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      lunchBox1EditMains[mainIndex].quantity = parseInt(value)
+    }
+    for (const main of lunchBox1EditMains) {
+      if (main.id === mainId) {
+        if (main.name === name) {
+          main.quantity = parseInt(value)
+        } else {
+          for (const drink of main.drinks) {
+            if (drink.name === name) {
+              drink.quantity = parseInt(value)
+            }
+          }
+        }
+      }
+    }
+
+    const sideDishIndex = lunchBox1EditSideDishes.findIndex(sideDish => sideDish.name === name)
+    if (sideDishIndex >= 0) {
+      lunchBox1EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  lunchBox1EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        lunchBox1EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog5.value = true
+}
+// 經濟盒餐修改總數量
+const lunchBox1EditTotalQuantity = computed(() => {
+  return lunchBox1EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 經濟盒餐修改單價
+const lunchBox1EditPrice = computed(() => {
+  return lunchBox1Price.value
+})
+// 經濟盒餐修改總價格
+const lunchBox1EditTotalQuantityPrice = computed(() => {
+  return lunchBox1EditTotalQuantity.value * lunchBox1Price.value
+})
+function closeEditDialog5 () {
+  editDialog5.value = false
+}
+
+const saveEditDialog5 = () => {
+  const row = {
+    bentoType: 5,
+    id: editingRow.id,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox1EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalEditQuantity = lunchBox1EditTotalQuantity.value // 計算總數量
+  for (const option of lunchBox1EditMains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox1DrinkName.value,
+            productTypeId: lunchBox1DrinkId.value
+          }
+          row.inputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox1Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += Main
+      // 保留 經濟盒餐、1005、數量、主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox1MainMealId.value,
+        productTypeName: lunchBox1MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox1EditSideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox1SideDishName.value,
+        productTypeId: lunchBox1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 經濟盒餐、1005、數量
+  const productInput = {
+    id: lunchBox1ProductId.value,
+    name: lunchBox1Name.value,
+    value: parseInt(totalEditQuantity),
+    price: lunchBox1Price.value,
+    totalPrice: lunchBox1EditTotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
+    tableRows.splice(rowIndex, 1, row)
+  }
+
+  editDialog5.value = false
+}
+
+// 會議盒餐修改
+const editDialog6 = ref(false)
+function editRowDialog6 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  for (const main of lunchBox2EditMains) {
+    main.quantity = 0
+    for (const drink of main.drinks) {
+      drink.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox2EditSideDishes) {
+    sideDish.quantity = 0
+  }
+  for (const input of row.inputs) {
+    const mainId = input.mainId
+    const name = input.name
+    const value = input.value
+
+    const mainIndex = lunchBox2EditMains.findIndex(
+      (lunchBox2EditMain) => lunchBox2EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      lunchBox2EditMains[mainIndex].quantity = parseInt(value)
+    }
+    for (const main of lunchBox2EditMains) {
+      if (main.id === mainId) {
+        if (main.name === name) {
+          main.quantity = parseInt(value)
+        } else {
+          for (const drink of main.drinks) {
+            if (drink.name === name) {
+              drink.quantity = parseInt(value)
+            }
+          }
+        }
+      }
+    }
+
+    const sideDishIndex = lunchBox2EditSideDishes.findIndex(sideDish => sideDish.name === name)
+    if (sideDishIndex >= 0) {
+      lunchBox2EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+  }
+
+  // 監聽主餐的數量變化
+  lunchBox2EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        lunchBox2EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+  editingRow = row
+  editDialog6.value = true
+}
+// 會議盒餐修改總數量
+const lunchBox2EditTotalQuantity = computed(() => {
+  return lunchBox2EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 會議盒餐修改單價
+const lunchBox2EditPrice = computed(() => {
+  return lunchBox2Price.value
+})
+// 會議盒餐修改總價格
+const lunchBox2EditTotalQuantityPrice = computed(() => {
+  return lunchBox2EditTotalQuantity.value * lunchBox2Price.value
+})
+
+function closeEditDialog6 () {
+  editDialog6.value = false
+}
+
+const saveEditDialog6 = () => {
+  const row = {
+    bentoType: 6,
+    id: editingRow.id,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox2EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalEditQuantity = lunchBox2EditTotalQuantity.value // 計算總數量
+  for (const option of lunchBox2EditMains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox2DrinkName.value,
+            productTypeId: lunchBox2DrinkId.value
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox2Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += Main
+      // 保留 會議盒餐、1005、數量、主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox2MainMealId.value,
+        productTypeName: lunchBox2MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox2EditSideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox2SideDishName.value,
+        productTypeId: lunchBox2SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 會議盒餐、1005、數量
+  const productInput = {
+    id: lunchBox2ProductId.value,
+    name: lunchBox2Name.value,
+    value: parseInt(totalEditQuantity),
+    price: lunchBox2Price.value,
+    totalPrice: lunchBox2EditTotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
+    tableRows.splice(rowIndex, 1, row)
+  }
+
+  editDialog6.value = false
+}
+
+// 貴賓盒餐修改
+const editDialog7 = ref(false)
+function editRowDialog7 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  for (const main of lunchBox3EditMains) {
+    main.quantity = 0
+    for (const drink of main.drinks) {
+      drink.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox3EditSideDishes) {
+    sideDish.quantity = 0
+  }
+  for (const input of row.inputs) {
+    const mainId = input.mainId
+    const name = input.name
+    const value = input.value
+
+    const mainIndex = lunchBox3EditMains.findIndex(
+      (lunchBox3EditMain) => lunchBox3EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      lunchBox3EditMains[mainIndex].quantity = parseInt(value)
+    }
+    for (const main of lunchBox3EditMains) {
+      if (main.id === mainId) {
+        if (main.name === name) {
+          main.quantity = parseInt(value)
+        } else {
+          for (const drink of main.drinks) {
+            if (drink.name === name) {
+              drink.quantity = parseInt(value)
+            }
+          }
+        }
+      }
+    }
+
+    const sideDishIndex = lunchBox3EditSideDishes.findIndex(sideDish => sideDish.name === name)
+    if (sideDishIndex >= 0) {
+      lunchBox3EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  lunchBox3EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        lunchBox3EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog7.value = true
+}
+// 貴賓盒餐修改總數量
+const lunchBox3EditTotalQuantity = computed(() => {
+  return lunchBox3EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 貴賓盒餐修改單價
+const lunchBox3EditPrice = computed(() => {
+  return lunchBox3Price.value
+})
+// 貴賓盒餐修改總價格
+const lunchBox3EditTotalQuantityPrice = computed(() => {
+  return lunchBox3EditTotalQuantity.value * lunchBox3Price.value
+})
+
+function closeEditDialog7 () {
+  editDialog7.value = false
+}
+
+const saveEditDialog7 = () => {
+  const row = {
+    bentoType: 7,
+    id: editingRow.id,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox3EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalEditQuantity = lunchBox3EditTotalQuantity.value // 計算總數量
+  for (const option of lunchBox3EditMains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox3DrinkName.value,
+            productTypeId: lunchBox3DrinkId.value
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox3Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox3MainMealId.value,
+        productTypeName: lunchBox3MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox3EditSideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox3SideDishName.value,
+        productTypeId: lunchBox3SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 貴賓盒餐、1007、數量
+  const productInput = {
+    id: lunchBox3ProductId.value,
+    name: lunchBox3Name.value,
+    value: parseInt(totalEditQuantity),
+    price: lunchBox3Price.value,
+    totalPrice: lunchBox3EditTotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
+    tableRows.splice(rowIndex, 1, row)
+  }
+
+  editDialog7.value = false
+}
+
+// 首席盒餐修改
+const editDialog8 = ref(false)
+function editRowDialog8 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  for (const main of lunchBox4EditMains) {
+    main.quantity = 0
+    for (const drink of main.drinks) {
+      drink.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox4EditSideDishes) {
+    sideDish.quantity = 0
+  }
+  for (const input of row.inputs) {
+    const mainId = input.mainId
+    const name = input.name
+    const value = input.value
+
+    const mainIndex = lunchBox4EditMains.findIndex(
+      (lunchBox4EditMain) => lunchBox4EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      lunchBox4EditMains[mainIndex].quantity = parseInt(value)
+    }
+    for (const main of lunchBox4EditMains) {
+      if (main.id === mainId) {
+        if (main.name === name) {
+          main.quantity = parseInt(value)
+        } else {
+          for (const drink of main.drinks) {
+            if (drink.name === name) {
+              drink.quantity = parseInt(value)
+            }
+          }
+        }
+      }
+    }
+
+    const sideDishIndex = lunchBox4EditSideDishes.findIndex(sideDish => sideDish.name === name)
+    if (sideDishIndex >= 0) {
+      lunchBox4EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  lunchBox4EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        lunchBox4EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '全潤' || main.name === '蛋潤') {
+            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialog8.value = true
+}
+
+// 首席盒餐修改總數量
+const lunchBox4EditTotalQuantity = computed(() => {
+  return lunchBox4EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+// 首席盒餐修改單價
+const lunchBox4EditPrice = computed(() => {
+  return lunchBox4Price.value
+})
+// 首席盒餐修改總價格
+const lunchBox4EditTotalQuantityPrice = computed(() => {
+  return lunchBox4EditTotalQuantity.value * lunchBox4Price.value
+})
+
+function closeEditDialog8 () {
+  editDialog8.value = false
+}
+
+const saveEditDialog8 = () => {
+  const row = {
+    bentoType: 8,
+    id: editingRow.id,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBox4EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalEditQuantity = lunchBox4EditTotalQuantity.value // 計算總數量
+  for (const option of lunchBox4EditMains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBox4DrinkName.value,
+            productTypeId: lunchBox4DrinkId.value
+          }
+          row.productInputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBox4Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += Main
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: lunchBox4MainMealId.value,
+        productTypeName: lunchBox4MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBox4EditSideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBox4SideDishName.value,
+        productTypeId: lunchBox4SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 首席盒餐、1008、數量
+  const productInput = {
+    productTypeId: lunchBox4MainMealId.value,
+    productTypeName: lunchBox4MainName.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
+    tableRows.splice(rowIndex, 1, row)
+  }
+
+  editDialog8.value = false
+}
+// 客製盒餐修改
+function editRowDialog0 (row) {
+  for (const main of lunchBoxCustom1EditMains) {
+    main.quantity = 0
+    for (const drink of main.drinks) {
+      drink.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBoxCustom1EditSideDishes) {
+    sideDish.quantity = 0
+  }
+  for (const input of row.inputs) {
+    const mainId = input.mainId
+    const name = input.name
+    const value = input.value
+
+    const mainIndex = lunchBoxCustom1EditMains.findIndex(
+      (lunchBoxCustom1EditMain) => lunchBoxCustom1EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      lunchBoxCustom1EditMains[mainIndex].quantity = parseInt(value)
+    }
+    for (const main of lunchBoxCustom1EditMains) {
+      if (main.id === mainId) {
+        if (main.name === name) {
+          main.quantity = parseInt(value)
+        } else {
+          for (const drink of main.drinks) {
+            if (drink.name === name) {
+              drink.quantity = parseInt(value)
+            }
+          }
+        }
+      }
+    }
+
+    const sideDishIndex = lunchBoxCustom1EditSideDishes.findIndex(sideDish => sideDish.name === name)
+    if (sideDishIndex >= 0) {
+      lunchBoxCustom1EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    const totalQuantity = parseFloat(row.price) // 获取 lunchBoxCustom1TotalQuantity 的值
+
+    lunchBoxCustom1EditPrice.value = totalQuantity / lunchBoxCustom1EditTotalQuantity.value // 将 rowPrice / totalQuantity 的值赋给 lunchBoxCustom1EditPrice
+  }
+
+  editingRow = row
+  editDialog0.value = true
+}
+
+const lunchBoxCustom1EditTotalQuantity = computed(() => {
+  return lunchBoxCustom1EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0)
+})
+
+const lunchBoxCustom1EditPrice = ref(0)
+const lunchBoxCustom1EditTotalQuantityPrice = computed(() => {
+  return lunchBoxCustom1EditTotalQuantity.value * lunchBoxCustom1EditPrice.value
+})
+
+const editDialog0 = ref(false)
+function closeEditDialog0 () {
+  editDialog0.value = false
+}
+
+const saveEditDialog0 = () => {
+  const row = {
+    bentoType: 0,
+    id: editingRow.id,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: lunchBoxCustom1EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+  const totalEditQuantity = lunchBoxCustom1EditTotalQuantity.value // 計算總數量
+  for (const option of lunchBoxCustom1EditMains) {
+    if (option.quantity > 0) {
+      let Main = `${option.name} x ${option.quantity}`
+      let drinkInfo = ''
+
+      for (const drink of option.drinks) {
+        if (drink.quantity > 0) {
+          if (drinkInfo !== '') {
+            drinkInfo += ', '
+          }
+          drinkInfo += `${drink.name} x ${drink.quantity}`
+          // 保留飲料名稱、飲料ID
+          const productInput = {
+            mainId: option.id,
+            productTypeName: lunchBoxCustom1DrinkName.value,
+            productTypeId: lunchBoxCustom1DrinkId.value
+          }
+          row.inputs.push(productInput)
+          // 將帶有數值的input推進inputs
+          const input = {
+            mainId: option.id,
+            name: drink.name,
+            value: parseInt(drink.quantity)
+          }
+          row.inputs.push(input)
+          drink.quantity = 0
+        }
+      }
+
+      if (drinkInfo !== '') {
+        Main += ` (${drinkInfo})`
+      }
+
+      if (row.Main !== '') {
+        row.Main += ', '
+      }
+      row.name = lunchBoxCustom1Name.value + totalEditQuantity + '份' // 使用總數量
+      row.Main += Main
+      // 保留 主餐ID
+      const productInput = {
+        productTypeId: lunchBoxCustom1MainMealId.value,
+        productTypeName: lunchBoxCustom1MainName.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: option.name,
+        value: parseInt(option.quantity)
+      }
+      row.inputs.push(input)
+      option.quantity = 0
+    }
+  }
+
+  for (const sideDish of lunchBoxCustom1EditSideDishes) {
+    if (sideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ', '
+      }
+      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: lunchBoxCustom1SideDishName.value,
+        productTypeId: lunchBoxCustom1SideDishId.value
+      }
+      row.productInputs.push(productInput)
+      // 將帶有數值的input推進inputs
+      const input = {
+        name: sideDish.name,
+        value: parseInt(sideDish.quantity),
+        is_default: sideDish.is_default
+      }
+      row.inputs.push(input)
+      sideDish.quantity = 0
+    }
+  }
+  // 保留 客製盒餐、數量、主餐名稱
+  const productInput = {
+    id: lunchBoxCustom1ProductId.value,
+    name: lunchBoxCustom1Name.value,
+    value: parseInt(totalEditQuantity),
+    price: lunchBoxCustom1Price.value,
+    totalPrice: lunchBoxCustom1EditTotalQuantity.value
+  }
+  row.productInputs.push(productInput)
+  if (row.Main !== '' || row.sideDishes !== '') {
+    const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
+    tableRows.splice(rowIndex, 1, row)
+  }
+
+  editDialog0.value = false
+}
+// 單點修改
+function editBangdongSolo (row) {
+  // 6吋潤餅歸零
+  for (const bangdongSoloEdit6inch of bangdongSoloEdit6inchs) {
+    bangdongSoloEdit6inch.quantity = 0
+  }
+  // 3吋潤筆歸零
+  for (const bangdongSoloEdit3inch of bangdongSoloEdit3inchs) {
+    bangdongSoloEdit3inch.quantity = 0
+  }
+  // 飲料歸零
+  for (const bangdongSoloEditDrink of bangdongSoloEditDrinks) {
+    bangdongSoloEditDrink.quantity = 0
+  }
+  // 配菜歸零
+  for (const bangdongSoloEditSideDish of bangdongSoloEditSideDishes) {
+    bangdongSoloEditSideDish.quantity = 0
+  }
+  // 副主餐歸零
+  for (const bangdongSoloEditBentoMain of bangdongSoloEditBentoMains) {
+    bangdongSoloEditBentoMain.quantity = 0
+  }
+  // 環保袋歸零
+  for (const bangdongSoloEditEcoBag of bangdongSoloEditEcoBags) {
+    bangdongSoloEditEcoBag.quantity = 0
+  }
+  // 雞胸便當主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 6吋潤餅 推入input數值
+    const mainIndex = bangdongSoloEdit6inchs.findIndex((bangdongSoloEdit6inch) => bangdongSoloEdit6inch.name === name)
+    if (mainIndex >= 0) {
+      bangdongSoloEdit6inchs[mainIndex].quantity = parseInt(value)
+    }
+    // 3吋潤筆 推入input數值
+    const threeInchIndex = bangdongSoloEdit3inchs.findIndex((bangdongSoloEdit3inch) => bangdongSoloEdit3inch.name === name)
+    if (threeInchIndex >= 0) {
+      bangdongSoloEdit3inchs[threeInchIndex].quantity = parseInt(value)
+    }
+    // 飲料 推入input數值
+    const drinkIndex = bangdongSoloEditDrinks.findIndex((bangdongSoloEditDrink) => bangdongSoloEditDrink.name === name)
+    if (drinkIndex >= 0) {
+      bangdongSoloEditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 配菜 推入input數值
+    const sideDishIndex = bangdongSoloEditSideDishes.findIndex((bangdongSoloEditSideDish) => bangdongSoloEditSideDish.name === name)
+    if (sideDishIndex >= 0) {
+      bangdongSoloEditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 副主餐 推入input數值
+    const bentoMainIndex = bangdongSoloEditBentoMains.findIndex((bangdongSoloEditBentoMain) => bangdongSoloEditBentoMain.name === name)
+    if (bentoMainIndex >= 0) {
+      bangdongSoloEditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+    // 環保袋 推入input數值
+    const ecoBagIndex = bangdongSoloEditEcoBags.findIndex((bangdongSoloEditEcoBag) => bangdongSoloEditEcoBag.name === name)
+    if (ecoBagIndex >= 0) {
+      bangdongSoloEditEcoBags[ecoBagIndex].quantity = parseInt(value)
+    }
+  }
+
+  editingRow = row
+  editDialog10.value = true
+}
+
+// 計算總數量
+const bangdongSoloEditTotalQuantity = computed(() => {
+  let total = 0
+  total += bangdongSoloEdit6inchs.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloEdit3inchs.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloEditDrinks.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloEditSideDishes.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloEditBentoMains.reduce((sum, item) => sum + Number(item.quantity), 0)
+  total += bangdongSoloEditEcoBags.reduce((sum, item) => sum + Number(item.quantity), 0)
+
+  return total
+})
+// 計算總價格
+const bangdongSoloEditTotalQuantityPrice = computed(() => {
+  let total = 0
+  total += bangdongSoloEdit6inchs.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloEdit3inchs.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloEditDrinks.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloEditSideDishes.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloEditBentoMains.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+  total += bangdongSoloEditEcoBags.reduce((sum, item) => sum + Number(item.quantity) * Number(item.price), 0)
+
+  return total
+})
+// 關閉修正欄位
+function closeEditDialog10 () {
+  editDialog10.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialog10 () {
+  const row = {
+    bentoType: 10,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdongSoloEditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdongSoloEditTotalQuantity.value
+
+  // 儲存推入潤餅置入table
+  // 6吋潤餅
+  const bangdongSoloEdit6inchCompositions = []
+  for (const bangdongSoloEdit6inch of bangdongSoloEdit6inchs) {
+    if (bangdongSoloEdit6inch.quantity > 0) {
+      const bangdongSoloEdit6inchComposition = `${bangdongSoloEdit6inch.name} x${bangdongSoloEdit6inch.quantity}`
+      bangdongSoloEdit6inchCompositions.push(bangdongSoloEdit6inchComposition)
+      // 保留6吋潤餅名稱、ID
+      const productInput = {
+        productTypeName: bangdongSolo6inchName.value,
+        productTypeId: bangdongSolo6inchId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloEdit6inch.name,
+        value: parseInt(bangdongSoloEdit6inch.quantity)
+      }
+      row.inputs.push(input)
+
+      bangdongSoloEdit6inch.quantity = 0
+    }
+  }
+  // 3吋潤餅
+  const bangdongSoloEdit3inchCompositions = []
+  for (const bangdongSoloEdit3inch of bangdongSoloEdit3inchs) {
+    if (bangdongSoloEdit3inch.quantity > 0) {
+      const bangdongSoloEdit3inchComposition = `${bangdongSoloEdit3inch.name} x${bangdongSoloEdit3inch.quantity}`
+      bangdongSoloEdit3inchCompositions.push(bangdongSoloEdit3inchComposition)
+      // 保留3吋潤餅名稱、ID
+      const productInput = {
+        productTypeName: bangdongSolo3inchName.value,
+        productTypeId: bangdongSolo3inchId.value
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloEdit3inch.name,
+        value: parseInt(bangdongSoloEdit3inch.quantity)
+      }
+      row.inputs.push(input)
+
+      bangdongSoloEdit3inch.quantity = 0
+    }
+  }
+
+  if (bangdongSoloEdit6inchCompositions.length > 0) {
+    row.Main += `${bangdongSolo6inchName.value} (${bangdongSoloEdit6inchCompositions.join(', ')})`
+  }
+
+  if (bangdongSoloEdit3inchCompositions.length > 0) {
+    if (bangdongSoloEdit6inchCompositions.length > 0) {
+      row.Main += ', '
+    }
+    row.Main += `${bangdongSolo3inchName.value}  (${bangdongSoloEdit3inchCompositions.join(', ')})`
+  }
+  // 儲存推入飲料置入table
+  for (const bangdongSoloEditDrink of bangdongSoloEditDrinks) {
+    if (bangdongSoloEditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdongSoloEditDrink.name + 'x' + parseInt(bangdongSoloEditDrink.quantity).toString()
+      // 保留飲料名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloEditDrink.name,
+        productTypeId: bangdongSoloEditDrink.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloEditDrink.name,
+        price: bangdongSoloEditDrink.price,
+        value: parseInt(bangdongSoloEditDrink.quantity)
+      }
+      row.inputs.push(input)
+      bangdongSoloEditDrink.quantity = 0
+    }
+  }
+  // 儲存推入配菜置入table
+  const bangdongSoloEditSideDishCompositions = []
+  for (const bangdongSoloEditSideDish of bangdongSoloEditSideDishes) {
+    if (bangdongSoloEditSideDish.quantity > 0) {
+      const bangdongSoloEditSideDishComposition = `${bangdongSoloEditSideDish.name} x${bangdongSoloEditSideDish.quantity}`
+      bangdongSoloEditSideDishCompositions.push(bangdongSoloEditSideDishComposition)
+      // console.log(bangdongSoloEditSideDishComposition)
+      // 保留配菜名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloEditSideDish.name,
+        productTypeId: bangdongSoloEditSideDish.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloEditSideDish.name,
+        price: bangdongSoloEditSideDish.price,
+        value: parseInt(bangdongSoloEditSideDish.quantity),
+        is_default: bangdongSoloEditSideDish.is_default
+      }
+      row.inputs.push(input)
+
+      bangdongSoloEditSideDish.quantity = 0
+    }
+  }
+  // 儲存推入副主餐置入table
+  const bangdongSoloEditBentoMainCompositions = []
+  for (const bangdongSoloEditBentoMain of bangdongSoloEditBentoMains) {
+    if (bangdongSoloEditBentoMain.quantity > 0) {
+      const bangdongSoloEditBentoMainComposition = `${bangdongSoloEditBentoMain.name} x${bangdongSoloEditBentoMain.quantity}`
+      bangdongSoloEditBentoMainCompositions.push(bangdongSoloEditBentoMainComposition)
+      // console.log(bangdongSoloEditBentoMainComposition)
+      // 保留副主餐名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloEditBentoMain.name,
+        productTypeId: bangdongSoloEditBentoMain.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloEditBentoMain.name,
+        price: bangdongSoloEditBentoMain.price,
+        value: parseInt(bangdongSoloEditBentoMain.quantity)
+      }
+      row.inputs.push(input)
+
+      bangdongSoloEditBentoMain.quantity = 0
+    }
+  }
+
+  if (bangdongSoloEditSideDishCompositions.length > 0) {
+    row.sideDishes += `配菜 (${bangdongSoloEditSideDishCompositions.join(', ')})`
+  }
+
+  if (bangdongSoloEditBentoMainCompositions.length > 0) {
+    if (bangdongSoloEditSideDishCompositions.length > 0) {
+      row.sideDishes += ', '
+    }
+    row.sideDishes += `副主餐 (${bangdongSoloEditBentoMainCompositions.join(', ')})`
+  }
+  row.name = bangdongSoloEditName.value + totalQuantity + '份'
+
+  // 購物袋
+  const ecoBagCompositions = []
+  for (const bangdongSoloEditEcoBag of bangdongSoloEditEcoBags) {
+    if (bangdongSoloEditEcoBag.quantity > 0) {
+      const ecoBagComposition = `${bangdongSoloEditEcoBag.name} x${bangdongSoloEditEcoBag.quantity}`
+      ecoBagCompositions.push(ecoBagComposition)
+      // 保留購物袋名稱、ID
+      const productInput = {
+        productTypeName: bangdongSoloEditEcoBag.name,
+        productTypeId: bangdongSoloEditEcoBag.id
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongSoloEditEcoBag.name,
+        price: bangdongSoloEditEcoBag.price,
+        value: parseInt(bangdongSoloEditEcoBag.quantity)
+      }
+      row.inputs.push(input)
+      bangdongSoloEditEcoBag.quantity = 0
+    }
+  }
+
+  if (ecoBagCompositions.length > 0) {
+    row.name += ` (${ecoBagCompositions.join(', ')})`
+  }
+  const productInput = {
+    id: bangdongSoloProductId.value,
+    name: bangdongSoloName.value,
+    value: parseInt(bangdongSoloTotalQuantity),
+    totalPrice: bangdongSoloTotalQuantityPrice.value
+  }
+  row.productInputs.push(productInput)
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialog10.value = false
+}
+// -------------------------------------------------------------------------
 
 // 盒餐開關
 const showlunchBox = ref(false)
@@ -8928,276 +9041,6 @@ const showlunchBox = ref(false)
 const openlunchBox = () => {
   showlunchBox.value = true
 }
-
-// 經濟盒餐
-const lunchbox1Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-// 會議盒餐
-const lunchbox2Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-
-// 貴賓盒餐
-const lunchbox3Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-// 首席盒餐
-const lunchbox4Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
 
 const showlunchBox1 = ref(false)
 const showlunchBox2 = ref(false)
@@ -9208,1185 +9051,381 @@ const showbangdong2 = ref(false)
 const showbangdong3 = ref(false)
 const showbangdong4 = ref(false)
 // 單點開關
-const showsolo = ref(false)
+const showbangdongSolo = ref(false)
 
 const opensolo = () => {
-  showsolo.value = true
+  showbangdongSolo.value = true
 }
-const soloForm = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  eggPotato: 0, // 蛋薯泥
-  Potato: 0, // 薯泥
-  shrimp: 0, // 炸蝦
-  chicken: 0, // 炒雞
-  fish: 0, // 酥魚
-  pig: 0, // 培根
-  vegetablePotatoHalf: 0, // 全素薯泥3吋
-  eggPotatoHalf: 0, // 蛋薯泥3吋
-  PotatoHalf: 0, // 薯泥3吋
-  shrimpHalf: 0, // 炸蝦3吋
-  chickenHalf: 0, // 炒雞3吋
-  fishHalf: 0, // 酥魚3吋
-  pigHalf: 0, // 培根3吋
-  sugarZero: 0, // 無糖豆漿
-  sugarSome: 0, // 微糖豆漿
-  blackTea: 0, // 紅茶
-  milkTea: 0, // 奶茶
-  sweetsoup: 0, // 甜湯
-  soup: 0, // 湯
-  smallBag: 0, // 小袋
-  bigBag: 0, // 大袋
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0 // 烤地瓜
-})
+
 // 客製便當開關
-const showCustomBangdong = ref(false)
+const showbangdongCustom1 = ref(false)
 const openCustomBangdong = () => {
-  showCustomBangdong.value = true
+  showbangdongCustom1.value = true
 }
 
-// 客製招牌便當
-
-const customBangdong1Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
-
-})
-function totalCustombangdong1 () {
-  return parseInt(customBangdong1Form.bangdong1Vegetable) +
-    parseInt(customBangdong1Form.bangdong1Egg) +
-    parseInt(customBangdong1Form.bangdong1Potato) +
-    parseInt(customBangdong1Form.bangdong1Shrimp) +
-    parseInt(customBangdong1Form.bangdong1Chicken) +
-    parseInt(customBangdong1Form.bangdong1Fish) +
-    parseInt(customBangdong1Form.bangdong1Pig) +
-    parseInt(customBangdong1Form.bangdong1Meet)
-}
-// console.log(totalbangdong1())
-
-watch(() => totalCustombangdong1(), (newValue) => {
-  customBangdong1Form.bangdong1Quantity = newValue
-})
-// 客製雞腿便當
-
-const customBangdong2Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
-
-})
-function totalCustombangdong2 () {
-  return parseInt(customBangdong2Form.bangdong1Vegetable) +
-    parseInt(customBangdong2Form.bangdong1Egg) +
-    parseInt(customBangdong2Form.bangdong1Potato) +
-    parseInt(customBangdong2Form.bangdong1Shrimp) +
-    parseInt(customBangdong2Form.bangdong1Chicken) +
-    parseInt(customBangdong2Form.bangdong1Fish) +
-    parseInt(customBangdong2Form.bangdong1Pig) +
-    parseInt(customBangdong2Form.bangdong1Meet)
-}
-
-watch(() => totalCustombangdong2(), (newValue) => {
-  customBangdong2Form.bangdong1Quantity = newValue
-})
-// 客製雞胸便當
-
-const customBangdong3Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
-
-})
-function totalCustombangdong3 () {
-  return parseInt(customBangdong3Form.bangdong1Vegetable) +
-    parseInt(customBangdong3Form.bangdong1Egg) +
-    parseInt(customBangdong3Form.bangdong1Potato) +
-    parseInt(customBangdong3Form.bangdong1Shrimp) +
-    parseInt(customBangdong3Form.bangdong1Chicken) +
-    parseInt(customBangdong3Form.bangdong1Fish) +
-    parseInt(customBangdong3Form.bangdong1Pig) +
-    parseInt(customBangdong3Form.bangdong1Meet)
-}
-
-watch(() => totalCustombangdong3(), (newValue) => {
-  customBangdong3Form.bangdong1Quantity = newValue
-})
-
-// 客製滷牛便當
-
-const customBangdong4Form = reactive({
-  bangdong1Quantity: 0, // 便當數量
-  bangdong1Drumstick: 0, // 雞腿
-  bangdong1Breast: 0, // 雞胸
-  bangdong1Beef: 0, // 滷牛肉
-  bangdong1Vegetable: 0, // 蔬菜
-  bangdong1Egg: 0, // 蛋
-  bangdong1Potato: 0, // 薯泥
-  bangdong1Shrimp: 0, // 炸蝦
-  bangdong1Chicken: 0, // 炒雞
-  bangdong1Fish: 0, // 酥魚
-  bangdong1Pig: 0, // 培根
-  bangdong1Meet: 0, // 滷肉
-  tomato: 0, // 番茄
-  egg: 0, // 鹽水煮蛋
-  vegetable: 0, // 蔬菜
-  fried_mushroom: 0, // 炸菇
-  braised_dried: 0, // 滷豆干
-  oil_rice: 0, // 油飯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  bake_potato: 0, // 烤地瓜
-  bangdong1SugarZero: 0, // 無糖
-  bangdong1SugarSome: 0, // 微糖
-  bangdong1BlackTea: 0, // 紅茶
-  bangdong1MilkTea: 0, // 奶茶
-  bangdong1Sweetsoup: 0, // 甜湯
-  bangdong1Soup: 0// 湯
-
-})
-function totalCustombangdong4 () {
-  return parseInt(customBangdong4Form.bangdong1Vegetable) +
-    parseInt(customBangdong4Form.bangdong1Egg) +
-    parseInt(customBangdong4Form.bangdong1Potato) +
-    parseInt(customBangdong4Form.bangdong1Shrimp) +
-    parseInt(customBangdong4Form.bangdong1Chicken) +
-    parseInt(customBangdong4Form.bangdong1Fish) +
-    parseInt(customBangdong4Form.bangdong1Pig) +
-    parseInt(customBangdong4Form.bangdong1Meet)
-}
-
-watch(() => totalCustombangdong4(), (newValue) => {
-  customBangdong4Form.bangdong1Quantity = newValue
-})
 // 客製餐盒開關
-const showCustomLunchBox = ref(false)
+const showLunchBoxCustom1 = ref(false)
 const openCustomLunchBox = () => {
-  showCustomLunchBox.value = true
-}
-const showCustomLunchBox1 = ref(false)
-const showCustomLunchBox2 = ref(false)
-const showCustomLunchBox3 = ref(false)
-const showCustomLunchBox4 = ref(false)
-const showCustomBangdong1 = ref(false)
-const showCustomBangdong2 = ref(false)
-const showCustomBangdong3 = ref(false)
-const showCustomBangdong4 = ref(false)
-
-// 客製經濟盒餐
-const customLunchbox1Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-// 客製會議盒餐
-const customLunchbox2Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-
-// 客製貴賓盒餐
-const customLunchbox3Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-// 客製首席盒餐
-const customLunchbox4Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-
-// const valid = ref(false)
-// const loading = ref(false)
-
-// const onSubmit = async () => {
-//   await apiAuth.post('/users', form)
-//   await apiAuth.post('/orders', form)
-//   // if (!valid.value) return
-//   // loading.value = true
-//   try {
-//     await $q.notify({
-//       color: 'green-4',
-//       textColor: 'white  ',
-//       icon: 'check-circle',
-//       message: '新增訂單聯絡人，請繼續點餐'
-//     })
-//   } catch (error) {
-//     $q.notify({
-//       color: 'red-4',
-//       textColor: 'white',
-//       icon: 'error',
-//       message: error.message || '發生錯誤'
-//     })
-//   }
-//   loading.value = false
-// }
-
-const columns = [
-  {
-    name: 'index',
-    label: '#',
-    field: 'index'
-  },
-  {
-    name: 'name',
-    required: true,
-    label: '商品名稱',
-    align: 'left',
-    field: row => row.name,
-    format: val => `${val}`,
-    sortable: true
-  },
-  {
-    name: 'calories',
-    align: 'center',
-    label: '主餐',
-    field: 'calories',
-    format: val => `${val}`,
-    sortable: true
-  },
-  {
-    name: 'fat',
-    label: '飲料',
-    align: 'center',
-    field: 'fat',
-    format: val => `${val}`,
-    sortable: true
-  },
-  {
-    name: 'carbs',
-    label: '金額',
-    align: 'center',
-    field: 'carbs'
-  },
-  {
-    name: 'actions',
-    label: '操作',
-    field: 'actions',
-    align: 'center'
-  }
-]
-
-// 招牌便當推入表格
-const rows = reactive([])
-const submitBandong1Form = () => {
-  const currentIndex = rows.length + 1
-  const calories = []
-  const fat = []
-
-  // 主餐
-  if (bangdong1Form.bangdong1Vegetable > 0) {
-    calories.push('全素X' + bangdong1Form.bangdong1Vegetable)
-  }
-  if (bangdong1Form.bangdong1Egg > 0) {
-    calories.push('蛋素X' + bangdong1Form.bangdong1Egg)
-  }
-  if (bangdong1Form.bangdong1Potato > 0) {
-    calories.push('薯泥X' + bangdong1Form.bangdong1Potato)
-  }
-  if (bangdong1Form.bangdong1Shrimp > 0) {
-    calories.push('炸蝦X' + bangdong1Form.bangdong1Shrimp)
-  }
-  if (bangdong1Form.bangdong1Chicken > 0) {
-    calories.push('炒雞X' + bangdong1Form.bangdong1Chicken)
-  }
-  if (bangdong1Form.bangdong1Fish > 0) {
-    calories.push('酥魚X' + bangdong1Form.bangdong1Fish)
-  }
-  if (bangdong1Form.bangdong1Pig > 0) {
-    calories.push('培根X' + bangdong1Form.bangdong1Pig)
-  }
-  if (bangdong1Form.bangdong1Meet > 0) {
-    calories.push('滷肉X' + bangdong1Form.bangdong1Meet)
-  }
-
-  // 飲料
-  if (bangdong1Form.bangdong1SugarZero > 0) {
-    fat.push('無豆' + bangdong1Form.bangdong1SugarZero + '杯' + '、')
-  }
-  if (bangdong1Form.bangdong1SugarSome > 0) {
-    fat.push('微豆' + bangdong1Form.bangdong1SugarSome + '杯' + '、')
-  }
-  if (bangdong1Form.bangdong1BlackTea > 0) {
-    fat.push('紅茶' + bangdong1Form.bangdong1BlackTea + '杯' + '、')
-  }
-  if (bangdong1Form.bangdong1MilkTea > 0) {
-    fat.push('奶茶' + bangdong1Form.bangdong1MilkTea + '杯' + '、')
-  }
-  if (bangdong1Form.bangdong1Sweetsoup > 0) {
-    fat.push('甜湯' + bangdong1Form.bangdong1Sweetsoup + '碗' + '、')
-  }
-  if (bangdong1Form.bangdong1Soup > 0) {
-    fat.push('濃湯' + bangdong1Form.bangdong1Soup + '碗' + '、')
-  }
-  console.log(fat)
-  console.log(calories)
-
-  rows.push({
-    index: currentIndex,
-    name: '招牌便當X' + bangdong1Form.bangdong1Quantity,
-    calories,
-    fat
-  })
-  console.log(rows)
-
-  // 清空表單資料
-  bangdong1Form.bangdong1Quantity = 0
-  bangdong1Form.bangdong1Vegetable = 0
-  bangdong1Form.bangdong1Egg = 0
-  bangdong1Form.bangdong1Potato = 0
-  bangdong1Form.bangdong1Shrimp = 0
-  bangdong1Form.bangdong1Chicken = 0
-  bangdong1Form.bangdong1Fish = 0
-  bangdong1Form.bangdong1Pig = 0
-  bangdong1Form.bangdong1Meet = 0
-  bangdong1Form.bangdong1Breast = 0
-  bangdong1Form.bangdong1Beef = 0
-  bangdong1Form.bangdong1SugarZero = 0
-  bangdong1Form.bangdong1SugarSome = 0
-  bangdong1Form.bangdong1BlackTea = 0
-  bangdong1Form.bangdong1MilkTea = 0
-  bangdong1Form.bangdong1Sweetsoup = 0
-  bangdong1Form.bangdong1Sweetsoup = 0
-  bangdong1Form.bangdong1Soup = 0
-  showbangdong1.value = 'false'
+  showLunchBoxCustom1.value = true
 }
 
-// 經濟盒餐推入
-// 經濟盒餐總數計算
-let lunchbox1Quantity = 0
-function totallunchbox1Quantity () {
-  return parseInt(lunchbox1Form.vegetablePotato) +
-    parseInt(lunchbox1Form.eggPotato) +
-    parseInt(lunchbox1Form.potato) +
-    parseInt(lunchbox1Form.shrimp) +
-    parseInt(lunchbox1Form.chicken) +
-    parseInt(lunchbox1Form.fish) +
-    parseInt(lunchbox1Form.pig) +
-    parseInt(lunchbox1Form.meet)
-}
-watch(() => totallunchbox1Quantity(), (newValue) => {
-  lunchbox1Quantity = newValue
-})
-// 無豆計算
-let lunchbox1SugarZeroQuantity = 0
-function totallunchbox1SugarZeroQuantity () {
-  return parseInt(lunchbox1Form.vegetablePotato_sugarZero) +
-    parseInt(lunchbox1Form.eggPotato_sugarZero) +
-    parseInt(lunchbox1Form.potato_sugarZero) +
-    parseInt(lunchbox1Form.shrimp_sugarZero) +
-    parseInt(lunchbox1Form.chicken_sugarZero) +
-    parseInt(lunchbox1Form.fish_sugarZero) +
-    parseInt(lunchbox1Form.pig_sugarZero) +
-    parseInt(lunchbox1Form.meet_sugarZero)
-}
-watch(() => totallunchbox1SugarZeroQuantity(), (newValue) => {
-  lunchbox1SugarZeroQuantity = newValue
-})
-// 微豆計算
-let lunchbox1SugarsSomeQuantity = 0
-function totallunchbox1SugarsSomeQuantity () {
-  return parseInt(lunchbox1Form.vegetablePotato_sugarSome) +
-    parseInt(lunchbox1Form.eggPotato_sugarSome) +
-    parseInt(lunchbox1Form.potato_sugarSome) +
-    parseInt(lunchbox1Form.shrimp_sugarSome) +
-    parseInt(lunchbox1Form.chicken_sugarSome) +
-    parseInt(lunchbox1Form.fish_sugarSome) +
-    parseInt(lunchbox1Form.pig_sugarSome) +
-    parseInt(lunchbox1Form.meet_sugarSome)
-}
-watch(() => totallunchbox1SugarsSomeQuantity(), (newValue) => {
-  lunchbox1SugarsSomeQuantity = newValue
-})
+const addOrder = async () => {
+  try {
+    // 導入資料縣市
+    const states = await apiAuth.get('localization/division/state')
 
-// 紅茶計算
-let lunchbox1BlackTeaQuantity = 0
-function totallunchbox1BlackTeaQuantity () {
-  return parseInt(lunchbox1Form.vegetablePotato_blackTea) +
-    parseInt(lunchbox1Form.eggPotato_blackTea) +
-    parseInt(lunchbox1Form.potato_blackTea) +
-    parseInt(lunchbox1Form.shrimp_blackTea) +
-    parseInt(lunchbox1Form.chicken_blackTea) +
-    parseInt(lunchbox1Form.fish_blackTea) +
-    parseInt(lunchbox1Form.pig_blackTea) +
-    parseInt(lunchbox1Form.meet_blackTea)
-}
-watch(() => totallunchbox1BlackTeaQuantity(), (newValue) => {
-  lunchbox1BlackTeaQuantity = newValue
-})
-// 奶茶計算
-let lunchbox1MilkTeaQuantity = 0
-function totallunchbox1MilkTeaQuantity () {
-  return parseInt(lunchbox1Form.vegetablePotato_milkTea) +
-    parseInt(lunchbox1Form.eggPotato_milkTea) +
-    parseInt(lunchbox1Form.potato_milkTea) +
-    parseInt(lunchbox1Form.shrimp_milkTea) +
-    parseInt(lunchbox1Form.chicken_milkTea) +
-    parseInt(lunchbox1Form.fish_milkTea) +
-    parseInt(lunchbox1Form.pig_milkTea) +
-    parseInt(lunchbox1Form.meet_milkTea)
-}
-watch(() => totallunchbox1MilkTeaQuantity(), (newValue) => {
-  lunchbox1MilkTeaQuantity = newValue
-})
-// 甜湯計算
-let lunchbox1SweetsoupQuantity = 0
-function totallunchbox1SweetsoupQuantity () {
-  return parseInt(lunchbox1Form.vegetablePotato_sweetsoup) +
-    parseInt(lunchbox1Form.eggPotato_sweetsoup) +
-    parseInt(lunchbox1Form.potato_sweetsoup) +
-    parseInt(lunchbox1Form.shrimp_sweetsoup) +
-    parseInt(lunchbox1Form.chicken_sweetsoup) +
-    parseInt(lunchbox1Form.fish_sweetsoup) +
-    parseInt(lunchbox1Form.pig_sweetsoup) +
-    parseInt(lunchbox1Form.meet_sweetsoup)
-}
-watch(() => totallunchbox1SweetsoupQuantity(), (newValue) => {
-  lunchbox1SweetsoupQuantity = newValue
-})
-// 濃湯計算
-let lunchbox1SoupQuantity = 0
-function totallunchbox1SoupQuantity () {
-  return parseInt(lunchbox1Form.vegetablePotato_soup) +
-    parseInt(lunchbox1Form.eggPotato_soup) +
-    parseInt(lunchbox1Form.potato_soup) +
-    parseInt(lunchbox1Form.shrimp_soup) +
-    parseInt(lunchbox1Form.chicken_soup) +
-    parseInt(lunchbox1Form.fish_soup) +
-    parseInt(lunchbox1Form.pig_soup) +
-    parseInt(lunchbox1Form.meet_soup)
-}
-watch(() => totallunchbox1SoupQuantity(), (newValue) => {
-  lunchbox1SoupQuantity = newValue
-})
-// 推入
-const submitLunchBox1Form = () => {
-  const currentIndex = rows.length + 1
-  const calories = []
-  const fat = []
+    // 搜索
+    const state = states.data.find(s => s.name === personForm.address)
+    const stateId = state.id
+    console.log(stateId)
 
-  // 主餐
-  if (lunchbox1Form.vegetablePotato > 0) {
-    calories.push('全素X' + lunchbox1Form.vegetablePotato)
-  }
-  if (lunchbox1Form.eggPotato > 0) {
-    calories.push('蛋素X' + lunchbox1Form.eggPotato)
-  }
-  if (lunchbox1Form.potato > 0) {
-    calories.push('薯泥X' + lunchbox1Form.potato)
-  }
-  if (lunchbox1Form.shrimp > 0) {
-    calories.push('炸蝦X' + lunchbox1Form.shrimp)
-  }
-  if (lunchbox1Form.chicken > 0) {
-    calories.push('炒雞X' + lunchbox1Form.chicken)
-  }
-  if (lunchbox1Form.fish > 0) {
-    calories.push('酥魚X' + lunchbox1Form.fish)
-  }
-  if (lunchbox1Form.pig > 0) {
-    calories.push('培根X' + lunchbox1Form.pig)
-  }
-  if (lunchbox1Form.meet > 0) {
-    calories.push('滷肉X' + lunchbox1Form.meet)
-  }
+    // 導入資料區域
+    const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${state.id}`)
+    const city = cities.data.find(c => c.name === personForm.address2)
+    const address2Id = city.city_id
+    console.log(address2Id)
 
-  // 飲料
-  if (lunchbox1SugarZeroQuantity > 0) {
-    fat.push('無豆' + lunchbox1SugarZeroQuantity + '杯' + '、')
-  }
-  if (lunchbox1SugarsSomeQuantity > 0) {
-    fat.push('微豆' + lunchbox1SugarsSomeQuantity + '杯' + '、')
-  }
-  if (lunchbox1BlackTeaQuantity > 0) {
-    fat.push('紅茶' + lunchbox1BlackTeaQuantity + '杯' + '、')
-  }
-  if (lunchbox1MilkTeaQuantity > 0) {
-    fat.push('奶茶' + lunchbox1MilkTeaQuantity + '杯' + '、')
-  }
-  if (lunchbox1SweetsoupQuantity > 0) {
-    fat.push('甜湯' + lunchbox1SweetsoupQuantity + '碗' + '、')
-  }
-  if (lunchbox1SoupQuantity > 0) {
-    fat.push('濃湯' + lunchbox1SoupQuantity + '碗' + '、')
-  }
-  console.log(fat)
-  console.log(calories)
+    const formData = new FormData()
 
-  rows.push({
-    index: currentIndex,
-    name: '經濟盒餐X' + lunchbox1Quantity,
-    calories,
-    fat
-  })
-  console.log(rows)
+    // 添加基本的訂單信息
+    formData.append('order_id', '')// 訂單編號
+    formData.append('status_id', 116)// 訂單狀態
+    formData.append('order_date', personForm.checkDate)// 訂購日期
+    formData.append('ping_method', personForm.pick)// 取貨方式
+    formData.append('delivery_date_ymd', personForm.getDate)// 送達日
+    formData.append('delivery_date_hi', personForm.time)// 排單時間
+    formData.append('delivery_time_range', personForm.time)// 送達時間範圍
+    formData.append('shipping_road_abbr', personForm.road)// 送達路段
+    formData.append('personal_name', personForm.name) // 訂購人姓名
+    formData.append('salutation_id', personForm.gender) // 稱謂(即性別，先生/小姐)
+    formData.append('mobile', personForm.tel)// 訂購人手機
+    formData.append('telephone', personForm.hometel.substring(2)) // 訂購人電話
+    formData.append('email', personForm.email) // 訂購人會員代號
+    formData.append('payment_company', personForm.company) // 訂購公司
+    formData.append('is_payment_tin', personForm.noCompilation ? 1 : 0) // 是否需要統編
+    formData.append('payment_method', paymentMethod.value) //  付款方式
+    formData.append('payment_paid', paid.value) //  付款金額
+    formData.append('order_tags', personForm.event) //  訂單標籤
+    formData.append('shipping_personal_name', personForm.recipient) //  personForm.recipient
+    formData.append('shipping_state_id', stateId) //  縣市代號
+    formData.append('shipping_city_id', address2Id) //  鄉鎮市區代號
+    formData.append('shipping_road', personForm.road) //  送達地址
+    formData.append('shipping_address1', personForm.road2) //  送達地址
+    formData.append('payment_company', personForm.getCompany) //  收件公司
+    formData.append('shipping_phone', personForm.recipientTel) //  收件人電話
+    formData.append('comment', personForm.remark) //  客戶備註
+    formData.append('extra_comment', mealRemark.value) //  餐點備註
+    formData.append('telephone_prefix', personForm.hometel.substring(0, 2)) // 區碼
 
-  // 清空表單資料
-  lunchbox1Form.vegetablePotato = 0
-  lunchbox1Form.eggPotato = 0
-  lunchbox1Form.potato = 0
-  lunchbox1Form.shrimp = 0
-  lunchbox1Form.chicken = 0
-  lunchbox1Form.fish = 0
-  lunchbox1Form.pig = 0
-  lunchbox1Form.meet = 0
-  lunchbox1Form.vegetablePotato_sugarZero = 0
-  lunchbox1Form.eggPotato_sugarZero = 0
-  lunchbox1Form.potato_sugarZero = 0
-  lunchbox1Form.shrimp_sugarZero = 0
-  lunchbox1Form.chicken_sugarZero = 0
-  lunchbox1Form.fish_sugarZero = 0
-  lunchbox1Form.pig_sugarZero = 0
-  lunchbox1Form.meet_sugarZero = 0
-  lunchbox1Form.vegetablePotato_sugarsSome = 0
-  lunchbox1Form.eggPotato_sugarsSome = 0
-  lunchbox1Form.potato_sugarsSome = 0
-  lunchbox1Form.shrimp_sugarsSome = 0
-  lunchbox1Form.chicken_sugarsSome = 0
-  lunchbox1Form.fish_sugarsSome = 0
-  lunchbox1Form.pig_sugarsSome = 0
-  lunchbox1Form.meet_sugarsSome = 0
-  lunchbox1Form.blackTea = 0
-  lunchbox1Form.milkTea = 0
-  lunchbox1Form.sweetsoup = 0
-  lunchbox1Form.vegetablePotato_soup = 0
-  lunchbox1Form.eggPotato_soup = 0
-  lunchbox1Form.potato_soup = 0
-  lunchbox1Form.shrimp_soup = 0
-  lunchbox1Form.chicken_soup = 0
-  lunchbox1Form.fish_soup = 0
-  lunchbox1Form.pig_soup = 0
-  lunchbox1Form.meet_soup = 0
-  lunchbox1Quantity = 0
-  lunchbox1SugarZeroQuantity = 0
-  lunchbox1SugarsSomeQuantity = 0
-  lunchbox1BlackTeaQuantity = 0
-  lunchbox1MilkTeaQuantity = 0
-  lunchbox1SweetsoupQuantity = 0
-  lunchbox1SoupQuantity = 0
+    // 添加訂單產品
+    for (const row of tableRows) {
+      for (const productInput of row.productInputs) {
+        if (Object.prototype.hasOwnProperty.call(productInput, 'name')) {
+          formData.append(`order_products[${row.id}][product_id]`, productInput.id)
+          formData.append(`order_products[${row.id}][name]`, productInput.name)
+          formData.append(`order_products[${row.id}][quantity]`, productInput.value)
+          formData.append(`order_products[${row.id}][final_total]`, productInput.totalPrice)
+        }
+      }
 
-  showlunchBox1.value = 'false'
-}
+      let productOptionIndex = 1
+      for (const productInput of row.productInputs) {
+        formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_id]`, productInput.productTypeId)
+        formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][name]`, productInput.productTypeName)
 
-const deleteRow = (row) => {
-  // 在這裡處理刪除 row 的操作
-  // 可以使用 row 參數來取得要刪除的資料
+        let productOptionValueIndex = 1
+        for (const input of row.inputs) {
+          if (input.mainId === productInput.mainId) {
+            formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][product_option_value_id]`, input.id)
+            formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][value]`, input.name)
+            formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][quantity]`, input.value)
+            if (input.mainId) {
+              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][parent_povid]`, input.mainId)
+            }
+            productOptionValueIndex++
+          }
+        }
 
-  // 假設 tableData 是您的資料表格的資料陣列
-  // 使用 Array.findIndex 找到要刪除的資料的索引
-  const index = rows.findIndex(item => item === row)
+        productOptionIndex++
+      }
+      // 發送訂單到API
+      const response = await apiAuth.post('sale/order/save', formData)
+      console.log(response.data)
+    }
 
-  if (index !== -1) {
-    // 使用 Array.splice 刪除該資料
-    rows.splice(index, 1)
+    // 介面上顯示原本的地址名稱
+    personForm.address = state.name
+    personForm.address2 = city.name
+  } catch (error) {
+    console.error(error)
+    await $q.notify({
+      color: 'red-4',
+      textColor: 'white',
+      icon: 'error',
+      message: 'An error occurred: ' + error.message
+    })
   }
 }
 
-// function editRow (rows) {
-//   // TODO: 在表單中顯示要編輯的資料，並保存變更
-//   if (rows.name == '招牌便當') {
-//     showbangdong1.value = true
-//   } else {
-//     showbangdong2.value = true
-//   }
-// }
 </script >
 
-<style lang="scss" scoped>
-.mainMenu{
-text-align: center;
- position: relative;
-  top: 50%;
-  transform: translate(0, 20%);
-width: 100vw;
-
-.q-btn{
-width: 300px;
-height: 300px;
-margin: 20px;
-margin-top: 50px;
-font-size: 50px!important;
-}
-}
-.orderMenucontainer{
-  height: 950px;
-}
-
-.container {
-  background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 3px;
-  width: 1280px;
-  height: 1024px;
-
-}
-.nav{
-  display: flex!important;
-  justify-content: space-around!important;
-}
-.nav button{
-  width: 176px;
-  height: 176px;
-  background: #477DE7;
-  color: #FFFFFF;
-  font-size: 28px;
-  box-shadow: 10px 10px 0px 2px #1564ad;
-
-}
-
-.menu{
-  // margin-top: 10px;
-  // margin-left: 30px;
-  height: 85px;
-  margin:0px 30px 0 5px ;
+  <style lang="scss" scoped>
+  .mainMenu{
   text-align: center;
-  h5{
-    font-size: 23px;
-  }
-  // position: relative;
-  // top: 50%;
-  // transform: translate(0, -50%);
+   position: relative;
+    top: 50%;
+    transform: translate(0, 20%);
+  width: 100vw;
+
   .q-btn{
-    width: 160px;
-  height: 40px;
-  background: #477DE7;
-  color: #FFFFFF;
-  margin: 9px;
-  margin-top: 6px;
-  /* margin-top: 20px; */
-  font-size: 27px;
-  box-shadow: 7px 5px 0px 2px #1564ad;
-  }
-
-}
-.menu .card-body {
-  cursor: pointer;
-}
-
-.menu .card:hover {
-  box-shadow: 0px 0px 10px 1px rgba(255,255,255,0.8);
-}
-
-#cancel{
-  box-shadow: 10px 10px 0px 0px #f94633;
-
-}
-
-.row {
-  max-height: 700px;
-}
-
-.slider {
-  height: 100%;
-  width: 1260px;
-  overflow-y: auto;
-  background: #dadde0;
-  // margin: 10px;
-  margin-top: 5px;
-
-   th{
-    font-size: 20px!important;
-   }
-}
-
-#sliderTable{
-  height: 100%;
-  .q-table__middle{
-        th{
-    font-size: 2rem!important;
-   }
-  }
-  }
-
-#fine{
-
-  background: rgb(19 207 107);
-  color: #FFFFFF;
-  /* margin-top: 20px; */
-
-}
-
-.modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 173%;
-    height: 920px;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.2);
-    border-radius: 0.3rem;
-    outline: 0;
-}
-
-.bandongbtn{
   width: 300px;
-height: 270px;
-  background: #477DE7;
-  color: #FFFFFF;
-  margin: 52px;
-  /* margin-top: 20px; */
-  font-size: 40px;
-  box-shadow: 10px 10px 0px 2px #1564ad;
+  height: 300px;
+  margin: 20px;
+  margin-top: 50px;
+  font-size: 50px!important;
+  }
+  }
+  .orderMenucontainer{
+    height: 950px;
+  }
 
-}
+  .container {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 3px;
+    width: 1280px;
+    height: 1024px;
 
-.bangdongFooterBtn{
-    background: red;
-    width: 120px;
-    height: 66px;
-    font-size: 27px;
+  }
+  .nav{
+    display: flex!important;
+    justify-content: space-around!important;
+  }
+  .nav button{
+    width: 176px;
+    height: 176px;
+    background: #477DE7;
     color: #FFFFFF;
-}
-.person{
-  height: 427px;
-  width:100%;
-  margin:0 5px;
-  .person-form{
-    width: 100%;
-  }
-
-}
-
-#bangdongcard{
-  width: 100%!important;
-  height: 720px;
-  .q-input{
-    margin-top: 10px;
-  }
-
-}
-#customBangdongcard{
-  width: 100%!important;
-  height: 720px;
-  h5{
-    line-height: 0;
-  }
-  .q-input{
-    margin-top: 10px;
-  }
-
-}
-#dialogbtnCard{
-  width: 650px!important;
-  height: 680px;
-  overflow: hidden;
-  .q-input{
-    margin-top: 10px;
-  }
-
-}
-#solocard{
-  width: 100%!important;
-  max-height: 900px;
-  // overflow: hidden;
-  display: flex;
-  overflow-wrap: break-word;
-  .q-input{
-    margin-top: 3px;
-  }
-
-}
-
-.q-dialog__inner--minimized > div {
-    max-width: 1270px;
-    max-height: 1000px;
-}
-
-// .q-dialog--inner--minimized > div[data-v-11ce7a88] {
-//     max-width: 1180px;
-// }
-
-table,table td,table th{
-  border:1px solid #0c0c0c;
-  border-collapse:collapse;
-  width: 157.7px;
-  padding: 7px;
-  }
-  table{
-    height: 314px;
+    font-size: 28px;
+    box-shadow: 10px 10px 0px 2px #1564ad;
 
   }
-  #lunchbox{
-    max-height: 900px;
-    .h{
-      font-size: 20px;
-    }
+
+  .menu{
+    // margin-top: 10px;
+    // margin-left: 30px;
+    height: 85px;
+    margin:0px 30px 0 5px ;
+    text-align: center;
     h5{
-    line-height: 0;
-  }
-  }
-  #customLunchbox{
-    max-height: 900px;
-    .h{
-      font-size: 20px;
+      font-size: 23px;
     }
-    h5{
-    line-height: 0;
-  }
-  }
-
-  #lunchboxbtn{
-    width: 657px!important;
-    height: 600px;
+    // position: relative;
+    // top: 50%;
+    // transform: translate(0, -50%);
     .q-btn{
-    width: 260px;
-    height: 260px;
-    margin: 34px;
-    // margin-top: 50px;
-    font-size: 50px;
+      width: 160px;
+    height: 40px;
+    background: #477DE7;
+    color: #FFFFFF;
+    margin: 9px;
+    margin-top: 6px;
+    /* margin-top: 20px; */
+    font-size: 27px;
+    box-shadow: 7px 5px 0px 2px #1564ad;
+    }
+
+  }
+  .menu .card-body {
+    cursor: pointer;
+  }
+
+  .menu .card:hover {
+    box-shadow: 0px 0px 10px 1px rgba(255,255,255,0.8);
+  }
+
+  #cancel{
+    box-shadow: 10px 10px 0px 0px #f94633;
+
+  }
+
+  .row {
+    max-height: 700px;
+  }
+
+  .slider {
+    height: 100%;
+    width: 1260px;
+    overflow-y: auto;
+    background: #dadde0;
+    // margin: 10px;
+    margin-top: 5px;
+
+     th{
+      font-size: 20px!important;
+     }
+  }
+
+  #sliderTable{
+    height: 100%;
+    td {
+      white-space: normal;
+    }
+    .q-table__middle{
+          th{
+      font-size: 2rem!important;
+     }
+    }
+    }
+
+  #fine{
+
+    background: rgb(19 207 107);
+    color: #FFFFFF;
+    /* margin-top: 20px; */
+
+  }
+
+  .modal-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 173%;
+      height: 920px;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid rgba(0,0,0,.2);
+      border-radius: 0.3rem;
+      outline: 0;
+  }
+
+  .bandongbtn{
+    width: 300px;
+  height: 270px;
+    background: #477DE7;
+    color: #FFFFFF;
+    margin: 52px;
+    /* margin-top: 20px; */
+    font-size: 40px;
+    box-shadow: 10px 10px 0px 2px #1564ad;
+
+  }
+
+  .bangdongFooterBtn{
+      background: red;
+      width: 120px;
+      height: 66px;
+      font-size: 27px;
+      color: #FFFFFF;
+  }
+  .person{
+    height: 427px;
+    width:100%;
+    margin:0 5px;
+    .person-form{
+      width: 100%;
     }
 
   }
 
-  .custom-dropdown {
-  width: 2px;
-}
+  #bangdongcard{
+    width: 100%!important;
+    height: 720px;
+    .q-input{
+      margin-top: 10px;
+    }
 
-.radio-option {
-  font-size: 20px;
-}
-.radio-option .q-radio__label {
-  font-size: 20px;
-}
-</style>
+  }
+  #customBangdongcard{
+    width: 100%!important;
+    height: 720px;
+    h5{
+      line-height: 0;
+    }
+    .q-input{
+      margin-top: 10px;
+    }
+
+  }
+  #dialogbtnCard{
+    width: 650px!important;
+    height: 680px;
+    overflow: hidden;
+    .q-input{
+      margin-top: 10px;
+    }
+
+  }
+  #solocard{
+    width: 100%!important;
+    max-height: 900px;
+    // overflow: hidden;
+    display: flex;
+    overflow-wrap: break-word;
+    .q-input{
+      margin-top: 3px;
+    }
+
+  }
+
+  .q-dialog__inner--minimized > div {
+      max-width: 1270px;
+      max-height: 1000px;
+  }
+
+  // .q-dialog--inner--minimized > div[data-v-11ce7a88] {
+  //     max-width: 1180px;
+  // }
+
+  table,table td,table th{
+    border:1px solid #0c0c0c;
+    border-collapse:collapse;
+    width: 157.7px;
+    padding: 7px;
+    }
+    table{
+      height: 314px;
+
+    }
+    #lunchbox{
+      max-height: 900px;
+      .h{
+        font-size: 20px;
+      }
+      h5{
+      line-height: 0;
+    }
+    }
+    #customLunchbox{
+      max-height: 900px;
+      .h{
+        font-size: 20px;
+      }
+      h5{
+      line-height: 0;
+    }
+    }
+
+    #lunchboxbtn{
+      width: 657px!important;
+      height: 600px;
+      .q-btn{
+      width: 260px;
+      height: 260px;
+      margin: 34px;
+      // margin-top: 50px;
+      font-size: 50px;
+      }
+
+    }
+
+    .custom-dropdown {
+    width: 2px;
+  }
+
+  .radio-option {
+    font-size: 20px;
+  }
+  .radio-option .q-radio__label {
+    font-size: 20px;
+  }
+  </style>

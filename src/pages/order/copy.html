@@ -1,270 +1,68 @@
-// 客製經濟盒餐
-const customLunchbox1Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
+<q-dialog v-model="editDialog4">
+  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong4MainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong4EditMain, index) in bangdong4EditMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong4EditMain.quantity" :label="bangdong4EditMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong4DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong4EditDrink, index) in bangdong4EditDrinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong4EditDrink.quantity" :label="bangdong4EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 副主餐 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong4BentoMainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong4EditBentoMain, index) in bangdong4EditBentoMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong4EditBentoMain.quantity" :label="bangdong4EditBentoMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdong4SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdong4EditSideDish, index) in bangdong4EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdong4EditSideDish.quantity" :label="bangdong4EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+      <h5 style="line-height: 0;">{{bangdong4Name}}</h5>
+    </div>
+    <div class="row">
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdong4EditTotalQuantity" label="數量總計" readonly />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdong4EditTotalQuantityPrice" label="金額總計" readonly />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn label="取消" color="red" @click="closeEditDialog4" />
+      <q-btn label="儲存" color="primary" @click="saveEditDialog4" />
 
-})
-// 客製會議盒餐
-const customLunchbox2Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
+    </div>
 
-})
-
-// 客製貴賓盒餐
-const customLunchbox3Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-// 客製首席盒餐
-const customLunchbox4Form = reactive({
-  vegetablePotato: 0, // 全素薯泥
-  vegetablePotato_sugarZero: 0, // 全素薯泥無糖豆漿
-  vegetablePotato_sugarSome: 0, // 全素薯泥微糖豆漿
-  vegetablePotato_blackTea: 0, // 全素薯泥紅茶
-  vegetablePotato_milkTea: 0, // 全素薯泥奶茶
-  vegetablePotato_sweetsoup: 0, // 全素薯泥甜湯
-  vegetablePotato_soup: 0, // 全素薯泥湯
-  eggPotato: 0, // 蛋薯泥
-  eggPotato_sugarZero: 0, // 蛋薯泥無糖豆漿
-  eggPotato_sugarSome: 0, // 蛋薯泥微糖豆漿
-  eggPotato_blackTea: 0, // 蛋薯泥紅茶
-  eggPotato_milkTea: 0, // 蛋薯泥奶茶
-  eggPotato_sweetsoup: 0, // 蛋薯泥甜湯
-  eggPotato_soup: 0, // 蛋薯泥湯
-  potato: 0, // 薯泥
-  potato_sugarZero: 0, // 薯泥無糖豆漿
-  potato_sugarSome: 0, // 薯泥微糖豆漿
-  potato_blackTea: 0, // 薯泥紅茶
-  potato_milkTea: 0, // 薯泥奶茶
-  potato_sweetsoup: 0, // 薯泥甜湯
-  potato_soup: 0, // 薯泥湯
-  shrimp: 0, // 炸蝦
-  shrimp_sugarZero: 0, // 炸蝦無糖豆漿
-  shrimp_sugarSome: 0, // 炸蝦微糖豆漿
-  shrimp_blackTea: 0, // 炸蝦紅茶
-  shrimp_milkTea: 0, // 炸蝦奶茶
-  shrimp_sweetsoup: 0, // 炸蝦甜湯
-  shrimp_soup: 0, // 炸蝦湯
-  chicken: 0, // 炒雞
-  chicken_sugarZero: 0, // 炒雞無糖豆漿
-  chicken_sugarSome: 0, // 炒雞微糖豆漿
-  chicken_blackTea: 0, // 炒雞紅茶
-  chicken_milkTea: 0, // 炒雞奶茶
-  chicken_sweetsoup: 0, // 炒雞甜湯
-  chicken_soup: 0, // 炒雞湯
-  fish: 0, // 酥魚
-  fish_sugarZero: 0, // 酥魚無糖豆漿
-  fish_sugarSome: 0, // 酥魚微糖豆漿
-  fish_blackTea: 0, // 酥魚紅茶
-  fish_milkTea: 0, // 酥魚奶茶
-  fish_sweetsoup: 0, // 酥魚甜湯
-  fish_soup: 0, // 酥魚湯
-  pig: 0, // 培根
-  pig_sugarZero: 0, // 培根無糖豆漿
-  pig_sugarSome: 0, // 培根微糖豆漿
-  pig_blackTea: 0, // 培根紅茶
-  pig_milkTea: 0, // 培根奶茶
-  pig_sweetsoup: 0, // 培根甜湯
-  pig_soup: 0, // 培根湯
-  meet: 0, // 滷肉
-  meet_sugarZero: 0, // 滷肉無糖豆漿
-  meet_sugarSome: 0, // 滷肉微糖豆漿
-  meet_blackTea: 0, // 滷肉紅茶
-  meet_milkTea: 0, // 滷肉奶茶
-  meet_sweetsoup: 0, // 滷肉甜湯
-  meet_soup: 0, // 滷肉湯
-  fried_potato: 0, // 炸地瓜
-  eggtart: 0, // 蛋撻
-  shortbread: 0, // 酥餅
-  chicken_wing: 0, // 雞翅
-  fruit: 0, // 水果
-  fried_mushroom: 0, // 炸菇
-  bake_potato: 0 // 烤地瓜
-
-})
-
+  </q-card>
+</q-dialog>

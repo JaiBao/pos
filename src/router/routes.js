@@ -51,7 +51,8 @@ const routes = [
           login: false,
           admin: false
         }
-      }, {
+      },
+      {
         path: '/Setting',
         component: () => import('pages/order/SettingPage.vue'),
         meta: {
@@ -60,15 +61,18 @@ const routes = [
           admin: false
         }
       },
-      {
-        path: '/Document',
-        component: () => import('pages/order/DocumentPage.vue'),
-        meta: {
-          title: '訂單',
-          login: false,
-          admin: false
-        }
-      },
+      // {
+      //   path: '/Document',
+      //   beforeEnter () {
+      //     window.location.href = 'http://ods.dtstw.com/backend/sale/orders'
+      //   },
+      //   // component: () => import('pages/order/DocumentPage.vue'),
+      //   meta: {
+      //     title: '訂單',
+      //     login: false,
+      //     admin: false
+      //   }
+      // },
       {
         path: '/Print',
         component: () => import('pages/order/PrintPage.vue'),

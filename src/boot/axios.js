@@ -34,7 +34,7 @@ import { useUserStore } from 'src/stores/user.js'
 // for each client)
 
 const api = axios.create({ baseURL: 'http://ods.dtstw.com/api/' })// process.env.VITE_API'http://localhost:4000'
-const apiAuth = axios.create({ baseURL: 'http://ods.dtstw.com/backend/api/' })// 'http://localhost:4000'
+const apiAuth = axios.create({ baseURL: 'http://ods.dtstw.com/api/' })// 'http://localhost:4000'
 apiAuth.interceptors.request.use(config => {
   const user = useUserStore()
   config.headers.authorization = 'Bearer ' + user.tokens

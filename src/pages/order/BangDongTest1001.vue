@@ -119,7 +119,7 @@
         <q-td style="text-align: center;font-size:20px">
           {{ props.row.name }}
           <div v-for="(input, index) in props.row.inputs" :key="index" style="text-align: center;font-size:20px">
-            <input type="value" :name="input.name" v-model="input.value"
+            <input type="hidden" :name="input.name" v-model="input.value"
             >
           </div>
         </q-td>
@@ -128,7 +128,15 @@
         <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.sideDishes }}</q-td>
         <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.price }}
           <div v-for="(productInput, index) in props.row.productInputs" :key="index" style="text-align: center;font-size:20px">
-            <input type="value" :name="productInput.name" v-model="productInput.value"
+            <input type="hidden" :name="productInput.name" v-model="productInput.value"
+            >
+          </div>
+          <div v-for="(priceInput, index) in props.row.priceInputs" :key="index" style="text-align: center;font-size:20px">
+            <input type="hidden" :name="priceInput.name" v-model="priceInput.value"
+            >
+          </div>
+          <div v-for="(productTypeInput, index) in props.row.productTypeInputs" :key="index" style="text-align: center;font-size:20px">
+            <input type="hidden" :name="productTypeInput.name" v-model="productTypeInput.value"
             >
           </div>
         </q-td>
@@ -231,10 +239,6 @@ const bangdong1Name = ref('')
 const price = ref(0)
 const tableRows = reactive([])
 const editDialog1 = ref(false)
-const productId = ref('')
-const mainMealId = ref('')
-const drinkId = ref('')
-const sideDishId = ref('')
 // 抓取招牌便當主餐形成input
 const loadBangdong1 = async () => {
   try {
@@ -306,10 +310,6 @@ const loadBangdong1 = async () => {
     bangdong1DrinkName.value = Drink.name
     bangdong1SideDishName.value = sideDish.name
     price.value = parseInt(response.data.price)
-    productId.value = response.data.id
-    mainMealId.value = mainMeal.id
-    drinkId.value = Drink.id
-    sideDishId.value = sideDish.id
   } catch (error) {
     console.error(error)
   }
@@ -346,7 +346,9 @@ const submitBangdong1 = () => {
     sideDishDefault: '',
     price: bangdong1TotalQuantityPrice.value,
     inputs: [],
-    productInputs: []
+    productInputs: [],
+    priceInputs: [],
+    productTypeInputs: []
   }
 
   const totalQuantity = bangdong1TotalQuantity.value
@@ -357,15 +359,9 @@ const submitBangdong1 = () => {
         row.Main += ', '
       }
       row.name = bangdong1Name.value + totalQuantity + '份'
-      // 保留 招牌便當、1001、數量、主餐名稱、主餐ID
       const productInput = {
-        id: productId.value,
         name: bangdong1Name.value,
-        value: parseInt(totalQuantity),
-        price: price.value,
-        totalPrice: bangdong1TotalQuantity.value,
-        productTypeId: mainMealId.value,
-        productTypeName: bangdong1MainName.value
+        value: parseInt(totalQuantity)
       }
       row.productInputs.push(productInput)
       row.Main += bangdong1Main.name + '' + parseInt(bangdong1Main.quantity).toString()
@@ -384,12 +380,7 @@ const submitBangdong1 = () => {
         row.drinks += ', '
       }
       row.drinks += bangdong1Drink.name + '' + parseInt(bangdong1Drink.quantity).toString()
-      // 保留飲料名稱、飲料ID
-      const productInput = {
-        productTypeName: bangdong1DrinkName.value,
-        productTypeId: drinkId.value
-      }
-      row.productInputs.push(productInput)
+
       const input = {
         name: bangdong1Drink.name,
         value: parseInt(bangdong1Drink.quantity)
@@ -406,12 +397,7 @@ const submitBangdong1 = () => {
       }
       row.sideDishes += bangdong1SideDish.name + '' + parseInt(bangdong1SideDish.quantity).toString()
       row.sideDishDefault += bangdong1SideDish.is_default + ' '
-      // 保留配菜名稱、配菜ID
-      const productInput = {
-        productTypeName: bangdong1SideDishName.value,
-        productTypeId: sideDishId.value
-      }
-      row.productInputs.push(productInput)
+
       const input = {
         name: bangdong1SideDish.name,
         value: parseInt(bangdong1SideDish.quantity),
@@ -425,6 +411,7 @@ const submitBangdong1 = () => {
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
 }
+
 // 刪除該行
 const deleteRow = (id) => {
   const index = tableRows.findIndex((row) => row.id === id)
@@ -442,7 +429,6 @@ const bangdong1EditMains = reactive([])
 const bangdong1EditDrinks = reactive([])
 const bangdong1EditSideDishes = reactive([])
 const bangdong1EditBentoMains = reactive([])
-
 const loadBangdong1Edit = async () => {
   try {
     const response = await apiAuth.get('catalog/product/1001')
@@ -588,8 +574,7 @@ function saveEditDialog1editDialog1 () {
     sideDishes: '',
     sideDishDefault: '',
     price: bangdong1EditTotalQuantityPrice.value,
-    inputs: [],
-    productInputs: []
+    inputs: []
   }
 
   const totalEditQuantity = bangdong1EditTotalQuantity.value // 計算總數量
@@ -599,17 +584,6 @@ function saveEditDialog1editDialog1 () {
         row.Main += '、'
       }
       row.name = bangdong1Name.value + totalEditQuantity + '份' // 使用總數量
-      // 保留 招牌便當、1001、數量、主餐名稱、主餐ID
-      const productInput = {
-        id: productId.value,
-        name: bangdong1Name.value,
-        value: parseInt(totalEditQuantity),
-        price: price.value,
-        totalPrice: bangdong1EditTotalQuantity.value,
-        productTypeId: mainMealId.value,
-        productTypeName: bangdong1MainName.value
-      }
-      row.productInputs.push(productInput)
       row.Main += bangdong1EditMain.name + '' + parseInt(bangdong1EditMain.quantity).toString() + ' '
       const input = {
         name: bangdong1EditMain.name,
@@ -625,12 +599,6 @@ function saveEditDialog1editDialog1 () {
         row.drinks += '、'
       }
       row.drinks += bangdong1EditDrink.name + '' + parseInt(bangdong1EditDrink.quantity).toString() + ' '
-      // 保留飲料名稱、飲料ID
-      const productInput = {
-        productTypeName: bangdong1DrinkName.value,
-        productTypeId: drinkId.value
-      }
-      row.productInputs.push(productInput)
       const input = {
         name: bangdong1EditDrink.name,
         value: parseInt(bangdong1EditDrink.quantity)
@@ -646,12 +614,6 @@ function saveEditDialog1editDialog1 () {
       }
       row.sideDishes += bangdong1EditSideDish.name + '' + parseInt(bangdong1EditSideDish.quantity).toString() + ' '
       row.sideDishDefault += bangdong1EditSideDish.is_default + ' '
-      // 保留配菜名稱、配菜ID
-      const productInput = {
-        productTypeName: bangdong1SideDishName.value,
-        productTypeId: sideDishId.value
-      }
-      row.productInputs.push(productInput)
       const input = {
         name: bangdong1EditSideDish.name,
         value: parseInt(bangdong1EditSideDish.quantity),
