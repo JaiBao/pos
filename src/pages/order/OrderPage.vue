@@ -113,8 +113,8 @@
                 label="統編"
                 style="padding: 0;"
                 :input-style="{ fontSize: '20px' }"
-                :rules="[val => !val || val.length === 8 || '需為8位數']"
-                :readonly="!isCompilationReadonly"
+                :rules="[val => personForm.noCompilation || val.length === 8 || '需為8位數']"
+                :readonly="isCompilationReadonly"
       />
 
             </td>
@@ -344,7 +344,7 @@
         size="xs"
         val="xs"
         v-model="personForm.noCompilation"
-        label="需要統編"
+        label="不需要統編"
 
       />
       </div>
@@ -476,6 +476,7 @@
           <q-btn
             color="green"
             @click="addOrder"
+            :disabled="isSubmitting"
             label="加入訂單"
 
           />
@@ -1601,8 +1602,11 @@
                 <q-toolbar>
                   <q-toolbar-title>訂單</q-toolbar-title>
                   <q-space />
-           <h>訂購人:{{personForm.name}}
-            訂購人電話:{{personForm.tel}}</h>
+           <h class="row tableMember" >
+            <p v-if="personForm.memberId" >會員編號: {{ personForm.memberId }}</p>
+    <p v-if="personForm.name">訂購人: {{ personForm.name }}</p>
+    <p v-if="personForm.tel">訂購人電話: {{ personForm.tel }}</p>
+  </h>
 
                 </q-toolbar>
               </template>
@@ -2621,18 +2625,43 @@
         <q-radio v-model="paymentMethod" val="cash" label="現金"  class="radio-option"/>
         <q-radio v-model="paymentMethod" val="wire" label="電匯" class="radio-option" />
         <q-radio v-model="paymentMethod" val="credit" label="信用卡" class="radio-option" />
-        <q-radio v-model="paymentMethod" val="withindays30" label="收貨後30天"  class="radio-option"/>
+        <q-radio v-model="paymentMethod" val="withindays30" label="賒帳"  class="radio-option"/>
+
+        <q-input
+      v-if="paymentMethod === 'withindays30'"
+      v-model="getMoneyDate"
+      outlined
+      style="width:150px"
+      label="收款日期"
+      mask="date"
+      :input-style="{ fontSize: '18px' }"
+    >               <template v-slot:append>
+                  <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="getMoneyDate" today-btn>
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="確定" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">總金額</div>
-          <q-input outlined v-model="total" readonly style="width:160px"  />
+          <q-input outlined v-model="total" readonly style="width:130px"  />
         </div>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">已付金額</div>
-          <q-input outlined v-model="paid" style="width:160px"  />
+          <q-input outlined v-model="paid" style="width:130px"  />
         </div>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">未付餘額</div>
-          <q-input outlined v-model="unpaid" readonly style="width:160px"   />
+          <q-input outlined v-model="unpaid" readonly style="width:130px"   />
         </div>
       </div>
     </div>
@@ -2719,7 +2748,7 @@ const paymentMethod = ref('cash')
 const paid = ref(0)
 const total = ref(0)
 const unpaid = ref(0)
-
+const getMoneyDate = ref('')
 const totalPrice = computed(() => {
   return tableRows.reduce((accumulator, row) => accumulator + row.price, 0)
 })
@@ -2920,10 +2949,20 @@ watch(() => personForm.sameOrderCompany, (newVal) => {
   }
 })
 // 統編搜尋帶入公司名稱
+// 在用戶更改統編的時候，將isCompilationUserInput設置為true
+watch(
+  () => personForm.compilation,
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      isCompilationUserInput.value = true
+    }
+  }
+)
+
 watch(
   () => personForm.compilation,
   async (newVal) => {
-    if (newVal && newVal.length === 8) {
+    if (newVal && newVal.length === 8 && isCompilationUserInput.value) {
       apiAuth
         .get(`/member/guin/autocomplete?filter_uniform_invoice_no=${newVal}`)
         .then((res) => {
@@ -2988,7 +3027,7 @@ const timeOptions = computed(() => {
 // 電話號碼搜尋自動導入其他
 
 const telOptions = ref([])
-
+const isCompilationUserInput = ref(true)
 const filterTel = async (search, update, abort) => {
   if (search.length > 3) {
     const newData = []
@@ -3071,6 +3110,10 @@ watch(
           personForm.hometel = data.data[0].telephone_prefix + data.data[0].telephone
           personForm.hometel = personForm.hometel.replace(/-/g, '')
           personForm.memberId = data.data[0].id
+          personForm.compilation = data.data[0].payment_tin
+          personForm.company = data.data[0].payment_company
+          isCompilationUserInput.value = false
+
           // 導入舊資料縣市
           const stateObject = await apiAuth.get('localization/division/state')
             .then(response => response.data.find(item => item.id === data.data[0].shipping_state_id))
@@ -9260,7 +9303,13 @@ const openCustomLunchBox = () => {
   showLunchBoxCustom1.value = true
 }
 
+const isSubmitting = ref(false)
 const addOrder = async () => {
+  if (isSubmitting.value) {
+    return
+  }
+
+  isSubmitting.value = true
   try {
     // 導入資料縣市
     const states = await apiAuth.get('localization/division/state')
@@ -9408,6 +9457,8 @@ const addOrder = async () => {
       icon: 'error',
       message: 'An error occurred: ' + error.message
     })
+  } finally {
+    isSubmitting.value = false
   }
 }
 
@@ -9671,5 +9722,11 @@ const addOrder = async () => {
   }
   .radio-option .q-radio__label {
     font-size: 20px;
+  }
+
+  .tableMember{
+    p{
+      margin-right: 20px
+    }
   }
   </style>

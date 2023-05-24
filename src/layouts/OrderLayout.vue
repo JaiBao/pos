@@ -16,7 +16,7 @@
           color="blue"
           label="訂單"
           icon="list_alt"
-          href="http://ods.dtstw.com/backend/sale/orders"
+          :href="api.defaults.baseURL + 'backend/sale/orders'"
           target="_blank"
         />
         <q-btn
@@ -24,7 +24,7 @@
           label="會員"
           icon="manage_accounts"
           target="_blank"
-          href="http://ods.dtstw.com/backend/member/members"
+          :href="api.defaults.baseURL + 'backend/member/members'"
         />
         <q-btn
           color="grey"
@@ -38,7 +38,7 @@
           icon="settings"
           to="/Setting"
           target="_blank"
-          href="http://ods.dtstw.com/backend/catalog/products"
+          :href="api.defaults.baseURL + 'backend/catalog/products'"
         />
         <q-btn
           color="red"
@@ -54,6 +54,7 @@
 </template>
 
 <script setup>
+import { api } from 'src/boot/axios'
 
 </script>
 
