@@ -95,6 +95,23 @@ module.exports = configure(function (/* ctx */) {
       ],
       alias: {
         '@': path.join(__dirname, './src')
+      },
+
+      extendWebpack (cfg) {
+        if (cfg.mode === 'production') {
+          const path = require('path')
+          const fs = require('fs')
+
+          const sourceFile = path.resolve(__dirname, 'src-keep/.htaccess')
+          const targetDir = path.resolve(__dirname, 'dist/spa')
+          const targetFile = path.join(targetDir, '.htaccess')
+
+          if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true })
+          }
+
+          fs.copyFileSync(sourceFile, targetFile)
+        }
       }
     },
 
@@ -171,11 +188,28 @@ module.exports = configure(function (/* ctx */) {
       injectPwaMetaTags: true,
       swFilename: 'sw.js',
       manifestFilename: 'manifest.json',
-      useCredentialsForManifestTag: false
+      useCredentialsForManifestTag: false,
+      manifest: {
+        name: 'My App',
+        short_name: 'App',
+        description: 'My awesome app',
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#ffffff',
+        theme_color: '#027be3',
+        icons: [
+          {
+            src: 'statics/icons/icon-128x128.png',
+            sizes: '128x128',
+            type: 'image/png'
+          }
+          // ...
+        ]
+      },
       // useFilenameHashes: true,
       // extendGenerateSWOptions (cfg) {}
       // extendInjectManifestOptions (cfg) {},
-      // extendManifestJson (json) {}
+      extendManifestJson (json) {}
       // extendPWACustomSWConf (esbuildConf) {}
     },
 

@@ -85,17 +85,24 @@
               readonly/>
             </td>
             <td >
-              <q-select
+              <!-- <q-select
       v-model="personForm.time"
       outlined
       :options="timeOptions"
       label="送達時間"
       style="font-size: 15px;"
       :input-style="{ fontSize: '17px' }"
+    /> -->
+              <q-input
+      v-model="personForm.time"
+      outlined
+      label="送達時間範圍"
+      style="font-size: 15px;"
+      :input-style="{ fontSize: '17px' }"
     />
             </td>
 
-            <td>
+            <td colspan="2">
               <q-input
               outlined
                v-model="personForm.company"
@@ -118,14 +125,7 @@
       />
 
             </td>
-            <td>
-              <q-input
-              outlined
-               v-model="personForm.getCompany"
-               type="text"
-               label="送達公司"
-               :input-style="{ fontSize: '20px' }" />
-            </td>
+
           </tr>
           <tr>
             <td>
@@ -139,7 +139,7 @@
               <q-select
               outlined
                v-model="personForm.tel"
-               type="string"
+               type="number"
                label="訂購人手機"
                use-input
                :input-style="{ fontSize: '17px' }"
@@ -281,12 +281,11 @@
             <td colspan="2">
               <q-input
               outlined
-               v-model="personForm.email"
-               type="email"
-               label="電子郵件"
+               v-model="personForm.getCompany"
+               type="text"
+               label="送達公司"
                :input-style="{ fontSize: '20px' }" />
-
-  </td>
+            </td>
             <td >
               <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
 
@@ -546,6 +545,15 @@
         <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
         </div>
         <div class="row">
+     <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong1Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
     <q-input
     outlined
     type="number"
@@ -553,9 +561,9 @@
     style="width: 130px;"
     v-model="bangdong1TotalQuantity"
     label="數量總計"
-    readonly
     min="0"
     />
+
     <q-input
     min="0"
     outlined
@@ -658,6 +666,15 @@
         <h5  style="line-height: 0;">{{bangdong2Name}}</h5>
         </div>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong2Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
     <q-input
     outlined
     type="number"
@@ -665,7 +682,6 @@
     style="width: 130px;"
     v-model="bangdong2TotalQuantity"
     label="數量總計"
-    readonly
     min="0"
     />
     <q-input
@@ -774,6 +790,15 @@
         <h5  style="line-height: 0;">{{bangdong3Name}}</h5>
         </div>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong3Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
     <q-input
     outlined
     type="number"
@@ -781,7 +806,6 @@
     style="width: 130px;"
     v-model="bangdong3TotalQuantity"
     label="數量總計"
-    readonly
     min="0"
     />
     <q-input
@@ -890,6 +914,15 @@
         <h5  style="line-height: 0;">{{bangdong4Name}}</h5>
         </div>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong4Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
     <q-input
     outlined
     type="number"
@@ -897,7 +930,6 @@
     style="width: 130px;"
     v-model="bangdong4TotalQuantity"
     label="數量總計"
-    readonly
     min="0"
     />
     <q-input
@@ -991,8 +1023,17 @@
       <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
         <h5 style="margin: 0; padding: 0;">{{lunchBox1Name}}</h5>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox1Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox1TotalQuantity" label="數量總計" readonly
+            v-model="lunchBox1TotalQuantity" label="數量總計"
             min="0"
             />
             <q-input
@@ -1064,8 +1105,17 @@
       <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
         <h5 style="margin: 0; padding: 0;">{{lunchBox2Name}}</h5>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox2Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox2TotalQuantity" label="數量總計" readonly
+            v-model="lunchBox2TotalQuantity" label="數量總計"
             min="0"
              />
              <q-input
@@ -1137,8 +1187,17 @@
       <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
         <h5 style="margin: 0; padding: 0;">{{lunchBox3Name}}</h5>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox3Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox3TotalQuantity" label="數量總計" readonly
+            v-model="lunchBox3TotalQuantity" label="數量總計"
             min="0"/>
             <q-input
             min="0"
@@ -1209,8 +1268,17 @@
       <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
         <h5 style="margin: 0; padding: 0;">{{lunchBox4Name}}</h5>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox4Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox4TotalQuantity" label="數量總計" readonly
+            v-model="lunchBox4TotalQuantity" label="數量總計"
             min="0"
             />
             <q-input
@@ -1348,6 +1416,15 @@
         <h5  style="margin: 0; padding: 0;">{{bangdongSoloName}}</h5>
         </div>
         <div class="row">
+          <!-- <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdongSoloArbitrarily"
+    label="任意搭配"
+    min="0"
+    /> -->
     <q-input
     min="0"
 
@@ -1357,7 +1434,6 @@
     style="width: 130px;"
     v-model="bangdongSoloTotalQuantity"
     label="數量總計"
-    readonly
     />
 
     <q-input
@@ -1460,6 +1536,15 @@
         <h5  style="line-height: 0;">{{bangdongCustom1Name}}</h5>
         </div>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdongCustom1Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
     <q-input
     min="0"
 
@@ -1469,7 +1554,6 @@
     style="width: 130px;"
     v-model="bangdongCustom1TotalQuantity"
     label="數量總計"
-    readonly
     />
     <q-input
     min="0"
@@ -1549,9 +1633,18 @@
         <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1Name}}</h5>
         <div class="row">
           <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBoxCustom1Arbitrarily"
+    label="任意搭配"
+    min="0"
+    />
+          <q-input
           min="0"
            outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBoxCustom1TotalQuantity" label="數量總計" readonly />
+            v-model="lunchBoxCustom1TotalQuantity" label="數量總計" />
           <q-input
           min="0"
            outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
@@ -1713,6 +1806,15 @@
         <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
         </div>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong1EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
     <q-input
     outlined
     type="number"
@@ -1720,7 +1822,6 @@
     style="width: 130px;"
     v-model="bangdong1EditTotalQuantity"
     label="數量總計"
-    readonly
     min="0"
     />
     <q-input
@@ -1813,6 +1914,15 @@
         <h5  style="line-height: 0;">{{bangdong3Name}}</h5>
         </div>
         <div class="row">
+          <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong2EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
     <q-input
     outlined
     type="number"
@@ -1820,7 +1930,6 @@
     style="width: 130px;"
     v-model="bangdong2EditTotalQuantity"
     label="數量總計"
-    readonly
     min="0"
     />
     <q-input
@@ -1911,8 +2020,17 @@
         <h5 style="line-height: 0;">{{bangdong3Name}}</h5>
       </div>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong3EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong3EditTotalQuantity" label="數量總計" readonly
+          v-model="bangdong3EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
@@ -1991,8 +2109,17 @@
         <h5 style="line-height: 0;">{{bangdong4Name}}</h5>
       </div>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong4EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong4EditTotalQuantity" label="數量總計" readonly
+          v-model="bangdong4EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
@@ -2070,8 +2197,17 @@
         <h5 style="line-height: 0;">{{bangdongCustom1Name}}</h5>
       </div>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdongCustom1EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdongCustom1EditTotalQuantity" label="數量總計" readonly
+          v-model="bangdongCustom1EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
@@ -2124,8 +2260,17 @@
     <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
       <h5 style="margin: 0; padding: 0;">{{lunchBox1EditName}}</h5>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox1EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox1EditTotalQuantity" label="數量總計" readonly
+          v-model="lunchBox1EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2193,8 +2338,17 @@
     <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
       <h5 style="margin: 0; padding: 0;">{{lunchBox2EditName}}</h5>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox2EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox2EditTotalQuantity" label="數量總計" readonly
+          v-model="lunchBox2EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2262,8 +2416,17 @@
     <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
       <h5 style="margin: 0; padding: 0;">{{lunchBox3EditName}}</h5>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox3EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox3EditTotalQuantity" label="數量總計" readonly
+          v-model="lunchBox3EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2331,8 +2494,17 @@
     <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
       <h5 style="margin: 0; padding: 0;">{{lunchBox4EditName}}</h5>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox4EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox4EditTotalQuantity" label="數量總計" readonly
+          v-model="lunchBox4EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2400,8 +2572,17 @@
     <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
       <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1EditName}}</h5>
       <div class="row">
+        <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBoxCustom1EditArbitrarily"
+    label="任意搭配"
+    min="0"
+    />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBoxCustom1EditTotalQuantity" label="數量總計" readonly
+          v-model="lunchBoxCustom1EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
@@ -2530,6 +2711,15 @@
   <h5  style="margin: 0; padding: 0;">{{bangdongSoloName}}</h5>
   </div>
   <div class="row">
+    <!-- <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdongSoloEditArbitrarily"
+    label="任意搭配"
+    min="0"
+    /> -->
   <q-input
   min="0"
 
@@ -2539,7 +2729,6 @@
   style="width: 130px;"
   v-model="bangdongSoloEditTotalQuantity"
   label="數量總計"
-  readonly
   />
 
   <q-input
@@ -2623,12 +2812,12 @@
     <div class="col-12">
       <div class="q-pa-xs row justify-around ">
         <q-radio v-model="paymentMethod" val="cash" label="現金"  class="radio-option"/>
-        <q-radio v-model="paymentMethod" val="wire" label="電匯" class="radio-option" />
+        <q-radio v-model="paymentMethod" val="wire" label="轉帳" class="radio-option" />
         <q-radio v-model="paymentMethod" val="credit" label="信用卡" class="radio-option" />
-        <q-radio v-model="paymentMethod" val="withindays30" label="賒帳"  class="radio-option"/>
+        <q-radio v-model="paymentMethod" val="debt" label="賒帳"  class="radio-option"/>
 
         <q-input
-      v-if="paymentMethod === 'withindays30'"
+      v-if="paymentMethod === 'debt'"
       v-model="getMoneyDate"
       outlined
       style="width:150px"
@@ -2805,7 +2994,7 @@ function onReset () {
   personForm.compilation = ''// 統編
   personForm.name = ''// 訂購人
   personForm.tel = ''// 訂購人電話
-  personForm.email = ''// 訂購人電子信箱
+  // personForm.email = ''// 訂購人電子信箱
   personForm.hometel = ''// 訂購人住家電話
   personForm.address = ''// 縣市
   personForm.address2 = ''// 區域
@@ -2837,6 +3026,11 @@ const roadOptions = reactive([])
 // 取得縣市選項
 const getAddressList = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('localization/division/state')
     addressoptions.splice(0, addressoptions.length, ...response.data.map(item => item.name))
   } catch (error) {
@@ -2847,6 +3041,11 @@ const getAddressList = async () => {
 // 取得區域選項
 const getDistrictList = async (id) => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get(`localization/division/city?filter_parent_id=${id}`)
     if (!Array.isArray(response.data)) {
       throw new Error('response.data is not an array')
@@ -3009,20 +3208,20 @@ watch(
   }
 )
 
-const timeOptions = computed(() => {
-  const options = []
-  for (let i = 0; i < 24; i++) {
-    for (let j = 0; j < 60; j += 30) { // 每30分
-      const hour = i.toString().padStart(2, '0')
-      const minute = j.toString().padStart(2, '0')
-      const nextMinute = (j + 30) % 60
-      const nextHour = nextMinute === 0 ? (i + 1) % 24 : i
-      const timeRange = `${hour}:${minute}-${nextHour.toString().padStart(2, '0')}:${nextMinute.toString().padStart(2, '0')}`
-      options.push(timeRange)
-    }
-  }
-  return options
-})
+// const timeOptions = computed(() => {
+//   const options = []
+//   for (let i = 5; i < 20; i++) {
+//     for (let j = 0; j < 60; j += 30) { // 每30分
+//       const hour = i.toString().padStart(2, '0')
+//       const minute = j.toString().padStart(2, '0')
+//       const nextMinute = (j + 30) % 60
+//       const nextHour = nextMinute === 0 ? (i + 1) % 24 : i
+//       const timeRange = `${hour}:${minute}-${nextHour.toString().padStart(2, '0')}:${nextMinute.toString().padStart(2, '0')}`
+//       options.push(timeRange)
+//     }
+//   }
+//   return options
+// })
 
 // 電話號碼搜尋自動導入其他
 
@@ -3042,6 +3241,7 @@ const filterTel = async (search, update, abort) => {
         totalPages = data.last_page
       }
 
+      // newData.push(...data.data.map(item => `${item.name} ${item.mobile.replace('-', '')}`))
       newData.push(...data.data.map(item => item.mobile.replace('-', '')))
       page++
     }
@@ -3055,15 +3255,6 @@ const filterTel = async (search, update, abort) => {
   }
 }
 
-// const selectTel = (value) => {
-//   // 驗證電話號碼格式
-//   const phoneRegex = /^[0-9]{11}$/
-//   if (phoneRegex.test(value.target.value)) {
-//     personForm.tel = value.target.value
-//   } else {
-//     personForm.tel = ''
-//   }
-// }
 const selectTel = (value) => {
   // 驗證電話號碼格式
   const phoneRegex = /^[0-9]{10}$/
@@ -3082,7 +3273,7 @@ watch(
     // 如果tel為空，清空表單中的其他資料
     if (!newVal) {
       personForm.name = ''
-      personForm.email = ''
+      // personForm.email = ''
       personForm.road = ''
       personForm.address = ''
       personForm.address2 = ''
@@ -3098,13 +3289,18 @@ watch(
     clearTimeout(timeoutId)
     timeoutId = setTimeout(async () => {
       try {
+        // 延遲請求的時間（以毫秒為單位）
+        const delay = 2000
+
+        // 延遲指定的時間
+        await new Promise(resolve => setTimeout(resolve, delay))
         // 發送API請求獲取資料
         const { data } = await apiAuth.get(`/member/member?filter_phone=${newVal}`)
 
         if (data.data.length > 0) {
           // 如果找到對應的資料，填入表單中
           personForm.name = data.data[0].name
-          personForm.email = data.data[0].email
+          // personForm.email = data.data[0].email
           personForm.road = data.data[0].shipping_road
           personForm.road2 = data.data[0].shipping_address1
           personForm.hometel = data.data[0].telephone_prefix + data.data[0].telephone
@@ -3132,7 +3328,7 @@ watch(
         // 處理錯誤
         console.error(error)
       }
-    }, 300)
+    }, 3000)
   }
 )
 
@@ -3141,6 +3337,11 @@ const dialogVisible2 = ref(false)
 const option2s = ref([])
 const getExtraComments2 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('/sale/order/getOrderPhrases/phrase_order_comment')
     const extraComments = response.data
 
@@ -3186,7 +3387,13 @@ function closeDialog2 () {
 }
 
 function selectOption2 (option2) {
-  personForm.remark += option2
+  if (personForm.remark === '..') {
+    personForm.remark = ''
+    personForm.remark = option2
+  } else {
+    personForm.remark += ',' + option2
+  }
+
   personForm.remark = personForm.remark.replace('..', '')
   closeDialog2()
 }
@@ -3199,6 +3406,11 @@ const options = ref([])
 
 const getExtraComments = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('/sale/order/getOrderPhrases/phrase_order_extra_comment')
     const extraComments = response.data
 
@@ -3246,7 +3458,13 @@ function closeDialog () {
 }
 
 function selectOption (option) {
-  mealRemark.value += option
+  if (mealRemark.value === '..') {
+    mealRemark.value = ''
+    mealRemark.value = option
+  } else {
+    mealRemark.value += ',' + option
+  }
+
   mealRemark.value = mealRemark.value.replace('..', '')
   closeDialog()
 }
@@ -3258,6 +3476,11 @@ const getCustomers = async () => {
   let totalPages = 1
 
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const { data: { total } } = await apiAuth.get('/member/member')
     totalPages = Math.ceil(total / batchSize)
 
@@ -3289,6 +3512,11 @@ const getCustomers = async () => {
 
 const savePerson = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     // 導入資料縣市
     const states = await apiAuth.get('localization/division/state')
 
@@ -3317,7 +3545,7 @@ const savePerson = async () => {
           telephone: personForm.hometel.substring(2),
           name: personForm.name, // 訂購人
           mobile: personForm.tel, // 訂購人電話
-          email: personForm.email, // 訂購人email
+          // email: personForm.email, // 訂購人email
           shipping_personal_name: personForm.recipient, // 收件人
           shipping_phone: personForm.recipientTel, // 收件人電話
           payment_tin: personForm.compilation, // 統編
@@ -3341,7 +3569,7 @@ const savePerson = async () => {
         member_id: '',
         name: personForm.name,
         mobile: personForm.tel,
-        email: personForm.email,
+        // email: personForm.email,
         shipping_personal_name: personForm.recipient,
         shipping_phone: personForm.recipientTel,
         payment_tin: personForm.compilation,
@@ -3376,14 +3604,71 @@ const savePerson = async () => {
   }
 }
 
+/// 任意搭配update//
+// 便當
+const bangdong1Arbitrarily = ref(0)
+const bangdong2Arbitrarily = ref(0)
+const bangdong3Arbitrarily = ref(0)
+const bangdong4Arbitrarily = ref(0)
+const bangdong1EditArbitrarily = ref(0)
+const bangdong2EditArbitrarily = ref(0)
+const bangdong3EditArbitrarily = ref(0)
+const bangdong4EditArbitrarily = ref(0)
+// 盒餐
+const lunchBox1Arbitrarily = ref(0)
+const lunchBox2Arbitrarily = ref(0)
+const lunchBox3Arbitrarily = ref(0)
+const lunchBox4Arbitrarily = ref(0)
+const lunchBox1EditArbitrarily = ref(0)
+const lunchBox2EditArbitrarily = ref(0)
+const lunchBox3EditArbitrarily = ref(0)
+const lunchBox4EditArbitrarily = ref(0)
+// 客製便當
+const bangdongCustom1Arbitrarily = ref(0)
+const bangdongCustom1EditArbitrarily = ref(0)
+// 客製盒餐
+const lunchBoxCustom1Arbitrarily = ref(0)
+const lunchBoxCustom1EditArbitrarily = ref(0)
+// 單點
+// const bangdongSoloArbitrarily = ref(0)
+// const bangdongSoloEditArbitrarily = ref(0)
+
 /// ///////////////便當盒餐/////////////////////
 const loading = ref(false)
 // 便當盒餐開關
 const showbangdong = ref(false)
 
+// 是否已經抓取過招牌便當資料的狀態變數
+const isBangdong1Loaded = ref(false)
+const isBangdong2Loaded = ref(false)
+const isBangdong3Loaded = ref(false)
+const isBangdong4Loaded = ref(false)
+
 const openbangdong = () => {
   showbangdong.value = true
+  if (!isBangdong1Loaded.value) {
+    loadBangdong1()
+    loadBangdong1Edit()
+    isBangdong1Loaded.value = true
+  }
+  if (!isBangdong2Loaded.value) {
+    loadBangdong2()
+    loadBangdong2Edit()
+    isBangdong2Loaded.value = true
+  }
+  if (!isBangdong3Loaded.value) {
+    loadBangdong3()
+    loadBangdong3Edit()
+    isBangdong3Loaded.value = true
+  }
+  if (!isBangdong4Loaded.value) {
+    loadBangdong4()
+    loadBangdong4Edit()
+    isBangdong4Loaded.value = true
+  }
+  // 其他邏輯...
 }
+
 // 招牌便當
 const bangdong1Mains = reactive([])
 const bangdong1MainName = ref('')
@@ -3401,6 +3686,11 @@ const bangdong1SideDishId = ref('')
 // 抓取招牌便當主餐形成input
 const loadBangdong1 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1001')
     const productOptions = response.data.product_options
     // 主餐
@@ -3444,8 +3734,8 @@ const loadBangdong1 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -3478,15 +3768,30 @@ const loadBangdong1 = async () => {
   }
 }
 
-loadBangdong1()
-
 // 計算總數量
 const bangdong1TotalQuantity = computed(() => {
   return bangdong1Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong1Arbitrarily.value)
 })
 
+// // 計算總數量
+// const bangdong1TotalQuantity = computed(() => {
+//   const mainQuantity = bangdong1Mains.reduce((total, current) => {
+//     return total + parseInt(current.quantity)
+//   }, 0)
+//   const arbitrarilyValue = parseInt(bangdong1Arbitrarily.value)
+
+//   return mainQuantity + arbitrarilyValue
+// })
+
+// watch(bangdong1TotalQuantity, (newVal) => {
+//   const mainQuantity = bangdong1Mains.reduce((total, current) => {
+//     return total + parseInt(current.quantity)
+//   }, 0)
+
+//   bangdong1Arbitrarily.value = newVal - mainQuantity
+// })
 // 計算總價格
 const bangdong1TotalQuantityPrice = computed(() => {
   return bangdong1TotalQuantity.value * bangdong1Price.value
@@ -3515,7 +3820,7 @@ const submitBangdong1 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong1Name.value + totalQuantity + '份'
+
       // 保留 主餐名稱、主餐ID
       const productInput = {
         productTypeId: bangdong1MainMealId.value,
@@ -3594,6 +3899,20 @@ const submitBangdong1 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdong1Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong1Arbitrarily.value).toString()
+    const input = {
+      id: 'bangdong1Arbitrarily',
+      value: bangdong1Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong1Name.value + totalQuantity + '份'
   console.log(JSON.stringify(row))
   console.log(JSON.stringify(row.inputs))
   console.log(JSON.stringify(row.inputs.id))
@@ -3611,6 +3930,11 @@ const bangdong1EditSideDishes = reactive([])
 const bangdong1EditBentoMains = reactive([])
 const loadBangdong1Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1001')
     const productOptions = response.data.product_options
 
@@ -3663,7 +3987,6 @@ const loadBangdong1Edit = async () => {
   }
 }
 
-loadBangdong1Edit()
 // 雞胸便當
 const bangdong2Mains = reactive([])
 const bangdong2MainName = ref('')
@@ -3683,6 +4006,11 @@ const bangdong2Price = ref(0)
 // 抓取雞胸便當主餐形成input
 const loadBangdong2 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1002')
     const productOptions = response.data.product_options
     // 主餐
@@ -3736,8 +4064,8 @@ const loadBangdong2 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong2SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -3779,13 +4107,11 @@ const loadBangdong2 = async () => {
   }
 }
 
-loadBangdong2()
-
 // 計算總數量
 const bangdong2TotalQuantity = computed(() => {
   return bangdong2Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong2Arbitrarily.value)
 })
 
 // 計算總價格
@@ -3817,7 +4143,6 @@ const submitBangdong2 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong2Name.value + totalQuantity + '份'
       row.Main += bangdong2Main.name + 'x' + parseInt(bangdong2Main.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -3918,6 +4243,20 @@ const submitBangdong2 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdong2Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong2Arbitrarily.value).toString()
+    const input = {
+      id: 'bangdong2Arbitrarily',
+      value: bangdong2Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong2Name.value + totalQuantity + '份'
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
   showbangdong2.value = false
@@ -3930,6 +4269,11 @@ const bangdong2EditSideDishes = reactive([])
 const bangdong2EditBentoMains = reactive([])
 const loadBangdong2Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1002')
     const productOptions = response.data.product_options
 
@@ -3994,8 +4338,6 @@ const loadBangdong2Edit = async () => {
   }
 }
 
-loadBangdong2Edit()
-
 // 雞腿便當
 const bangdong3Mains = reactive([])
 const bangdong3MainName = ref('')
@@ -4015,6 +4357,11 @@ const bangdong3BentoMainId = ref('')
 // 抓取雞腿便當主餐形成input
 const loadBangdong3 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1003')
     const productOptions = response.data.product_options
     // 主餐
@@ -4068,8 +4415,8 @@ const loadBangdong3 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong3SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -4111,13 +4458,11 @@ const loadBangdong3 = async () => {
   }
 }
 
-loadBangdong3()
-
 // 計算總數量
 const bangdong3TotalQuantity = computed(() => {
   return bangdong3Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong3Arbitrarily.value)
 })
 
 // 計算總價格
@@ -4149,7 +4494,7 @@ const submitBangdong3 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong3Name.value + totalQuantity + '份'
+
       row.Main += bangdong3Main.name + 'x' + parseInt(bangdong3Main.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -4249,6 +4594,20 @@ const submitBangdong3 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdong3Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong3Arbitrarily.value).toString()
+    const input = {
+      id: 'bangdong3Arbitrarily',
+      value: bangdong3Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong3Name.value + totalQuantity + '份'
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
   showbangdong3.value = false
@@ -4261,6 +4620,11 @@ const bangdong3EditSideDishes = reactive([])
 const bangdong3EditBentoMains = reactive([])
 const loadBangdong3Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1003')
     const productOptions = response.data.product_options
 
@@ -4325,7 +4689,6 @@ const loadBangdong3Edit = async () => {
   }
 }
 
-loadBangdong3Edit()
 // 滷牛便當
 const bangdong4Mains = reactive([])
 const bangdong4MainName = ref('')
@@ -4345,6 +4708,11 @@ const bangdong4BentoMainId = ref('')
 // 抓取滷牛便當主餐形成input
 const loadBangdong4 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1004')
     const productOptions = response.data.product_options
     // 主餐
@@ -4398,8 +4766,8 @@ const loadBangdong4 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong4SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -4441,13 +4809,11 @@ const loadBangdong4 = async () => {
   }
 }
 
-loadBangdong4()
-
 // 計算總數量
 const bangdong4TotalQuantity = computed(() => {
   return bangdong4Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong4Arbitrarily.value)
 })
 
 // 計算總價格
@@ -4479,7 +4845,6 @@ const submitBangdong4 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong4Name.value + totalQuantity + '份'
       row.Main += bangdong4Main.name + 'x' + parseInt(bangdong4Main.quantity).toString()
       const productInput = {
         productTypeId: bangdong4MainMealId.value,
@@ -4578,6 +4943,20 @@ const submitBangdong4 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdong4Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong4Arbitrarily.value).toString()
+    const input = {
+      id: 'bangdong4Arbitrarily',
+      value: bangdong4Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong4Name.value + totalQuantity + '份'
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
   showbangdong4.value = false
@@ -4590,6 +4969,11 @@ const bangdong4EditSideDishes = reactive([])
 const bangdong4EditBentoMains = reactive([])
 const loadBangdong4Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1004')
     const productOptions = response.data.product_options
 
@@ -4655,8 +5039,6 @@ const loadBangdong4Edit = async () => {
   }
 }
 
-loadBangdong4Edit()
-
 // ---------------------------------------------------------
 // 經濟盒餐
 const lunchBox1Mains = reactive([])
@@ -4672,6 +5054,11 @@ const lunchBox1DrinkId = ref('')
 const lunchBox1SideDishId = ref('')
 const loadLunchBox1 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1005')
     const productOptions = response.data.product_options
 
@@ -4717,8 +5104,8 @@ const loadLunchBox1 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -4749,12 +5136,12 @@ const loadLunchBox1 = async () => {
     console.error(error)
   }
 }
-loadLunchBox1()
+
 // 計算總數量
 const lunchBox1TotalQuantity = computed(() => {
   return lunchBox1Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox1Arbitrarily.value)
 })
 
 // 計算總價格
@@ -4816,7 +5203,7 @@ const submitLunchbox1 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox1Name.value + totalQuantity + '份'
+
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -4871,6 +5258,20 @@ const submitLunchbox1 = () => {
   }
   row.productInputs.push(productInput)
 
+  // 保留任搭數量
+  if (lunchBox1Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox1Arbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox1Arbitrarily',
+      value: lunchBox1Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox1Name.value + totalQuantity + '份'
   if (row.Main !== '' || row.sideDishes !== '') {
     // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
     tableRows.push(row)
@@ -4888,6 +5289,11 @@ const lunchBox1EditName = ref('')
 
 const loadLunchBox1Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1005')
     const productOptions = response.data.product_options
 
@@ -4934,7 +5340,6 @@ const loadLunchBox1Edit = async () => {
     console.error(error)
   }
 }
-loadLunchBox1Edit()
 
 // 會議盒餐
 const lunchBox2Mains = reactive([])
@@ -4951,6 +5356,11 @@ const lunchBox2SideDishId = ref('')
 
 const loadLunchBox2 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1006')
     const productOptions = response.data.product_options
 
@@ -4996,8 +5406,8 @@ const loadLunchBox2 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox2SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -5028,12 +5438,12 @@ const loadLunchBox2 = async () => {
     console.error(error)
   }
 }
-loadLunchBox2()
+
 // 計算總數量
 const lunchBox2TotalQuantity = computed(() => {
   return lunchBox2Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox2Arbitrarily.value)
 })
 
 // 計算總價格
@@ -5095,7 +5505,6 @@ const submitLunchbox2 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox2Name.value + totalQuantity + '份'
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -5149,6 +5558,20 @@ const submitLunchbox2 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBox2Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox2Arbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox2Arbitrarily',
+      value: lunchBox2Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox2Name.value + totalQuantity + '份'
   if (row.Main !== '' || row.sideDishes !== '') {
     // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
     tableRows.push(row)
@@ -5165,6 +5588,11 @@ const lunchBox2EditName = ref('')
 
 const loadLunchBox2Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1006')
     const productOptions = response.data.product_options
 
@@ -5229,7 +5657,6 @@ const loadLunchBox2Edit = async () => {
     console.error(error)
   }
 }
-loadLunchBox2Edit()
 
 // 貴賓盒餐
 const lunchBox3Mains = reactive([])
@@ -5246,6 +5673,11 @@ const lunchBox3SideDishId = ref('')
 
 const loadLunchBox3 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1007')
     const productOptions = response.data.product_options
 
@@ -5291,8 +5723,8 @@ const loadLunchBox3 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox3SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -5323,12 +5755,12 @@ const loadLunchBox3 = async () => {
     console.error(error)
   }
 }
-loadLunchBox3()
+
 // 計算總數量
 const lunchBox3TotalQuantity = computed(() => {
   return lunchBox3Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox3Arbitrarily.value)
 })
 
 // 計算總價格
@@ -5390,7 +5822,7 @@ const submitLunchbox3 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox3Name.value + totalQuantity + '份'
+
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -5444,6 +5876,20 @@ const submitLunchbox3 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBox3Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox3Arbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox3Arbitrarily',
+      value: lunchBox3Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox3Name.value + totalQuantity + '份'
   if (row.Main !== '' || row.sideDishes !== '') {
     // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
     tableRows.push(row)
@@ -5460,6 +5906,11 @@ const lunchBox3EditName = ref('')
 
 const loadLunchBox3Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1007')
     const productOptions = response.data.product_options
 
@@ -5506,7 +5957,6 @@ const loadLunchBox3Edit = async () => {
     console.error(error)
   }
 }
-loadLunchBox3Edit()
 
 // 首席盒餐
 const lunchBox4Mains = reactive([])
@@ -5523,6 +5973,11 @@ const lunchBox4SideDishId = ref('')
 
 const loadLunchBox4 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1008')
     const productOptions = response.data.product_options
 
@@ -5568,8 +6023,8 @@ const loadLunchBox4 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox4SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -5600,12 +6055,12 @@ const loadLunchBox4 = async () => {
     console.error(error)
   }
 }
-loadLunchBox4()
+
 // 計算總數量
 const lunchBox4TotalQuantity = computed(() => {
   return lunchBox4Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox4Arbitrarily.value)
 })
 
 // 計算總價格
@@ -5667,7 +6122,7 @@ const submitLunchbox4 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox4Name.value + totalQuantity + '份'
+
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -5721,6 +6176,20 @@ const submitLunchbox4 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBox4Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox4Arbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox4Arbitrarily',
+      value: lunchBox4Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox4Name.value + totalQuantity + '份'
   if (row.Main !== '' || row.sideDishes !== '') {
     // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
     tableRows.push(row)
@@ -5737,6 +6206,11 @@ const lunchBox4EditName = ref('')
 
 const loadLunchBox4Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1008')
     const productOptions = response.data.product_options
 
@@ -5783,7 +6257,6 @@ const loadLunchBox4Edit = async () => {
     console.error(error)
   }
 }
-loadLunchBox4Edit()
 
 // ------------------------客製便當、盒餐、單點---------------------------------
 // 客製便當
@@ -5803,9 +6276,14 @@ const bangdongCustom1DrinkId = ref('')
 const bangdongCustom1SideDishId = ref('')
 const bangdongCustom1BentoMainId = ref('')
 const editDialog9 = ref(false)
-// 抓取客製招牌便當主餐形成input
+// 抓取客製便當主餐形成input
 const loadBangdongCustom1 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1043')
     const productOptions = response.data.product_options
     // 主餐
@@ -5868,13 +6346,11 @@ const loadBangdongCustom1 = async () => {
   }
 }
 
-loadBangdongCustom1()
-
 // 計算總數量
 const bangdongCustom1TotalQuantity = computed(() => {
   return bangdongCustom1Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdongCustom1Arbitrarily.value)
 })
 
 // 計算總價格
@@ -5905,7 +6381,7 @@ const submitBangdongCustom1 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = bangdongCustom1Name.value + totalQuantity + '份'
+
       row.Main += bangdongCustom1Main.name + 'x' + parseInt(bangdongCustom1Main.quantity).toString()
       const productInput = {
         productTypeId: bangdongCustom1MainMealId.value,
@@ -6001,6 +6477,20 @@ const submitBangdongCustom1 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdongCustom1Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdongCustom1Arbitrarily.value).toString()
+    const input = {
+      id: 'bangdongCustom1Arbitrarily',
+      value: bangdongCustom1Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdongCustom1Name.value + totalQuantity + '份'
   bangdongCustom1Price.value = 0
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
@@ -6014,6 +6504,11 @@ const bangdongCustom1EditSideDishes = reactive([])
 const bangdongCustom1EditBentoMains = reactive([])
 const loadBangdongCustom1Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1043')
     const productOptions = response.data.product_options
 
@@ -6078,7 +6573,6 @@ const loadBangdongCustom1Edit = async () => {
   }
 }
 
-loadBangdongCustom1Edit()
 // 客製盒餐
 const lunchBoxCustom1Mains = reactive([])
 const lunchBoxCustom1SideDishes = reactive([])
@@ -6093,6 +6587,11 @@ const lunchBoxCustom1DrinkId = ref('')
 const lunchBoxCustom1SideDishId = ref('')
 const loadLunchBoxCustom1 = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1044')
     const productOptions = response.data.product_options
 
@@ -6143,12 +6642,12 @@ const loadLunchBoxCustom1 = async () => {
     console.error(error)
   }
 }
-loadLunchBoxCustom1()
+
 // 計算總數量
 const lunchBoxCustom1TotalQuantity = computed(() => {
   return lunchBoxCustom1Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBoxCustom1Arbitrarily.value)
 })
 // 計算總價格
 const lunchBoxCustom1TotalQuantityPrice = computed(() => {
@@ -6209,7 +6708,7 @@ const submitLunchboxCustom1 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBoxCustom1Name.value + totalQuantity + '份'
+
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -6264,6 +6763,20 @@ const submitLunchboxCustom1 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBoxCustom1Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBoxCustom1Arbitrarily.value).toString()
+    const input = {
+      id: 'lunchBoxCustom1Arbitrarily',
+      value: lunchBoxCustom1Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBoxCustom1Name.value + totalQuantity + '份'
   if (row.Main !== '' || row.sideDishes !== '') {
     // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
     tableRows.push(row)
@@ -6279,6 +6792,11 @@ const lunchBoxCustom1EditName = ref('')
 
 const loadLunchBoxCustom1Edit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1044')
     const productOptions = response.data.product_options
 
@@ -6325,7 +6843,6 @@ const loadLunchBoxCustom1Edit = async () => {
     console.error(error)
   }
 }
-loadLunchBoxCustom1Edit()
 
 // 單點
 const bangdongSolo6inchs = reactive([])
@@ -6352,6 +6869,11 @@ const editDialog10 = ref(false)
 // 抓取單點商品形成input
 const loadBangdongSolo = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1062')
     const productOptions = response.data.product_options
     // 6吋
@@ -6443,8 +6965,6 @@ const loadBangdongSolo = async () => {
     console.error(error)
   }
 }
-
-loadBangdongSolo()
 
 // 計算總數量
 const bangdongSoloTotalQuantity = computed(() => {
@@ -6685,6 +7205,11 @@ const bangdongSoloEditEcoBags = reactive([])
 const bangdongSoloEditName = ref('')
 const loadBangdongSoloEdit = async () => {
   try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
     const response = await apiAuth.get('catalog/product/1062')
     const productOptions = response.data.product_options
 
@@ -6778,7 +7303,6 @@ const loadBangdongSoloEdit = async () => {
   }
 }
 
-loadBangdongSoloEdit()
 // -------------------------------------刪除新增膗存----------------------
 
 // 刪除該行
@@ -6849,6 +7373,10 @@ function editBangdong1 (row) {
   for (const input of row.inputs) {
     const name = input.name
     const value = input.value
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      bangdong1EditArbitrarily.value = input.value
+    }
     // 招牌便當  主餐  推入input數值
     const mainIndex = bangdong1EditMains.findIndex(
       (bangdong1EditMain) => bangdong1EditMain.name === name
@@ -6885,8 +7413,8 @@ function editBangdong1 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -6915,7 +7443,7 @@ function editBangdong1 (row) {
 const bangdong1EditTotalQuantity = computed(() => {
   return bangdong1EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong1EditArbitrarily.value)
 })
 
 // 招牌便當單價
@@ -6953,7 +7481,7 @@ function saveEditDialog1 () {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong1Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += bangdong1EditMain.name + 'x' + parseInt(bangdong1EditMain.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -7025,7 +7553,21 @@ function saveEditDialog1 () {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
-  console.log('productInput:', productInput)
+  // 保留任搭數量
+  if (bangdong1EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong1EditArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong1EditArbitrarily',
+      value: bangdong1EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+
+  row.name = bangdong1Name.value + totalEditQuantity + '份' // 使用總數量
   // 將這個 row 推進 tableRows 中
   const rowIndex = tableRows.findIndex(r => r === editingRow)
   if (rowIndex !== -1) {
@@ -7061,6 +7603,10 @@ function editBangdong2 (row) {
   for (const input of row.inputs) {
     const name = input.name
     const value = input.value
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      bangdong2EditArbitrarily.value = input.value
+    }
     // 雞胸便當  主餐  推入input數值
     const mainIndex = bangdong2EditMains.findIndex(
       (bangdong2EditMain) => bangdong2EditMain.name === name
@@ -7097,8 +7643,8 @@ function editBangdong2 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong2EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -7135,7 +7681,7 @@ function editBangdong2 (row) {
 const bangdong2EditTotalQuantity = computed(() => {
   return bangdong2EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong2EditArbitrarily.value)
 })
 // 雞胸便當單價
 const bangdong2EditPrice = computed(() => {
@@ -7174,7 +7720,7 @@ function saveEditDialog2 () {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong2Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += bangdong2EditMain.name + 'x' + parseInt(bangdong2EditMain.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -7267,6 +7813,20 @@ function saveEditDialog2 () {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdong2EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong2EditArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong2EditArbitrarily',
+      value: bangdong2EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong2Name.value + totalEditQuantity + '份' // 使用總數量
   // 將這個 row 推進 tableRows 中
   const rowIndex = tableRows.findIndex(r => r === editingRow)
   if (rowIndex !== -1) {
@@ -7299,6 +7859,10 @@ function editBangdong3 (row) {
   for (const input of row.inputs) {
     const name = input.name
     const value = input.value
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      bangdong3EditArbitrarily.value = input.value
+    }
     // 雞腿便當  主餐  推入input數值
     const mainIndex = bangdong3EditMains.findIndex(
       (bangdong3EditMain) => bangdong3EditMain.name === name
@@ -7335,8 +7899,8 @@ function editBangdong3 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong3EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -7373,7 +7937,7 @@ function editBangdong3 (row) {
 const bangdong3EditTotalQuantity = computed(() => {
   return bangdong3EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong3EditArbitrarily.value)
 })
 
 // 雞腿便當單價
@@ -7413,7 +7977,6 @@ function saveEditDialog3 () {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong3Name.value + totalEditQuantity + '份' // 使用總數量
       row.Main += bangdong3EditMain.name + 'x' + parseInt(bangdong3EditMain.quantity).toString()
       // 保留 雞腿便當、1003、數量、主餐名稱、主餐ID
       const productInput = {
@@ -7507,6 +8070,20 @@ function saveEditDialog3 () {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdong3EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong3EditArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong3EditArbitrarily',
+      value: bangdong3EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong3Name.value + totalEditQuantity + '份' // 使用總數量
   // 將這個 row 推進 tableRows 中
   const rowIndex = tableRows.findIndex(r => r === editingRow)
   if (rowIndex !== -1) {
@@ -7540,6 +8117,10 @@ function editBangdong4 (row) {
   for (const input of row.inputs) {
     const name = input.name
     const value = input.value
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      bangdong4EditArbitrarily.value = input.value
+    }
     // 滷牛便當  主餐  推入input數值
     const mainIndex = bangdong4EditMains.findIndex(
       (bangdong4EditMain) => bangdong4EditMain.name === name
@@ -7576,8 +8157,8 @@ function editBangdong4 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong4EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -7613,7 +8194,7 @@ function editBangdong4 (row) {
 const bangdong4EditTotalQuantity = computed(() => {
   return bangdong4EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong4EditArbitrarily.value)
 })
 // 滷牛便當單價
 const bangdong4EditPrice = computed(() => {
@@ -7652,7 +8233,7 @@ function saveEditDialog4 () {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong4Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += bangdong4EditMain.name + 'x' + parseInt(bangdong4EditMain.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -7746,6 +8327,20 @@ function saveEditDialog4 () {
     totalPrice: row.price
   }
   row.inputs.push(productInput)
+  // 保留任搭數量
+  if (bangdong4EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdong4EditArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong4EditArbitrarily',
+      value: bangdong4EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong4Name.value + totalEditQuantity + '份' // 使用總數量
   // 將這個 row 推進 tableRows 中
   const rowIndex = tableRows.findIndex(r => r === editingRow)
   if (rowIndex !== -1) {
@@ -7775,6 +8370,10 @@ function editRowDialog9 (row) {
   for (const input of row.inputs) {
     const name = input.name
     const value = input.value
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      bangdongCustom1EditArbitrarily.value = input.value
+    }
     // 客製招牌便當  主餐  推入input數值
     const mainIndex = bangdongCustom1EditMains.findIndex(
       (bangdongCustom1EditMain) => bangdongCustom1EditMain.name === name
@@ -7805,7 +8404,7 @@ function editRowDialog9 (row) {
     }
   }
 
-  const totalQuantity = parseFloat(row.price) // 获取 bangdongCustom1TotalQuantity 的值
+  const totalQuantity = parseFloat(row.price) // 取 bangdongCustom1TotalQuantity 的值
 
   bangdongCustom1EditPrice.value = totalQuantity / bangdongCustom1EditTotalQuantity.value // 将 rowPrice / totalQuantity 的值赋给 bangdongCustom1EditPrice
 
@@ -7816,7 +8415,7 @@ function editRowDialog9 (row) {
 const bangdongCustom1EditTotalQuantity = computed(() => {
   return bangdongCustom1EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdongCustom1EditArbitrarily.value)
 })
 // 客製便當總價格
 const bangdongCustom1EditPrice = ref(0)
@@ -7849,7 +8448,7 @@ function saveEditDialog9 () {
       if (row.Main !== '') {
         row.Main += '、'
       }
-      row.name = bangdongCustom1Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += bangdongCustom1EditMain.name + 'x' + parseInt(bangdongCustom1EditMain.quantity).toString()
       const productInput = {
         productTypeId: bangdongCustom1MainMealId.value,
@@ -7941,6 +8540,20 @@ function saveEditDialog9 () {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdongCustom1EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdongCustom1EditArbitrarily.value).toString()
+    const input = {
+      id: 'bangdongCustom1EditArbitrarily',
+      value: bangdongCustom1EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdongCustom1Name.value + totalEditQuantity + '份' // 使用總數量
   // 將這個 row 推進 tableRows 中
   const rowIndex = tableRows.findIndex(r => r === editingRow)
   if (rowIndex !== -1) {
@@ -7968,7 +8581,10 @@ function editRowDialog5 (row) {
     const mainId = input.mainId
     const name = input.name
     const value = input.value
-
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      lunchBox1EditArbitrarily.value = input.value
+    }
     const mainIndex = lunchBox1EditMains.findIndex(
       (lunchBox1EditMain) => lunchBox1EditMain.name === name
     )
@@ -8001,8 +8617,8 @@ function editRowDialog5 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -8030,7 +8646,7 @@ function editRowDialog5 (row) {
 const lunchBox1EditTotalQuantity = computed(() => {
   return lunchBox1EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox1EditArbitrarily.value)
 })
 
 // 經濟盒餐修改單價
@@ -8098,7 +8714,7 @@ const saveEditDialog5 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox1Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += Main
       // 保留 經濟盒餐、1005、數量、主餐名稱、主餐ID
       const productInput = {
@@ -8151,6 +8767,21 @@ const saveEditDialog5 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBox1EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox1EditArbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox1EditArbitrarily',
+      value: lunchBox1EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+
+  row.name = lunchBox1Name.value + totalEditQuantity + '份' // 使用總數量
   if (row.Main !== '' || row.sideDishes !== '') {
     const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
     tableRows.splice(rowIndex, 1, row)
@@ -8178,7 +8809,10 @@ function editRowDialog6 (row) {
     const mainId = input.mainId
     const name = input.name
     const value = input.value
-
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      lunchBox2EditArbitrarily.value = input.value
+    }
     const mainIndex = lunchBox2EditMains.findIndex(
       (lunchBox2EditMain) => lunchBox2EditMain.name === name
     )
@@ -8212,8 +8846,8 @@ function editRowDialog6 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox2EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -8240,7 +8874,7 @@ function editRowDialog6 (row) {
 const lunchBox2EditTotalQuantity = computed(() => {
   return lunchBox2EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox2EditArbitrarily.value)
 })
 
 // 會議盒餐修改單價
@@ -8309,7 +8943,7 @@ const saveEditDialog6 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox2Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += Main
       // 保留 會議盒餐、1005、數量、主餐名稱、主餐ID
       const productInput = {
@@ -8362,6 +8996,20 @@ const saveEditDialog6 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBox2EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox2EditArbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox2EditArbitrarily',
+      value: lunchBox2EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox2Name.value + totalEditQuantity + '份' // 使用總數量
   if (row.Main !== '' || row.sideDishes !== '') {
     const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
     tableRows.splice(rowIndex, 1, row)
@@ -8389,7 +9037,10 @@ function editRowDialog7 (row) {
     const mainId = input.mainId
     const name = input.name
     const value = input.value
-
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      lunchBox3EditArbitrarily.value = input.value
+    }
     const mainIndex = lunchBox3EditMains.findIndex(
       (lunchBox3EditMain) => lunchBox3EditMain.name === name
     )
@@ -8422,8 +9073,8 @@ function editRowDialog7 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox3EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -8451,7 +9102,7 @@ function editRowDialog7 (row) {
 const lunchBox3EditTotalQuantity = computed(() => {
   return lunchBox3EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox3EditArbitrarily.value)
 })
 
 // 貴賓盒餐修改單價
@@ -8520,7 +9171,7 @@ const saveEditDialog7 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox3Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -8573,6 +9224,20 @@ const saveEditDialog7 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBox3EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox3EditArbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox3EditArbitrarily',
+      value: lunchBox3EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox3Name.value + totalEditQuantity + '份' // 使用總數量
   if (row.Main !== '' || row.sideDishes !== '') {
     const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
     tableRows.splice(rowIndex, 1, row)
@@ -8600,7 +9265,10 @@ function editRowDialog8 (row) {
     const mainId = input.mainId
     const name = input.name
     const value = input.value
-
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      lunchBox4EditArbitrarily.value = input.value
+    }
     const mainIndex = lunchBox4EditMains.findIndex(
       (lunchBox4EditMain) => lunchBox4EditMain.name === name
     )
@@ -8633,8 +9301,8 @@ function editRowDialog8 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox4EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全潤' || main.name === '蛋潤') {
-            if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -8662,7 +9330,7 @@ function editRowDialog8 (row) {
 const lunchBox4EditTotalQuantity = computed(() => {
   return lunchBox4EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox4EditArbitrarily.value)
 })
 
 // 首席盒餐修改單價
@@ -8731,7 +9399,7 @@ const saveEditDialog8 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox4Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -8784,6 +9452,20 @@ const saveEditDialog8 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBox4EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBox4EditArbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox4EditArbitrarily',
+      value: lunchBox4EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox4Name.value + totalEditQuantity + '份' // 使用總數量
   if (row.Main !== '' || row.sideDishes !== '') {
     const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
     tableRows.splice(rowIndex, 1, row)
@@ -8807,7 +9489,10 @@ function editRowDialog0 (row) {
     const mainId = input.mainId
     const name = input.name
     const value = input.value
-
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      lunchBoxCustom1EditArbitrarily.value = input.value
+    }
     const mainIndex = lunchBoxCustom1EditMains.findIndex(
       (lunchBoxCustom1EditMain) => lunchBoxCustom1EditMain.name === name
     )
@@ -8844,7 +9529,7 @@ function editRowDialog0 (row) {
 const lunchBoxCustom1EditTotalQuantity = computed(() => {
   return lunchBoxCustom1EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBoxCustom1EditArbitrarily.value)
 })
 
 const lunchBoxCustom1EditPrice = ref(0)
@@ -8910,7 +9595,7 @@ const saveEditDialog0 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBoxCustom1Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += Main
       // 保留 主餐ID
       const productInput = {
@@ -8963,6 +9648,20 @@ const saveEditDialog0 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (lunchBoxCustom1EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(lunchBoxCustom1EditArbitrarily.value).toString()
+    const input = {
+      id: 'lunchBoxCustom1EditArbitrarily',
+      value: lunchBoxCustom1EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBoxCustom1Name.value + totalEditQuantity + '份' // 使用總數量
   if (row.Main !== '' || row.sideDishes !== '') {
     const rowIndex = tableRows.findIndex((item) => item.id === editingRow.id)
     tableRows.splice(rowIndex, 1, row)
@@ -9272,8 +9971,35 @@ function saveEditDialog10 () {
 // 盒餐開關
 const showlunchBox = ref(false)
 
+// 是否已經抓取過招牌便當資料的狀態變數
+const isLunchBox1Loaded = ref(false)
+const isLunchBox2Loaded = ref(false)
+const isLunchBox3Loaded = ref(false)
+const isLunchBox4Loaded = ref(false)
+
 const openlunchBox = () => {
   showlunchBox.value = true
+  if (!isLunchBox1Loaded.value) {
+    loadLunchBox1()
+    loadLunchBox1Edit()
+    isLunchBox1Loaded.value = true
+  }
+  if (!isLunchBox2Loaded.value) {
+    loadLunchBox2()
+    loadLunchBox2Edit()
+    isLunchBox2Loaded.value = true
+  }
+  if (!isLunchBox3Loaded.value) {
+    loadLunchBox3()
+    loadLunchBox3Edit()
+    isLunchBox3Loaded.value = true
+  }
+  if (!isLunchBox4Loaded.value) {
+    loadLunchBox4()
+    loadLunchBox4Edit()
+    isLunchBox4Loaded.value = true
+  }
+// 其他邏輯...
 }
 
 const showlunchBox1 = ref(false)
@@ -9287,20 +10013,44 @@ const showbangdong4 = ref(false)
 // 單點開關
 const showbangdongSolo = ref(false)
 
+const isBangdongSoloLoaded = ref(false)
+
 const opensolo = () => {
   showbangdongSolo.value = true
+  if (!isBangdongSoloLoaded.value) {
+    loadBangdongSolo()
+    loadBangdongSoloEdit()
+    isBangdongSoloLoaded.value = true
+  }
 }
 
 // 客製便當開關
 const showbangdongCustom1 = ref(false)
+
+const isBangdongCustom1Loaded = ref(false)
+
 const openCustomBangdong = () => {
   showbangdongCustom1.value = true
+
+  if (!isBangdongCustom1Loaded.value) {
+    loadBangdongCustom1()
+    loadBangdongCustom1Edit()
+    isBangdongCustom1Loaded.value = true
+  }
 }
 
 // 客製餐盒開關
 const showLunchBoxCustom1 = ref(false)
+
+const isLunchBoxCustom1Loaded = ref(false)
 const openCustomLunchBox = () => {
   showLunchBoxCustom1.value = true
+
+  if (!isLunchBoxCustom1Loaded.value) {
+    loadLunchBoxCustom1()
+    loadLunchBoxCustom1Edit()
+    isLunchBoxCustom1Loaded.value = true
+  }
 }
 
 const isSubmitting = ref(false)
@@ -9342,6 +10092,13 @@ const addOrder = async () => {
     const day2 = dateParts2[2]
     const formattedDate2 = year2 + '-' + month2 + '-' + day2
 
+    const checkDate3 = getMoneyDate.value
+    const dateParts3 = checkDate3 ? checkDate3.split('/') : [] // 檢查是否為空值
+    const year3 = dateParts3.length > 0 ? dateParts3[0] : ''
+    const month3 = dateParts3.length > 1 ? dateParts3[1] : ''
+    const day3 = dateParts3.length > 2 ? dateParts3[2] : ''
+    const formattedDate3 = year3 && month3 && day3 ? year3 + '-' + month3 + '-' + day3 : '' // 確保所有日期部分都存在才組成日期字串
+
     const pickMethod = computed(() => {
       if (personForm.pick === '自取') {
         return 'shipping_pickup'
@@ -9354,7 +10111,7 @@ const addOrder = async () => {
     // 添加基本的訂單信息
     formData.append('order_id', '')// 訂單編號
     formData.append('customer_id', personForm.memberId)// 訂購人編號
-    formData.append('status_id', 116)// 訂單狀態
+    // formData.append('status_id', 116)// 訂單狀態
     formData.append('order_date', formattedDate)// 訂購日期
     formData.append('shipping_method', pickMethod.value)// 取貨方式
     formData.append('delivery_date_ymd', formattedDate2)// 送達日
@@ -9366,13 +10123,16 @@ const addOrder = async () => {
     formData.append('mobile', personForm.tel)// 訂購人手機
     formData.append('telephone_prefix', personForm.hometel.substring(0, 2)) // 區碼
     formData.append('telephone', personForm.hometel.substring(2)) // 訂購人電話
-    formData.append('email', personForm.email) // 訂購人信箱
+    // formData.append('getReturn', 1) // 測試
+    // formData.append('email', personForm.email) // 訂購人信箱
     formData.append('payment_company', personForm.company) // 訂購公司
     formData.append('payment_tin', personForm.compilation) // 統一編號
     formData.append('is_payment_tin', personForm.noCompilation ? 1 : 0) // 是否需要統編
-    formData.append('payment_method', total.value) //  總金額
+    formData.append('payment_method', paymentMethod.value) //  付款方式
+    formData.append('scheduled_payment_date', formattedDate3) // 付款日期
+    formData.append('payment_total', total.value) //  總金額
     formData.append('payment_total', paid.value) //  付款金額
-    formData.append('payment_paid', paid.value) //  付款金額
+    formData.append('payment_unpaid', unpaid.value) //  未付餘額
     formData.append('order_tags', personForm.event) //  訂單標籤
     formData.append('shipping_personal_name', personForm.recipient) //  personForm.recipient
     formData.append('shipping_state_id', stateId) //  縣市代號
@@ -9384,18 +10144,18 @@ const addOrder = async () => {
     formData.append('comment', personForm.remark) //  客戶備註
     formData.append('extra_comment', mealRemark.value) //  餐點備註
 
-    formData.append('order_totals[sub_total][title]  ', '商品合計') // 商品合計
-    formData.append('order_totals[sub_total][value]  ', total.value)
-    formData.append('order_totals[sub_total][sort_order]  ', 1)
-    formData.append('order_totals[discount][title]  ', '優惠折扣') // 優惠折扣
-    formData.append('order_totals[discount][value]  ', 0)
-    formData.append('order_totals[discount][sort_order]  ', 2)
-    formData.append('order_totals[shipping_fee][title]  ', '運費') // 運費
-    formData.append('order_totals[shipping_fee][value]  ', 0)
-    formData.append('order_totals[shipping_fee][sort_order]  ', 3)
-    formData.append('order_totals[total ][title]  ', '總計') // 總計
-    formData.append('order_totals[total ][value]  ', total.value)
-    formData.append('order_totals[total ][sort_order]  ', 4)
+    formData.append('order_totals[sub_total][title]', '商品合計') // 商品合計
+    formData.append('order_totals[sub_total][value]', total.value)
+    // formData.append('order_totals[sub_total][sort_order]', 1)
+    formData.append('order_totals[discount][title]', '優惠折扣') // 優惠折扣
+    formData.append('order_totals[discount][value]', 0)
+    // formData.append('order_totals[discount][sort_order]', 2)
+    formData.append('order_totals[shipping_fee][title]', '運費') // 運費
+    formData.append('order_totals[shipping_fee][value]', 0)
+    // formData.append('order_totals[shipping_fee][sort_order]', 3)
+    formData.append('order_totals[total ][title]', '總計') // 總計
+    formData.append('order_totals[total ][value]', total.value)
+    // formData.append('order_totals[total ][sort_order]', 4)
 
     // 添加訂單產品
     for (const row of tableRows) {
@@ -9410,28 +10170,56 @@ const addOrder = async () => {
         }
       }
 
-      let productOptionIndex = 1
-      for (const productInput of row.productInputs) {
-        formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_id]`, productInput.productTypeId)
-        formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][type]`, productInput.productType)
-        formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][name]`, productInput.productTypeName)
-
-        let productOptionValueIndex = 1
-        for (const input of row.inputs) {
-          if (input.mainId === productInput.mainId) {
-            formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][product_option_value_id]`, input.id)
-            formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][value]`, input.name)
-            formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][quantity]`, input.value)
-            if (input.mainId) {
-              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][parent_povid]`, input.mainId)
-            }
-
-            productOptionValueIndex++
+      for (const row of tableRows) {
+        for (const productInput of row.productInputs) {
+          if (Object.prototype.hasOwnProperty.call(productInput, 'name')) {
+            formData.append(`order_products[${row.id}][product_id]`, productInput.id)
+            formData.append(`order_products[${row.id}][name]`, productInput.name)
+            formData.append(`order_products[${row.id}][quantity]`, productInput.value)
+            formData.append(`order_products[${row.id}][price]`, productInput.price)
+            formData.append(`order_products[${row.id}][total]`, productInput.totalPrice)
+            formData.append(`order_products[${row.id}][final_total]`, productInput.totalPrice)
           }
         }
 
-        productOptionIndex++
+        let productOptionIndex = 1
+        for (const productInput of row.productInputs) {
+          formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_id]`, productInput.productTypeId)
+          formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][type]`, productInput.productType)
+          formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][name]`, productInput.productTypeName)
+
+          let productOptionValueIndex = 1
+
+          for (const input of row.inputs) {
+            if (input.mainId === productInput.mainId) {
+              // 確保 input.name 不包含 '任意搭配'
+              if (!input.name.includes('任意搭配')) {
+                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][product_option_value_id]`, input.id)
+                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][value]`, input.name)
+                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][quantity]`, input.value)
+                if (input.mainId) {
+                  formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][parent_povid]`, input.mainId)
+                }
+
+                productOptionValueIndex++
+              }
+            }
+          }
+
+          productOptionIndex++
+        }
       }
+
+      let statusId = 103 // 預設狀態為 116
+
+      for (const input of row.inputs) {
+        if (input.name.includes('任意搭配')) {
+          statusId = 116
+          break // 找到符合條件的 input，結束迴圈
+        }
+      }
+
+      formData.append('status_id', statusId) // 設定訂單狀態
 
       // 發送訂單到API
       const response = await apiAuth.post('sale/order/save', formData)
@@ -9446,6 +10234,8 @@ const addOrder = async () => {
     // 清空 tableRows
     tableRows.splice(0, tableRows.length)
     onReset()
+    getMoneyDate.value = ''
+    paid.value = 0
     // 介面上顯示原本的地址名稱
     personForm.address = state.name
     personForm.address2 = city.name
@@ -9674,7 +10464,7 @@ const addOrder = async () => {
   table,table td,table th{
     border:1px solid #0c0c0c;
     border-collapse:collapse;
-    width: 157.7px;
+    // width: 157.7px;
     padding: 7px;
     }
     table{

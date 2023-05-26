@@ -84,7 +84,7 @@
               :input-style="{ fontSize: '20px' }"
               readonly/>
             </td>
-            <td  >
+            <td >
               <q-select
       v-model="personForm.time"
       outlined
@@ -102,9 +102,9 @@
                type="text"
                label="訂購公司"
                :input-style="{ fontSize: '20px' }"
-               style="padding: 0; align-self: flex-start;"/>
+               style="padding: 0;"/>
             </td>
-            <td >
+            <td>
 
                 <q-input
                 outlined
@@ -116,13 +116,7 @@
                 :rules="[val => personForm.noCompilation || val.length === 8 || '需為8位數']"
                 :readonly="isCompilationReadonly"
       />
-      <q-checkbox
-        size="xs"
-        val="xs"
-        v-model="personForm.noCompilation"
-        label="不需要統編"
 
-      />
             </td>
 
           </tr>
@@ -133,17 +127,6 @@
               v-model="personForm.name"
               label="訂購人"
               :input-style="{ fontSize: '20px' }"/>
-              <q-radio
-  v-model="personForm.gender"
-  val="17"
-  style="font-size: 16px"
-  label="先生" />
-  <q-radio
-
-  v-model="personForm.gender"
-  val="18"
-  style="font-size: 16px"
-  label="小姐" />
             </td>
             <td>
               <q-select
@@ -295,17 +278,19 @@
                type="text"
                label="送達公司"
                :input-style="{ fontSize: '20px' }" />
-
             </td>
             <td >
               <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
 
-                <q-checkbox
-        size="xs"
-        v-model="personForm.sameOrderCompany"
-        val="xs"
-        label="同訂購公司"
-        />
+  <q-radio
+  v-model="personForm.gender"
+  val="17"
+  label="先生" />
+  <q-radio
+
+  v-model="personForm.gender"
+  val="18"
+  label="小姐" />
   </div>
 
             </td>
@@ -340,7 +325,21 @@
         label="同訂購人"
         />
       </div>
+      <div >
+        <q-checkbox
+        size="xs"
+        v-model="personForm.sameOrderCompany"
+        val="xs"
+        label="同訂購公司"
+        />
+        <q-checkbox
+        size="xs"
+        val="xs"
+        v-model="personForm.noCompilation"
+        label="不需要統編"
 
+      />
+      </div>
     </div>
 
               </td>
@@ -535,17 +534,17 @@
       </div>
     </div>
     <!-- 總計 -->
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
-        </div>
-        <div class="row">
+    <div style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center" >
           <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong1MainArbitrarily"
-    label="主餐任意搭配"
+    v-model="bangdong1Arbitrarily"
+    label="待分配"
     min="0"
     />
     <q-input
@@ -557,6 +556,12 @@
     label="飲料任意搭配"
     min="0"
     />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong1Name}}</h5>
+
+        <div class="row">
     <q-input
     outlined
     type="number"
@@ -588,6 +593,7 @@
     readonly
     min="0"
     />
+  </div>
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -666,21 +672,11 @@
       </div>
     </div>
     <!-- 總計 -->
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5  style="line-height: 0;">{{bangdong2Name}}</h5>
-        </div>
-        <div class="row">
-    <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="bangdong2TotalQuantity"
-    label="數量總計"
-    readonly
-    min="0"
-    />
-    <q-input
+    <div  style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
+          <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
@@ -694,10 +690,27 @@
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong2DDrinkArbitrarily"
+    v-model="bangdong2DrinkArbitrarily"
     label="飲料任意搭配"
     min="0"
     />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong2Name}}</h5>
+
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2TotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
     <q-input
     min="0"
     outlined
@@ -705,7 +718,7 @@
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
     v-model="bangdong2Price"
-    label="金額總計"
+    label="商品單價"
     readonly
     />
     <q-input
@@ -718,6 +731,7 @@
     readonly
     min="0"
     />
+  </div>
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -800,21 +814,11 @@
       </div>
     </div>
     <!-- 總計 -->
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5  style="line-height: 0;">{{bangdong3Name}}</h5>
-        </div>
-        <div class="row">
-    <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="bangdong3TotalQuantity"
-    label="數量總計"
-    readonly
-    min="0"
-    />
-    <q-input
+    <div  style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
+          <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
@@ -832,6 +836,23 @@
     label="飲料任意搭配"
     min="0"
     />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong3Name}}</h5>
+
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong3TotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
     <q-input
     min="0"
     outlined
@@ -852,6 +873,7 @@
     readonly
     min="0"
     />
+  </div>
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -934,21 +956,11 @@
       </div>
     </div>
     <!-- 總計 -->
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5  style="line-height: 0;">{{bangdong4Name}}</h5>
-        </div>
-        <div class="row">
-    <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="bangdong4TotalQuantity"
-    label="數量總計"
-    readonly
-    min="0"
-    />
-    <q-input
+    <div style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
+          <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
@@ -966,16 +978,23 @@
     label="飲料任意搭配"
     min="0"
     />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong4Name}}</h5>
+
+        <div class="row">
     <q-input
     outlined
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong4TotalQuantityPrice"
-    label="金額總計"
+    v-model="bangdong4TotalQuantity"
+    label="數量總計"
     readonly
     min="0"
     />
+
     <q-input
     min="0"
     outlined
@@ -986,6 +1005,17 @@
     label="商品單價"
     readonly
     />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong4TotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+  </div>
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -1054,13 +1084,9 @@
         </div>
       </div>
       <!-- 總計 -->
-      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-        <h5 style="margin: 0; padding: 0;">{{lunchBox1Name}}</h5>
-        <div class="row">
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox1TotalQuantity" label="數量總計" readonly
-            min="0"
-            />
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
             <q-input
     outlined
     type="number"
@@ -1079,20 +1105,21 @@
     label="飲料任意搭配"
     min="0"
     />
-            <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox1Price"
-            label="商品單價"
-            readonly
-            />
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox1TotalQuantityPrice" label="金額總計" readonly
-            min="0"
-            />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox1Name}}</h5>
+        <div class="row">
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1TotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1Price" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1TotalQuantityPrice" label="金額總計" readonly />
         </div>
       </div>
       <!-- 按鈕 -->
@@ -1144,15 +1171,11 @@
           </q-item>
         </div>
       </div>
-      <!-- 總計 -->
-      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-        <h5 style="margin: 0; padding: 0;">{{lunchBox2Name}}</h5>
-        <div class="row">
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox2TotalQuantity" label="數量總計" readonly
-            min="0"
-             />
-             <q-input
+       <!-- 總計 -->
+       <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
+            <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
@@ -1170,20 +1193,21 @@
     label="飲料任意搭配"
     min="0"
     />
-             <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox2Price"
-            label="商品單價"
-            readonly
-            />
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox2TotalQuantityPrice" label="金額總計" readonly
-            min="0"
-            />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox2Name}}</h5>
+        <div class="row">
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2TotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2Price" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2TotalQuantityPrice" label="金額總計" readonly />
         </div>
       </div>
       <!-- 按鈕 -->
@@ -1236,12 +1260,9 @@
         </div>
       </div>
       <!-- 總計 -->
-      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-        <h5 style="margin: 0; padding: 0;">{{lunchBox3Name}}</h5>
-        <div class="row">
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox3TotalQuantity" label="數量總計" readonly
-            min="0"/>
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
             <q-input
     outlined
     type="number"
@@ -1260,19 +1281,21 @@
     label="飲料任意搭配"
     min="0"
     />
-            <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox3Price"
-            label="商品單價"
-            readonly
-            />
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox3TotalQuantityPrice" label="金額總計" readonly
-            min="0"/>
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox3Name}}</h5>
+        <div class="row">
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3TotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3Price" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3TotalQuantityPrice" label="金額總計" readonly />
         </div>
       </div>
       <!-- 按鈕 -->
@@ -1326,13 +1349,9 @@
         </div>
       </div>
       <!-- 總計 -->
-      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-        <h5 style="margin: 0; padding: 0;">{{lunchBox4Name}}</h5>
-        <div class="row">
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox4TotalQuantity" label="數量總計" readonly
-            min="0"
-            />
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
             <q-input
     outlined
     type="number"
@@ -1351,20 +1370,21 @@
     label="飲料任意搭配"
     min="0"
     />
-            <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox4Price"
-            label="商品單價"
-            readonly
-            />
-          <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox4TotalQuantityPrice" label="金額總計" readonly
-            min="0"
-            />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox4Name}}</h5>
+        <div class="row">
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4TotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4Price" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4TotalQuantityPrice" label="金額總計" readonly />
         </div>
       </div>
       <!-- 按鈕 -->
@@ -1594,22 +1614,11 @@
       </div>
     </div>
     <!-- 總計 -->
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5  style="line-height: 0;">{{bangdongCustom1Name}}</h5>
-        </div>
-        <div class="row">
-    <q-input
-    min="0"
+    <div >
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
 
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="bangdongCustom1TotalQuantity"
-    label="數量總計"
-    readonly
-    />
-    <q-input
+        <div class="row  items-center">
+          <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
@@ -1627,6 +1636,23 @@
     label="飲料任意搭配"
     min="0"
     />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdongCustom1Name}}</h5>
+
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongCustom1TotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
     <q-input
     min="0"
     outlined
@@ -1635,9 +1661,9 @@
     style="width: 130px;"
     v-model="bangdongCustom1Price"
     label="商品單價"
+    readonly
     />
     <q-input
-    min="0"
     outlined
     type="number"
     :input-style="{ fontSize: '20px' }"
@@ -1645,7 +1671,9 @@
     v-model="bangdongCustom1TotalQuantityPrice"
     label="金額總計"
     readonly
+    min="0"
     />
+  </div>
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -1671,7 +1699,7 @@
               <q-dialog v-model="showLunchBoxCustom1" class="lunchBoxdailog"  full-width >
      <!-- 主餐 -->
      <q-card style="overflow: hidden;">
-      <div class="q-gutter-xs row items-start justify-center" id="lunchboxCustom1">
+      <div class="q-gutter-xs row items-start justify-center" >
         <div v-for="(lunchBoxCustom1Main, index) in lunchBoxCustom1Mains" :key="index">
           <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1Main.name }}</h5>
           <q-input
@@ -1701,13 +1729,9 @@
         </div>
       </div>
       <!-- 總計 -->
-      <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-        <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1Name}}</h5>
-        <div class="row">
-          <q-input
-          min="0"
-           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBoxCustom1TotalQuantity" label="數量總計" readonly />
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
             <q-input
     outlined
     type="number"
@@ -1726,6 +1750,13 @@
     label="飲料任意搭配"
     min="0"
     />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1Name}}</h5>
+        <div class="row">
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBoxCustom1TotalQuantity" label="數量總計" readonly />
           <q-input
           min="0"
            outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
@@ -1883,21 +1914,11 @@
       </div>
     </div>
     <!-- 總計 -->
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
-        </div>
-        <div class="row">
-    <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="bangdong1EditTotalQuantity"
-    label="數量總計"
-    readonly
-    min="0"
-    />
-    <q-input
+    <div style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
+          <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
@@ -1915,10 +1936,33 @@
     label="飲料任意搭配"
     min="0"
     />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong1Name}}</h5>
+
+        <div class="row">
     <q-input
-      min="0"
-       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong1EditPrice" label="商品單價" readonly />
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong1EditTotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong1EditPrice"
+    label="商品單價"
+    readonly
+    />
     <q-input
     outlined
     type="number"
@@ -1929,6 +1973,7 @@
     readonly
     min="0"
     />
+  </div>
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -2001,21 +2046,11 @@
       </div>
     </div>
     <!-- 總計 -->
-    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5  style="line-height: 0;">{{bangdong3Name}}</h5>
-        </div>
-        <div class="row">
-    <q-input
-    outlined
-    type="number"
-    :input-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    v-model="bangdong2EditTotalQuantity"
-    label="數量總計"
-    readonly
-    min="0"
-    />
-    <q-input
+    <div style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
+          <q-input
     outlined
     type="number"
     :input-style="{fontSize:'20px'}"
@@ -2033,10 +2068,33 @@
     label="飲料任意搭配"
     min="0"
     />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong2Name}}</h5>
+
+        <div class="row">
     <q-input
-      min="0"
-       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong2EditPrice" label="商品單價" readonly />
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2EditTotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong2EditPrice"
+    label="商品單價"
+    readonly
+    />
     <q-input
     outlined
     type="number"
@@ -2047,6 +2105,7 @@
     readonly
     min="0"
     />
+  </div>
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -2116,22 +2175,68 @@
           </q-item>
         </div>
       </div>
-      <!-- 總計 -->
-      <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5 style="line-height: 0;">{{bangdong3Name}}</h5>
-      </div>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong3EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+    <!-- 總計 -->
+    <div style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
           <q-input
-      min="0"
-       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong3EditPrice" label="商品單價" readonly />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong3EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
-      </div>
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong3EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong3EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong3Name}}</h5>
+
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong3EditTotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong3EditPrice"
+    label="商品單價"
+    readonly
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong3EditTotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+  </div>
+    </div>
       <!-- 按鈕 -->
       <div class="row justify-end" style="width: 100%;">
         <q-btn label="取消" color="red" @click="closeEditDialog3" />
@@ -2196,22 +2301,68 @@
           </q-item>
         </div>
       </div>
-      <!-- 總計 -->
-      <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5 style="line-height: 0;">{{bangdong4Name}}</h5>
-      </div>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong4EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+ <!-- 總計 -->
+ <div style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
           <q-input
-      min="0"
-       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong4EditPrice" label="商品單價" readonly />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong4EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
-      </div>
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong4EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdong4EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdong4Name}}</h5>
+
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong4EditTotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong4EditPrice"
+    label="商品單價"
+    readonly
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdong4EditTotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+  </div>
+    </div>
       <!-- 按鈕 -->
       <div class="row justify-end" style="width: 100%;">
         <q-btn label="取消" color="red" @click="closeEditDialog4" />
@@ -2275,22 +2426,68 @@
           </q-item>
         </div>
       </div>
-      <!-- 總計 -->
-      <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-        <h5 style="line-height: 0;">{{bangdongCustom1Name}}</h5>
-      </div>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdongCustom1EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+    <!-- 總計 -->
+    <div style="width:100%">
+        <h5  style="padding: 0;margin: 0">任配選項</h5>
+
+        <div class="row  items-center">
           <q-input
-      min="0"
-       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongCustom1EditPrice" label="商品單價"  />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdongCustom1EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
-      </div>
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdongCustom1EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdongCustom1EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+  </div>
+    </div>
+    <div >
+        <h5  style="padding: 0;margin: 0">{{bangdongCustom1Name}}</h5>
+
+        <div class="row">
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongCustom1EditTotalQuantity"
+    label="數量總計"
+    readonly
+    min="0"
+    />
+
+    <q-input
+    min="0"
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongCustom1EditPrice"
+    label="商品單價"
+    readonly
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{ fontSize: '20px' }"
+    style="width: 130px;"
+    v-model="bangdongCustom1EditTotalQuantityPrice"
+    label="金額總計"
+    readonly
+    min="0"
+    />
+  </div>
+    </div>
       <!-- 按鈕 -->
       <div class="row justify-end" style="width: 100%;">
         <q-btn label="取消" color="red" @click="closeEditDialog9" />
@@ -2330,28 +2527,45 @@
         </q-item>
       </div>
     </div>
-    <!-- 總計 -->
-    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-      <h5 style="margin: 0; padding: 0;">{{lunchBox1EditName}}</h5>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox1EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+      <!-- 總計 -->
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
+            <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox1EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox1EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox1Name}}</h5>
+        <div class="row">
           <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox1EditPrice"
-            label="商品單價"
-            readonly
-            />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1EditTotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1EditPrice" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly />
+        </div>
       </div>
-    </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
       <q-btn color="primary"
@@ -2399,28 +2613,45 @@
         </q-item>
       </div>
     </div>
-    <!-- 總計 -->
-    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-      <h5 style="margin: 0; padding: 0;">{{lunchBox2EditName}}</h5>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox2EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+      <!-- 總計 -->
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
+            <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox2EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox2EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox2Name}}</h5>
+        <div class="row">
           <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox2EditPrice"
-            label="商品單價"
-            readonly
-            />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox2EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2EditTotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2EditPrice" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox2EditTotalQuantityPrice" label="金額總計" readonly />
+        </div>
       </div>
-    </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
       <q-btn color="primary"
@@ -2468,28 +2699,45 @@
         </q-item>
       </div>
     </div>
-    <!-- 總計 -->
-    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-      <h5 style="margin: 0; padding: 0;">{{lunchBox3EditName}}</h5>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox3EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+      <!-- 總計 -->
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
+            <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox3EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox3EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox3Name}}</h5>
+        <div class="row">
           <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox3EditPrice"
-            label="商品單價"
-            readonly
-            />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox3EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3EditTotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3EditPrice" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox3EditTotalQuantityPrice" label="金額總計" readonly />
+        </div>
       </div>
-    </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
       <q-btn color="primary"
@@ -2537,28 +2785,45 @@
         </q-item>
       </div>
     </div>
-    <!-- 總計 -->
-    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-      <h5 style="margin: 0; padding: 0;">{{lunchBox4EditName}}</h5>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox4EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+      <!-- 總計 -->
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
+            <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox4EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBox4EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBox4Name}}</h5>
+        <div class="row">
           <q-input
-            min="0"
-            outlined
-            type="number"
-            :input-style="{ fontSize: '20px' }"
-            style="width: 130px;"
-            v-model="lunchBox4EditPrice"
-            label="商品單價"
-            readonly
-            />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4EditTotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4EditPrice" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBox4EditTotalQuantityPrice" label="金額總計" readonly />
+        </div>
       </div>
-    </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
       <q-btn color="primary"
@@ -2606,22 +2871,45 @@
         </q-item>
       </div>
     </div>
-    <!-- 總計 -->
-    <div style="width: 100%; margin-top:5px;  margin-left:35px; ">
-      <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1EditName}}</h5>
-      <div class="row">
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBoxCustom1EditTotalQuantity" label="數量總計" readonly
-          min="0"/>
+      <!-- 總計 -->
+      <div style="margin-top:5px;  margin-left:35px; ">
+        <h5 style="margin: 0; padding: 0;">任搭選項</h5>
+        <div class="row item-center">
+            <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBoxCustom1EditMainArbitrarily"
+    label="主餐任意搭配"
+    min="0"
+    />
+    <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="lunchBoxCustom1EditDrinkArbitrarily"
+    label="飲料任意搭配"
+    min="0"
+    />
+        </div>
+        <h5 style="margin: 0; padding: 0;">{{lunchBoxCustom1Name}}</h5>
+        <div class="row">
           <q-input
-      min="0"
-       outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="lunchBoxCustom1EditPrice" label="商品單價"  />
-        <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBoxCustom1EditTotalQuantityPrice" label="金額總計" readonly
-          min="0"/>
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBoxCustom1EditTotalQuantity" label="數量總計" readonly />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBoxCustom1EditPrice" label="商品單價"  />
+          <q-input
+          min="0"
+           outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+            v-model="lunchBoxCustom1EditTotalQuantityPrice" label="金額總計" readonly />
+        </div>
       </div>
-    </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
       <q-btn color="primary"
@@ -2893,8 +3181,48 @@ import { apiAuth } from 'src/boot/axios'
 
 // const router = useRouter()
 const $q = useQuasar()
+// 便當任配選項
 const bangdong1MainArbitrarily = ref(0)
 const bangdong1DrinkArbitrarily = ref(0)
+const bangdong2MainArbitrarily = ref(0)
+const bangdong2DrinkArbitrarily = ref(0)
+const bangdong3MainArbitrarily = ref(0)
+const bangdong3DrinkArbitrarily = ref(0)
+const bangdong4MainArbitrarily = ref(0)
+const bangdong4DrinkArbitrarily = ref(0)
+const bangdong1EditMainArbitrarily = ref(0)
+const bangdong1EditDrinkArbitrarily = ref(0)
+const bangdong2EditMainArbitrarily = ref(0)
+const bangdong2EditDrinkArbitrarily = ref(0)
+const bangdong3EditMainArbitrarily = ref(0)
+const bangdong3EditDrinkArbitrarily = ref(0)
+const bangdong4EditMainArbitrarily = ref(0)
+const bangdong4EditDrinkArbitrarily = ref(0)
+const bangdongCustom1MainArbitrarily = ref(0)
+const bangdongCustom1DrinkArbitrarily = ref(0)
+const bangdongCustom1EditMainArbitrarily = ref(0)
+const bangdongCustom1EditDrinkArbitrarily = ref(0)
+// 盒餐任配選項
+const lunchBox1MainArbitrarily = ref(0)
+const lunchBox1DrinkArbitrarily = ref(0)
+const lunchBox2MainArbitrarily = ref(0)
+const lunchBox2DrinkArbitrarily = ref(0)
+const lunchBox3MainArbitrarily = ref(0)
+const lunchBox3DrinkArbitrarily = ref(0)
+const lunchBox4MainArbitrarily = ref(0)
+const lunchBox4DrinkArbitrarily = ref(0)
+const lunchBox1EditMainArbitrarily = ref(0)
+const lunchBox1EditDrinkArbitrarily = ref(0)
+const lunchBox2EditMainArbitrarily = ref(0)
+const lunchBox2EditDrinkArbitrarily = ref(0)
+const lunchBox3EditMainArbitrarily = ref(0)
+const lunchBox3EditDrinkArbitrarily = ref(0)
+const lunchBox4EditMainArbitrarily = ref(0)
+const lunchBox4EditDrinkArbitrarily = ref(0)
+const lunchBoxCustom1MainArbitrarily = ref(0)
+const lunchBoxCustom1DrinkArbitrarily = ref(0)
+const lunchBoxCustom1EditMainArbitrarily = ref(0)
+const lunchBoxCustom1EditDrinkArbitrarily = ref(0)
 
 // 聯絡人區
 // 路名輔助按鈕
@@ -3696,7 +4024,7 @@ loadBangdong1()
 const bangdong1TotalQuantity = computed(() => {
   return bangdong1Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong1MainArbitrarily.value)
 })
 
 // 計算總價格
@@ -3727,7 +4055,7 @@ const submitBangdong1 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong1Name.value + totalQuantity + '份'
+
       // 保留 主餐名稱、主餐ID
       const productInput = {
         productTypeId: bangdong1MainMealId.value,
@@ -3735,7 +4063,7 @@ const submitBangdong1 = () => {
         productType: 'options_with_qty'
       }
       row.productInputs.push(productInput)
-      row.Main += bangdong1Main.name + 'x' + parseInt(bangdong1Main.quantity).toString() + ' '
+      row.Main += bangdong1Main.name + 'x' + parseInt(bangdong1Main.quantity).toString()
 
       const input = {
         id: bangdong1Main.id,
@@ -3806,6 +4134,34 @@ const submitBangdong1 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留主餐任搭數量
+  if (bangdong1MainArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '主餐任意搭配' + 'x' + parseInt(bangdong1MainArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong1MainArbitrarily',
+      value: bangdong1MainArbitrarily.value,
+      name: '主餐任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  // 保留飲料任搭數量
+  if (bangdong1DrinkArbitrarily.value > 0) {
+    if (row.drinks !== '') {
+      row.drinks += ','
+    }
+    row.drinks += '飲料任搭' + 'x' + parseInt(bangdong1DrinkArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong1DrinkArbitrarily',
+      value: bangdong1DrinkArbitrarily.value,
+      name: '飲料任意搭配'
+    }
+    row.inputs.push(input)
+  }
+
+  row.name = bangdong1Name.value + totalQuantity + '份'
   console.log(JSON.stringify(row))
   console.log(JSON.stringify(row.inputs))
   console.log(JSON.stringify(row.inputs.id))
@@ -3813,6 +4169,8 @@ const submitBangdong1 = () => {
 
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
+  bangdong1MainArbitrarily.value = 0
+  bangdong1DrinkArbitrarily.value = 0
   showbangdong1.value = false
 }
 
@@ -3997,7 +4355,7 @@ loadBangdong2()
 const bangdong2TotalQuantity = computed(() => {
   return bangdong2Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong2MainArbitrarily.value)
 })
 
 // 計算總價格
@@ -4029,7 +4387,6 @@ const submitBangdong2 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong2Name.value + totalQuantity + '份'
       row.Main += bangdong2Main.name + 'x' + parseInt(bangdong2Main.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -4130,6 +4487,35 @@ const submitBangdong2 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+
+  // 保留主餐任搭數量
+  if (bangdong2MainArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '主餐任意搭配' + 'x' + parseInt(bangdong2MainArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong2MainArbitrarily',
+      value: bangdong2MainArbitrarily.value,
+      name: '主餐任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  // 保留飲料任搭數量
+  if (bangdong2DrinkArbitrarily.value > 0) {
+    if (row.drinks !== '') {
+      row.drinks += ','
+    }
+    row.drinks += '飲料任搭' + 'x' + parseInt(bangdong2DrinkArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong2DrinkArbitrarily',
+      value: bangdong2DrinkArbitrarily.value,
+      name: '飲料任意搭配'
+    }
+    row.inputs.push(input)
+  }
+
+  row.name = bangdong2Name.value + totalQuantity + '份'
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
   showbangdong2.value = false
@@ -4329,7 +4715,7 @@ loadBangdong3()
 const bangdong3TotalQuantity = computed(() => {
   return bangdong3Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong3MainArbitrarily.value)
 })
 
 // 計算總價格
@@ -4361,7 +4747,7 @@ const submitBangdong3 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong3Name.value + totalQuantity + '份'
+
       row.Main += bangdong3Main.name + 'x' + parseInt(bangdong3Main.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -4461,6 +4847,33 @@ const submitBangdong3 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留主餐任搭數量
+  if (bangdong3MainArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '主餐任意搭配' + 'x' + parseInt(bangdong3MainArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong3MainArbitrarily',
+      value: bangdong3MainArbitrarily.value,
+      name: '主餐任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  // 保留飲料任搭數量
+  if (bangdong3DrinkArbitrarily.value > 0) {
+    if (row.drinks !== '') {
+      row.drinks += ','
+    }
+    row.drinks += '飲料任搭' + 'x' + parseInt(bangdong3DrinkArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong3DrinkArbitrarily',
+      value: bangdong3DrinkArbitrarily.value,
+      name: '飲料任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong3Name.value + totalQuantity + '份'
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
   showbangdong3.value = false
@@ -4659,7 +5072,7 @@ loadBangdong4()
 const bangdong4TotalQuantity = computed(() => {
   return bangdong4Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong4MainArbitrarily.value)
 })
 
 // 計算總價格
@@ -4691,7 +5104,7 @@ const submitBangdong4 = () => {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong4Name.value + totalQuantity + '份'
+
       row.Main += bangdong4Main.name + 'x' + parseInt(bangdong4Main.quantity).toString()
       const productInput = {
         productTypeId: bangdong4MainMealId.value,
@@ -4790,6 +5203,33 @@ const submitBangdong4 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留主餐任搭數量
+  if (bangdong4MainArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '主餐任意搭配' + 'x' + parseInt(bangdong4MainArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong4MainArbitrarily',
+      value: bangdong4MainArbitrarily.value,
+      name: '主餐任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  // 保留飲料任搭數量
+  if (bangdong4DrinkArbitrarily.value > 0) {
+    if (row.drinks !== '') {
+      row.drinks += ','
+    }
+    row.drinks += '飲料任搭' + 'x' + parseInt(bangdong4DrinkArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong4DrinkArbitrarily',
+      value: bangdong4DrinkArbitrarily.value,
+      name: '飲料任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong4Name.value + totalQuantity + '份'
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
   showbangdong4.value = false
@@ -4966,7 +5406,7 @@ loadLunchBox1()
 const lunchBox1TotalQuantity = computed(() => {
   return lunchBox1Mains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(lunchBox1MainArbitrarily.value)
 })
 
 // 計算總價格
@@ -5028,7 +5468,7 @@ const submitLunchbox1 = () => {
       if (row.Main !== '') {
         row.Main += ', '
       }
-      row.name = lunchBox1Name.value + totalQuantity + '份'
+
       row.Main += Main
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -5082,6 +5522,33 @@ const submitLunchbox1 = () => {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
+  // 保留主餐任搭數量
+  if (lunchBox1MainArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '主餐任意搭配' + 'x' + parseInt(lunchBox1MainArbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox1MainArbitrarily',
+      value: lunchBox1MainArbitrarily.value,
+      name: '主餐任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  // 保留飲料任搭數量
+  if (lunchBox1DrinkArbitrarily.value > 0) {
+    if (row.drinks !== '') {
+      row.drinks += ','
+    }
+    row.drinks += '飲料任搭' + 'x' + parseInt(lunchBox1DrinkArbitrarily.value).toString()
+    const input = {
+      id: 'lunchBox1DrinkArbitrarily',
+      value: lunchBox1DrinkArbitrarily.value,
+      name: '飲料任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = lunchBox1Name.value + totalQuantity + '份'
 
   if (row.Main !== '' || row.sideDishes !== '') {
     // 如果 row.Main 或 row.sideDishes 不是空的，則添加到 tableRows
@@ -6015,7 +6482,7 @@ const bangdongCustom1DrinkId = ref('')
 const bangdongCustom1SideDishId = ref('')
 const bangdongCustom1BentoMainId = ref('')
 const editDialog9 = ref(false)
-// 抓取客製招牌便當主餐形成input
+// 抓取客製便當主餐形成input
 const loadBangdongCustom1 = async () => {
   try {
     const response = await apiAuth.get('catalog/product/1043')
@@ -7061,6 +7528,14 @@ function editBangdong1 (row) {
   for (const input of row.inputs) {
     const name = input.name
     const value = input.value
+    // 主餐任意搭配抓取推入
+    if (input.name === '主餐任意搭配') {
+      bangdong1EditMainArbitrarily.value = input.value
+    }
+    // 飲料任意搭配抓取推入
+    if (input.name === '飲料任意搭配') {
+      bangdong1EditDrinkArbitrarily.value = input.value
+    }
     // 招牌便當  主餐  推入input數值
     const mainIndex = bangdong1EditMains.findIndex(
       (bangdong1EditMain) => bangdong1EditMain.name === name
@@ -7127,7 +7602,7 @@ function editBangdong1 (row) {
 const bangdong1EditTotalQuantity = computed(() => {
   return bangdong1EditMains.reduce((total, current) => {
     return total + parseInt(current.quantity)
-  }, 0)
+  }, 0) + parseInt(bangdong1EditMainArbitrarily.value)
 })
 
 // 招牌便當單價
@@ -7165,7 +7640,7 @@ function saveEditDialog1 () {
       if (row.Main !== '') {
         row.Main += ','
       }
-      row.name = bangdong1Name.value + totalEditQuantity + '份' // 使用總數量
+
       row.Main += bangdong1EditMain.name + 'x' + parseInt(bangdong1EditMain.quantity).toString()
       // 保留 主餐名稱、主餐ID
       const productInput = {
@@ -7237,7 +7712,34 @@ function saveEditDialog1 () {
     totalPrice: row.price
   }
   row.productInputs.push(productInput)
-  console.log('productInput:', productInput)
+
+  // 保留主餐任搭數量
+  if (bangdong1EditMainArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '主餐任意搭配' + 'x' + parseInt(bangdong1EditMainArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong1EditMainArbitrarily',
+      value: bangdong1EditMainArbitrarily.value,
+      name: '主餐任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  // 保留飲料任搭數量
+  if (bangdong1EditDrinkArbitrarily.value > 0) {
+    if (row.drinks !== '') {
+      row.drinks += ','
+    }
+    row.drinks += '飲料任搭' + 'x' + parseInt(bangdong1EditDrinkArbitrarily.value).toString()
+    const input = {
+      id: 'bangdong1EditDrinkArbitrarily',
+      value: bangdong1EditDrinkArbitrarily.value,
+      name: '飲料任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdong1Name.value + totalEditQuantity + '份' // 使用總數量
   // 將這個 row 推進 tableRows 中
   const rowIndex = tableRows.findIndex(r => r === editingRow)
   if (rowIndex !== -1) {
@@ -9596,18 +10098,18 @@ const addOrder = async () => {
     formData.append('comment', personForm.remark) //  客戶備註
     formData.append('extra_comment', mealRemark.value) //  餐點備註
 
-    formData.append('order_totals[sub_total][title]  ', '商品合計') // 商品合計
-    formData.append('order_totals[sub_total][value]  ', total.value)
-    // formData.append('order_totals[sub_total][sort_order]  ', 1)
-    formData.append('order_totals[discount][title]  ', '優惠折扣') // 優惠折扣
-    formData.append('order_totals[discount][value]  ', 0)
-    // formData.append('order_totals[discount][sort_order]  ', 2)
-    formData.append('order_totals[shipping_fee][title]  ', '運費') // 運費
-    formData.append('order_totals[shipping_fee][value]  ', 0)
+    formData.append('order_totals[sub_total][title]', '商品合計') // 商品合計
+    formData.append('order_totals[sub_total][value]', total.value)
+    // formData.append('order_totals[sub_total][sort_order]', 1)
+    formData.append('order_totals[discount][title]', '優惠折扣') // 優惠折扣
+    formData.append('order_totals[discount][value]', 0)
+    // formData.append('order_totals[discount][sort_order]', 2)
+    formData.append('order_totals[shipping_fee][title]', '運費') // 運費
+    formData.append('order_totals[shipping_fee][value]', 0)
     // formData.append('order_totals[shipping_fee][sort_order]  ', 3)
-    formData.append('order_totals[total ][title]  ', '總計') // 總計
-    formData.append('order_totals[total ][value]  ', total.value)
-    // formData.append('order_totals[total ][sort_order]  ', 4)
+    formData.append('order_totals[total ][title]', '總計') // 總計
+    formData.append('order_totals[total ][value]', total.value)
+    // formData.append('order_totals[total ][sort_order]', 4)
 
     // 添加訂單產品
     for (const row of tableRows) {
@@ -9805,7 +10307,7 @@ const addOrder = async () => {
       outline: 0;
   }
 
-  .bandongbtn{
+  .bangdongbtn{
     width: 300px;
   height: 270px;
     background: #477DE7;
@@ -9891,9 +10393,6 @@ const addOrder = async () => {
     }
     table{
       height: 314px;
-      td{
-        vertical-align: top;
-      }
 
     }
     #lunchbox{
