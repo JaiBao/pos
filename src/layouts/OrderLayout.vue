@@ -1,26 +1,23 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-page-container>
-      <router-view />
-    </q-page-container>
-    <q-footer  >
+    <q-header >
       <div class="oderfooter">
+        <q-btn-group spread>
     <q-btn
-          color="blue"
+          color="teal-5"
           label="點餐"
           icon="restaurant"
           to="/Order"
-
         />
         <q-btn
-          color="blue"
+          color="teal-5"
           label="訂單"
           icon="list_alt"
           :href="api.defaults.baseURL + 'backend/sale/orders'"
           target="_blank"
         />
         <q-btn
-          color="blue"
+          color="teal-5"
           label="會員"
           icon="manage_accounts"
           target="_blank"
@@ -33,7 +30,7 @@
         to="/Setting"
         />
         <q-btn
-          color="green"
+          color="teal-5"
           label="設定"
           icon="settings"
           to="/Setting"
@@ -47,7 +44,14 @@
           icon="logout"
 
         />
+        </q-btn-group>
       </div>
+    </q-header>
+    <q-page-container>
+      <router-view />
+    </q-page-container>
+    <q-footer  >
+
     </q-footer>
 
   </q-layout>
@@ -59,6 +63,9 @@ import { api } from 'src/boot/axios'
 </script>
 
 <style lang="scss" scoped>
+.q-layout__section--marginal{
+  background: #FFFFFF;
+}
 .oderfooter{
   display: flex!important;
   justify-content: space-between!important;
@@ -69,10 +76,10 @@ import { api } from 'src/boot/axios'
     flex: 1;
     width: 213.67px!important;
   height: 70px;
-  background: #477DE7;
+  // background: #477DE7;
   color: #FFFFFF;
   font-size: 28px;
-  box-shadow: 10px 10px 0px 2px #1564ad;
+  // box-shadow: 10px 10px 0px 2px #1564ad;
   // font-size: 42px;
 
   }

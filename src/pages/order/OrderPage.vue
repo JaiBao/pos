@@ -1,9 +1,10 @@
 <template>
+
   <div class="orderMenucontainer">
     <!-- 聯絡人區 -->
-    <q-btn v-if="!show" color="blue" size="md" @click="show = !show" style="width:100%">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
-
-  <div class="row person"  v-show="show">
+    <!-- <q-btn v-if="!show" color="blue" size="md" @click="show = !show" style="width:100%">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn> -->
+    <q-dialog  v-model="showPersonDialog" maximized>
+  <div class="row person"  >
 
       <q-form
       @submit="onSubmit" @reset="onReset"
@@ -435,7 +436,7 @@ label="Ms" />
               />
             </div>
                 <div class="row justify-end  col-3">
-                  <q-btn v-if="show" color="blue"  @click="show = !show"   class="q-ml-sm">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn>
+                  <!-- <q-btn v-if="show" color="blue"  @click="show = !show"   class="q-ml-sm">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn> -->
           <q-btn
                 label="清除"
                 type="reset"
@@ -456,7 +457,7 @@ label="Ms" />
     </q-form>
 
   </div>
-
+</q-dialog>
       <!-- 點單按鈕 -->
       <div class="row menu text-left" data-order-panel>
     <h5>請選擇餐點</h5>
@@ -494,6 +495,13 @@ label="Ms" />
             :disabled="isSubmitting"
             label="加入訂單"
 
+          />
+          <q-btn
+            color="pink-5"
+            @click="addPerson"
+            :disabled="isSubmitting"
+            label="客戶資料"
+        class="personBtn"
           />
 
           <!-- 便當dailog -->
@@ -3195,19 +3203,19 @@ label="Ms" />
 import { ref, watch, computed, reactive } from 'vue'
 import { useQuasar, Dialog } from 'quasar'
 import { apiAuth } from 'src/boot/axios'
-
-// import { useRouter } from 'vue-router'
-
-// const router = useRouter()
 const $q = useQuasar()
 
 // 聯絡人區
+const showPersonDialog = ref(false)
+function addPerson () {
+  showPersonDialog.value = true
+}
 // 路名輔助按鈕
 
 function run2 (message) {
   personForm.road2 += message
 }
-const show = ref(false)
+// const show = ref(false)
 // 訂購日期自動導入
 
 const personForm = reactive({
@@ -8007,7 +8015,7 @@ const loadBangdongSolo = async () => {
         quantity: 0
       })
     }
-    // 6吋
+    // 吋
     const burrito3inch = productOptions.burrito_3inch
     const burrito3inchValues = burrito3inch.product_option_values
 
@@ -12014,7 +12022,7 @@ const addOrder = async () => {
     // margin-top: 10px;
     // margin-left: 30px;
     height: 85px;
-    margin:0px 30px 0 5px ;
+    margin:24px 30px 0 5px ;
     text-align: center;
     h5{
       font-size: 23px;
@@ -12023,7 +12031,7 @@ const addOrder = async () => {
     // top: 50%;
     // transform: translate(0, -50%);
     .q-btn{
-      width: 160px;
+      width: 140px;
     height: 40px;
     background: #477DE7;
     color: #FFFFFF;
@@ -12032,6 +12040,9 @@ const addOrder = async () => {
     /* margin-top: 20px; */
     font-size: 27px;
     box-shadow: 7px 5px 0px 2px #1564ad;
+    }
+    .personBtn{
+      width: 140px;
     }
 
   }
