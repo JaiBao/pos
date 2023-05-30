@@ -1874,6 +1874,7 @@ label="Ms" />
             <p v-if="personForm.memberId" >會員編號: {{ personForm.memberId }}</p>
     <p v-if="personForm.name">訂購人: {{ personForm.name }}</p>
     <p v-if="personForm.tel">訂購人電話: {{ personForm.tel }}</p>
+    <p v-if="personForm.hometel">訂購人室內電話: {{personForm.prefix}}  {{ personForm.hometel }} #{{personForm.hometel2}}</p>
   </h>
 
                 </q-toolbar>
@@ -3278,6 +3279,9 @@ const unpaid = ref(0)
 const getMoneyDate = ref('')
 const totalPrice = computed(() => {
   return tableRows.reduce((accumulator, row) => accumulator + row.price, 0) - parseInt(discount.value) + parseInt(freight.value)
+})
+const productPrice = computed(() => {
+  return tableRows.reduce((accumulator, row) => accumulator + row.price, 0)
 })
 
 watch(totalPrice, (newTotalPrice) => {
@@ -11858,7 +11862,7 @@ const addOrder = async () => {
     formData.append('location_id', locationIdValue.value) // 設定訂單狀態
 
     formData.append('order_totals[sub_total][title]', '商品合計') // 商品合計
-    formData.append('order_totals[sub_total][value]', total.value)
+    formData.append('order_totals[sub_total][value]', productPrice.value)
     // formData.append('order_totals[sub_total][sort_order]', 1)
     formData.append('order_totals[discount][title]', '優惠折扣') // 優惠折扣
     formData.append('order_totals[discount][value]', discount.value)
