@@ -11842,7 +11842,7 @@ const addOrder = async () => {
     // formData.append('email', personForm.email) // 訂購人信箱
     formData.append('payment_company', personForm.company) // 訂購公司
     formData.append('payment_tin', personForm.compilation) // 統一編號
-    formData.append('is_payment_tin', personForm.noCompilation ? 1 : 0) // 是否需要統編
+    formData.append('is_payment_tin', personForm.noCompilation ? 0 : 1) // 是否需要統編
     formData.append('payment_method', paymentMethod.value) //  付款方式
     formData.append('scheduled_payment_date', formattedDate3) // 付款日期
     formData.append('payment_total', total.value) //  總金額
