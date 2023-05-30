@@ -101,21 +101,26 @@
       :input-style="{ fontSize: '17px' }"
     />
             </td>
-
             <td>
 
-                <q-input
-                outlined
-                v-model="personForm.compilation"
-                type="text"
-                label="統編"
-                style="padding: 0;"
-                :input-style="{ fontSize: '20px' }"
-                :rules="[val => personForm.noCompilation || val.length === 8 || '需為8位數']"
-                :readonly="isCompilationReadonly"
-      />
+<q-input
+outlined
+v-model="personForm.compilation"
+type="text"
+label="統編"
+style="padding: 0;"
+:input-style="{ fontSize: '20px' }"
+:rules="[val => personForm.noCompilation || val.length === 8 || '需為8位數']"
+:readonly="isCompilationReadonly"
+/>
+<q-checkbox
+        size="xs"
+        val="xs"
+        v-model="personForm.noCompilation"
+        label="不需要統編"
 
-            </td>
+      />
+</td>
             <td colspan="2">
               <q-input
               outlined
@@ -309,13 +314,19 @@ label="Ms" />
     </td>
           </tr>
           <tr>
-            <td colspan="2">
-              <q-input
-              outlined
-               v-model="personForm.getCompany"
-               type="text"
-               label="送達公司"
-               :input-style="{ fontSize: '20px' }" />
+            <td colspan="2">         <q-checkbox
+        size="xs"
+        v-model="personForm.sameOrderCustomer"
+        val="xs"
+        label="同訂購人"
+        />
+        <q-checkbox
+        size="xs"
+        v-model="personForm.sameOrderCompany"
+        val="xs"
+        label="同訂購公司"
+        />
+
             </td>
 
           </tr>
@@ -338,37 +349,19 @@ label="Ms" />
                :input-style="{ fontSize: '20px' }" />
 
             </td>
-            <td>
-              <div class="row justify-start" style="font-size: 20px; display: flex; ">
-          <div >
-        <q-checkbox
-        size="xs"
-        v-model="personForm.sameOrderCustomer"
-        val="xs"
-        label="同訂購人"
-        />
-      </div>
-      <div >
-        <q-checkbox
-        size="xs"
-        v-model="personForm.sameOrderCompany"
-        val="xs"
-        label="同訂購公司"
-        />
-        <q-checkbox
-        size="xs"
-        val="xs"
-        v-model="personForm.noCompilation"
-        label="不需要統編"
 
-      />
-      </div>
-    </div>
+            <td colspan="2" >
+              <q-input
 
-              </td>
-
-            <td colspan="5">
+              outlined
+               v-model="personForm.getCompany"
+               type="text"
+               label="送達公司"
+               :input-style="{ fontSize: '20px' }" />
+            </td>
+            <td colspan="4" >
               <q-select
+
       filled
       v-model="personForm.event"
       multiple
