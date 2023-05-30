@@ -485,13 +485,15 @@
 
           <!-- 便當dailog -->
           <q-dialog v-model="showbangdong" class="lunchBoxdailog" >
-          <q-card class="  items-start " id="dialogbtnCard">
+          <q-card class="  items-start " id="dialogbtnBangdongCard">
             <!-- 便當按鈕 -->
-            <div class="  items-center" id="lunchboxbtn" >
+            <div class="  items-center" id="bangdongbtn" >
               <q-btn color="blue" :label="bangdong1Name"  @click="showbangdong1 = true; showbangdong=false" />
               <q-btn color="blue" :label="bangdong2Name"  @click="showbangdong2 = true; showbangdong=false" />
               <q-btn color="blue" :label="bangdong3Name"  @click="showbangdong3 = true; showbangdong=false" />
               <q-btn color="blue" :label="bangdong4Name"  @click="showbangdong4 = true; showbangdong=false" />
+              <q-btn color="blue" :label="bangdongVegetarian1Name"  @click="showbangdongVegetarian1 = true; showbangdong=false" />
+              <q-btn color="blue" :label="bangdongVegetarian2Name"  @click="showbangdongVegetarian2 = true; showbangdong=false" />
             </div>
            <div  class="row justify-end q-ma-lg"> <q-btn color="red" label="取消" class="q-mt-md" @click="showbangdong = false" />
             </div>
@@ -977,6 +979,156 @@
 
     </q-card>
   </q-dialog>
+  <!-- 素食便當125dialog -->
+<q-dialog v-model="showbangdongVegetarian1">
+  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1MainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian1Main, index) in bangdongVegetarian1Mains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian1Main.quantity" :label="bangdongVegetarian1Main.name" outlined
+            type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian1Drink, index) in bangdongVegetarian1Drinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian1Drink.quantity" :label="bangdongVegetarian1Drink.name" outlined
+            type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" min="0" />
+        </q-item>
+      </div>
+    </div>
+          <!-- 副主餐 -->
+          <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1BentoMainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongVegetarian1BentoMain, index) in bangdongVegetarian1BentoMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongVegetarian1BentoMain.quantity" :label="bangdongVegetarian1BentoMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian1SideDish, index) in bangdongVegetarian1SideDishes" :key="index"
+          class="flex-auto " style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian1SideDish.quantity" :label="bangdongVegetarian1SideDish.name" outlined
+            type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+      <h5 style="line-height: 0;">{{bangdongVegetarian1Name}}</h5>
+    </div>
+    <div class="row">
+      <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
+        v-model="bangdongVegetarian1Arbitrarily" label="任意搭配" min="0" />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian1TotalQuantity" label="數量總計" min="0" />
+
+      <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian1Price" label="商品單價" readonly />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian1TotalQuantityPrice" label="金額總計" readonly min="0" />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn color="primary" label="送出" type="submit" class="q-mt-md" @click="submitBangdongVegetarian1" />
+      <q-btn color="red" label="取消" @click="showbangdongVegetarian1 = false" class="q-mt-md" />
+
+    </div>
+  </q-card>
+</q-dialog>
+<!-- 素食便當150dialog -->
+<q-dialog v-model="showbangdongVegetarian2">
+  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2MainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian2Main, index) in bangdongVegetarian2Mains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian2Main.quantity" :label="bangdongVegetarian2Main.name" outlined
+            type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian2Drink, index) in bangdongVegetarian2Drinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian2Drink.quantity" :label="bangdongVegetarian2Drink.name" outlined
+            type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" min="0" />
+        </q-item>
+      </div>
+    </div>
+          <!-- 副主餐 -->
+          <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2BentoMainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongVegetarian2BentoMain, index) in bangdongVegetarian2BentoMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongVegetarian2BentoMain.quantity" :label="bangdongVegetarian2BentoMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian2SideDish, index) in bangdongVegetarian2SideDishes" :key="index"
+          class="flex-auto " style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian2SideDish.quantity" :label="bangdongVegetarian2SideDish.name" outlined
+            type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+            style="width: 130px;" min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+      <h5 style="line-height: 0;">{{bangdongVegetarian2Name}}</h5>
+    </div>
+    <div class="row">
+      <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
+        v-model="bangdongVegetarian2Arbitrarily" label="任意搭配" min="0" />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian2TotalQuantity" label="數量總計" min="0" />
+
+      <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian2Price" label="商品單價" readonly />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian2TotalQuantityPrice" label="金額總計" readonly min="0" />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn color="primary" label="送出" type="submit" class="q-mt-md" @click="submitBangdongVegetarian2" />
+      <q-btn color="red" label="取消" @click="showbangdongVegetarian2 = false" class="q-mt-md" />
+
+    </div>
+  </q-card>
+</q-dialog>
         <!-- 盒餐dailog -->
         <q-dialog v-model="showlunchBox" class="lunchBoxdailog" >
     <q-card class="  items-start " id="dialogbtnCard">
@@ -2142,6 +2294,156 @@
 
     </q-card>
   </q-dialog>
+  <!-- 素食便當125修改dialog -->
+<q-dialog v-model="editDialogV1">
+  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1MainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian1EditMain, index) in bangdongVegetarian1EditMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian1EditMain.quantity" :label="bangdongVegetarian1EditMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian1EditDrink, index) in bangdongVegetarian1EditDrinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian1EditDrink.quantity" :label="bangdongVegetarian1EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+          <!-- 副主餐 -->
+          <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1BentoMainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongVegetarian1EditBentoMain, index) in bangdongVegetarian1EditBentoMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongVegetarian1EditBentoMain.quantity" :label="bangdongVegetarian1EditBentoMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian1SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian1EditSideDish, index) in bangdongVegetarian1EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian1EditSideDish.quantity" :label="bangdongVegetarian1EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+      <h5 style="line-height: 0;">{{bangdongVegetarian1Name}}</h5>
+    </div>
+    <div class="row">
+      <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
+        v-model="bangdongVegetarian1EditArbitrarily" label="任意搭配" min="0" />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian1EditTotalQuantity" label="數量總計" min="0" />
+      <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian1EditPrice" label="商品單價" readonly />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian1EditTotalQuantityPrice" label="金額總計" readonly min="0" />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn label="儲存" color="primary" @click="saveEditDialogV1" />
+      <q-btn label="取消" color="red" @click="closeEditDialogV1" />
+
+    </div>
+
+  </q-card>
+</q-dialog>
+<!-- 素食便當150修改dialog -->
+<q-dialog v-model="editDialogV2">
+  <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2MainName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian2EditMain, index) in bangdongVegetarian2EditMains" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian2EditMain.quantity" :label="bangdongVegetarian2EditMain.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 飲料 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2DrinkName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian2EditDrink, index) in bangdongVegetarian2EditDrinks" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian2EditDrink.quantity" :label="bangdongVegetarian2EditDrink.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+          <!-- 副主餐 -->
+          <div>
+        <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2BentoMainName }}</h5>
+        <div class="row items-center">
+          <q-item v-for="(bangdongVegetarian2EditBentoMain, index) in bangdongVegetarian2EditBentoMains" :key="index" class="flex-auto "
+            style="margin: 0; padding: 0;">
+            <q-input v-model="bangdongVegetarian2EditBentoMain.quantity" :label="bangdongVegetarian2EditBentoMain.name" outlined type="number"
+              :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
+              style="width: 130px;"
+              min="0"
+              />
+          </q-item>
+        </div>
+      </div>
+    <!-- 配菜 -->
+    <div>
+      <h5 style="margin: 0; padding: 0;">{{ bangdongVegetarian2SideDishName }}</h5>
+      <div class="row items-center">
+        <q-item v-for="(bangdongVegetarian2EditSideDish, index) in bangdongVegetarian2EditSideDishes" :key="index" class="flex-auto "
+          style="margin: 0; padding: 0;">
+          <q-input v-model="bangdongVegetarian2EditSideDish.quantity" :label="bangdongVegetarian2EditSideDish.name" outlined type="number"
+            :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
+            min="0" />
+        </q-item>
+      </div>
+    </div>
+    <!-- 總計 -->
+    <div style="width:100%;padding: 0;margin: 0;height: 30px;">
+      <h5 style="line-height: 0;">{{bangdongVegetarian2Name}}</h5>
+    </div>
+    <div class="row">
+      <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
+        v-model="bangdongVegetarian2EditArbitrarily" label="任意搭配" min="0" />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian2EditTotalQuantity" label="數量總計" min="0" />
+      <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian2EditPrice" label="商品單價" readonly />
+      <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
+        v-model="bangdongVegetarian2EditTotalQuantityPrice" label="金額總計" readonly min="0" />
+    </div>
+    <!-- 按鈕 -->
+    <div class="row justify-end" style="width: 100%;">
+      <q-btn label="儲存" color="primary" @click="saveEditDialogV2" />
+      <q-btn label="取消" color="red" @click="closeEditDialogV2" />
+
+    </div>
+
+  </q-card>
+</q-dialog>
    <!-- 客製招牌便當修改dialog -->
    <q-dialog v-model="editDialog9">
     <q-card class="q-gutter-md row items-start  word-break " id="bangdongcard">
@@ -3609,10 +3911,14 @@ const bangdong1Arbitrarily = ref(0)
 const bangdong2Arbitrarily = ref(0)
 const bangdong3Arbitrarily = ref(0)
 const bangdong4Arbitrarily = ref(0)
+const bangdongVegetarian1Arbitrarily = ref(0)
+const bangdongVegetarian2Arbitrarily = ref(0)
 const bangdong1EditArbitrarily = ref(0)
 const bangdong2EditArbitrarily = ref(0)
 const bangdong3EditArbitrarily = ref(0)
 const bangdong4EditArbitrarily = ref(0)
+const bangdongVegetarian1EditArbitrarily = ref(0)
+const bangdongVegetarian2EditArbitrarily = ref(0)
 // 盒餐
 const lunchBox1Arbitrarily = ref(0)
 const lunchBox2Arbitrarily = ref(0)
@@ -3642,6 +3948,8 @@ const isBangdong1Loaded = ref(false)
 const isBangdong2Loaded = ref(false)
 const isBangdong3Loaded = ref(false)
 const isBangdong4Loaded = ref(false)
+const isBangdongVegetarian1Loaded = ref(false)
+const isBangdongVegetarian2Loaded = ref(false)
 
 const openbangdong = () => {
   showbangdong.value = true
@@ -3664,6 +3972,16 @@ const openbangdong = () => {
     loadBangdong4()
     loadBangdong4Edit()
     isBangdong4Loaded.value = true
+  }
+  if (!isBangdongVegetarian1Loaded.value) {
+    loadBangdongVegetarian1()
+    loadBangdongVegetarian1Edit()
+    isBangdongVegetarian1Loaded.value = true
+  }
+  if (!isBangdongVegetarian2Loaded.value) {
+    loadBangdongVegetarian2()
+    loadBangdongVegetarian2Edit()
+    isBangdongVegetarian2Loaded.value = true
   }
   // 其他邏輯...
 }
@@ -3734,7 +4052,7 @@ const loadBangdong1 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -4072,7 +4390,7 @@ const loadBangdong2 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong2SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -4430,7 +4748,7 @@ const loadBangdong3 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong3SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -4788,7 +5106,7 @@ const loadBangdong4 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong4SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -5066,6 +5384,721 @@ const loadBangdong4Edit = async () => {
     console.error(error)
   }
 }
+// 素食便當125
+const bangdongVegetarian1Mains = reactive([])
+const bangdongVegetarian1MainName = ref('')
+const bangdongVegetarian1Drinks = reactive([])
+const bangdongVegetarian1DrinkName = ref('')
+const bangdongVegetarian1SideDishes = reactive([])
+const bangdongVegetarian1SideDishName = ref('')
+const bangdongVegetarian1BentoMains = reactive([])
+const bangdongVegetarian1BentoMainName = ref('')
+const bangdongVegetarian1Name = ref('')
+const bangdongVegetarian1Price = ref('')
+const bangdongVegetarian1ProductId = ref('')
+const bangdongVegetarian1MainMealId = ref('')
+const bangdongVegetarian1DrinkId = ref('')
+const bangdongVegetarian1SideDishId = ref('')
+const bangdongVegetarian1BentoMainId = ref('')
+// 抓取素食便當125主餐形成input
+const loadBangdongVegetarian1 = async () => {
+  try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
+    const response = await apiAuth.get('catalog/product/1003')
+    const productOptions = response.data.product_options
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      bangdongVegetarian1Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+
+    for (const DrinkValue of DrinkValues) {
+      bangdongVegetarian1Drinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        price: DrinkValue.price
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      bangdongVegetarian1SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      bangdongVegetarian1BentoMains.push({
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0
+      })
+    }
+    // 監聽主餐的數量變化
+    bangdongVegetarian1Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          bangdongVegetarian1SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '123' || main.name === '123') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+          // 副主餐的數量跟著主餐的數量變化
+          bangdongVegetarian1BentoMains.forEach(bentoMain => {
+            const diff = Number(newVal) - Number(oldVal)
+            const newQuantity = Number(bentoMain.quantity) + diff
+
+            // 確保副主餐數量不會變成負數
+            bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+          })
+        }
+      })
+    })
+    bangdongVegetarian1Name.value = response.data.name
+    bangdongVegetarian1MainName.value = mainMeal.name
+    bangdongVegetarian1DrinkName.value = Drink.name
+    bangdongVegetarian1SideDishName.value = sideDish.name
+    bangdongVegetarian1BentoMainName.value = bentoMain.name
+    bangdongVegetarian1Price.value = parseInt(response.data.price)
+    bangdongVegetarian1ProductId.value = response.data.id
+    bangdongVegetarian1MainMealId.value = mainMeal.id
+    bangdongVegetarian1DrinkId.value = Drink.id
+    bangdongVegetarian1SideDishId.value = sideDish.id
+    bangdongVegetarian1BentoMainId.value = bentoMain.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 計算總數量
+const bangdongVegetarian1TotalQuantity = computed(() => {
+  return bangdongVegetarian1Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0) + parseInt(bangdongVegetarian1Arbitrarily.value)
+})
+
+// 計算總價格
+const bangdongVegetarian1TotalQuantityPrice = computed(() => {
+  let totalPrice = bangdongVegetarian1TotalQuantity.value * bangdongVegetarian1Price.value
+  bangdongVegetarian1Drinks.forEach((drink) => {
+    totalPrice += drink.quantity * drink.price
+  })
+
+  return totalPrice
+})
+// 將資料推進tableRows
+const submitBangdongVegetarian1 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 11,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdongVegetarian1TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdongVegetarian1TotalQuantity.value
+  // 主餐
+  for (const bangdongVegetarian1Main of bangdongVegetarian1Mains) {
+    if (bangdongVegetarian1Main.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+
+      row.Main += bangdongVegetarian1Main.name + 'x' + parseInt(bangdongVegetarian1Main.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdongVegetarian1MainMealId.value,
+        productTypeName: bangdongVegetarian1MainName.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        id: bangdongVegetarian1Main.id,
+        name: bangdongVegetarian1Main.name,
+        value: parseInt(bangdongVegetarian1Main.quantity)
+      }
+      console.log(parseInt(bangdongVegetarian1Main.quantity).toString())
+      row.inputs.push(input)
+      bangdongVegetarian1Main.quantity = 0
+    }
+  }
+  // 飲料
+  for (const bangdongVegetarian1Drink of bangdongVegetarian1Drinks) {
+    if (bangdongVegetarian1Drink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdongVegetarian1Drink.name + 'x' + parseInt(bangdongVegetarian1Drink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdongVegetarian1DrinkName.value,
+        productTypeId: bangdongVegetarian1DrinkId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongVegetarian1Drink.name,
+        value: parseInt(bangdongVegetarian1Drink.quantity)
+      }
+      row.inputs.push(input)
+      bangdongVegetarian1Drink.quantity = 0
+    }
+  }
+  // 配菜
+  for (const bangdongVegetarian1SideDish of bangdongVegetarian1SideDishes) {
+    if (bangdongVegetarian1SideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdongVegetarian1SideDish.name + 'x' + parseInt(bangdongVegetarian1SideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong1SideDishName.value,
+        productTypeId: bangdong1SideDishId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdongVegetarian1SideDish.is_default + ' '
+      const input = {
+        id: bangdongVegetarian1SideDish.id,
+        name: bangdongVegetarian1SideDish.name,
+        value: parseInt(bangdongVegetarian1SideDish.quantity),
+        is_default: bangdongVegetarian1SideDish.is_default
+      }
+      row.inputs.push(input)
+      bangdongVegetarian1SideDish.quantity = 0
+    }
+  }
+  // 副主餐
+  for (const bangdongVegetarian1BentoMain of bangdongVegetarian1BentoMains) {
+    if (bangdongVegetarian1BentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdongVegetarian1BentoMain.name + 'x' + parseInt(bangdongVegetarian1BentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdongVegetarian1BentoMainName.value,
+        productTypeId: bangdongVegetarian1BentoMainId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        id: bangdongVegetarian1BentoMain.id,
+        name: bangdongVegetarian1BentoMain.name,
+        value: parseInt(bangdongVegetarian1BentoMain.quantity)
+      }
+      row.inputs.push(input)
+      bangdongVegetarian1BentoMain.quantity = 0
+    }
+  }
+  // 保留 素食便當125、1003、數量
+  const productInput = {
+    id: bangdongVegetarian1ProductId.value,
+    name: bangdongVegetarian1Name.value,
+    value: parseInt(totalQuantity),
+    price: bangdongVegetarian1Price.value,
+    totalPrice: row.price
+  }
+  row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdongVegetarian1Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdongVegetarian1Arbitrarily.value).toString()
+    const input = {
+      id: 'bangdongVegetarian1Arbitrarily',
+      value: bangdongVegetarian1Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdongVegetarian1Name.value + totalQuantity + '份'
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdongVegetarian1.value = false
+}
+
+// 修改欄位
+const bangdongVegetarian1EditMains = reactive([])
+const bangdongVegetarian1EditDrinks = reactive([])
+const bangdongVegetarian1EditSideDishes = reactive([])
+const bangdongVegetarian1EditBentoMains = reactive([])
+const loadBangdongVegetarian1Edit = async () => {
+  try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
+    const response = await apiAuth.get('catalog/product/1003')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+
+    for (const value of values) {
+      const bangdongVegetarian1EditMain = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongVegetarian1EditMains.push(bangdongVegetarian1EditMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdongVegetarian1EditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        price: DrinkValue.price
+      }
+      bangdongVegetarian1EditDrinks.push(bangdongVegetarian1EditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdongVegetarian1EditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdongVegetarian1EditSideDishes.push(bangdongVegetarian1EditSideDish)
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      const bangdongVegetarian1EditBentoMain = {
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongVegetarian1EditBentoMains.push(bangdongVegetarian1EditBentoMain)
+      console.log(bangdongVegetarian1EditBentoMain)
+    }
+    bangdongVegetarian1MainName.value = mainMeal.name
+    bangdongVegetarian1DrinkName.value = Drink.name
+    bangdongVegetarian1SideDishName.value = sideDish.name
+    bangdongVegetarian1BentoMainName.value = bentoMain.name
+    bangdongVegetarian1Price.value = parseInt(response.data.price)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 素食便當150
+const bangdongVegetarian2Mains = reactive([])
+const bangdongVegetarian2MainName = ref('')
+const bangdongVegetarian2Drinks = reactive([])
+const bangdongVegetarian2DrinkName = ref('')
+const bangdongVegetarian2SideDishes = reactive([])
+const bangdongVegetarian2SideDishName = ref('')
+const bangdongVegetarian2BentoMains = reactive([])
+const bangdongVegetarian2BentoMainName = ref('')
+const bangdongVegetarian2Name = ref('')
+const bangdongVegetarian2Price = ref('')
+const bangdongVegetarian2ProductId = ref('')
+const bangdongVegetarian2MainMealId = ref('')
+const bangdongVegetarian2DrinkId = ref('')
+const bangdongVegetarian2SideDishId = ref('')
+const bangdongVegetarian2BentoMainId = ref('')
+// 抓取素食便當150主餐形成input
+const loadBangdongVegetarian2 = async () => {
+  try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
+    const response = await apiAuth.get('catalog/product/1003')
+    const productOptions = response.data.product_options
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const mainMealValues = mainMeal.product_option_values
+
+    for (const mainMealValue of mainMealValues) {
+      bangdongVegetarian2Mains.push({
+        id: mainMealValue.id,
+        name: mainMealValue.name,
+        quantity: 0
+      })
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+
+    for (const DrinkValue of DrinkValues) {
+      bangdongVegetarian2Drinks.push({
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        price: DrinkValue.price
+      })
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+
+    for (const sideDishValue of sideDishValues) {
+      bangdongVegetarian2SideDishes.push({
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        is_default: sideDishValue.is_default
+      })
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      bangdongVegetarian2BentoMains.push({
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0
+      })
+    }
+    // 監聽主餐的數量變化
+    bangdongVegetarian2Mains.forEach(main => {
+      watch(() => main.quantity, (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          // 配菜的數量跟著主餐的數量變化
+          bangdongVegetarian2SideDishes.forEach(sideDish => {
+            const diff = Number(newVal) - Number(oldVal)
+            if (main.name === '123' || main.name === '123') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+                if (newVal === 0) {
+                  sideDish.quantity = 0
+                } else {
+                  sideDish.quantity = Number(sideDish.quantity) + diff
+                }
+              }
+            } else if (sideDish.is_default) {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          })
+          // 副主餐的數量跟著主餐的數量變化
+          bangdongVegetarian2BentoMains.forEach(bentoMain => {
+            const diff = Number(newVal) - Number(oldVal)
+            const newQuantity = Number(bentoMain.quantity) + diff
+
+            // 確保副主餐數量不會變成負數
+            bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+          })
+        }
+      })
+    })
+    bangdongVegetarian2Name.value = response.data.name
+    bangdongVegetarian2MainName.value = mainMeal.name
+    bangdongVegetarian2DrinkName.value = Drink.name
+    bangdongVegetarian2SideDishName.value = sideDish.name
+    bangdongVegetarian2BentoMainName.value = bentoMain.name
+    bangdongVegetarian2Price.value = parseInt(response.data.price)
+    bangdongVegetarian2ProductId.value = response.data.id
+    bangdongVegetarian2MainMealId.value = mainMeal.id
+    bangdongVegetarian2DrinkId.value = Drink.id
+    bangdongVegetarian2SideDishId.value = sideDish.id
+    bangdongVegetarian2BentoMainId.value = bentoMain.id
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+// 計算總數量
+const bangdongVegetarian2TotalQuantity = computed(() => {
+  return bangdongVegetarian2Mains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0) + parseInt(bangdongVegetarian2Arbitrarily.value)
+})
+
+// 計算總價格
+const bangdongVegetarian2TotalQuantityPrice = computed(() => {
+  let totalPrice = bangdongVegetarian2TotalQuantity.value * bangdongVegetarian2Price.value
+  bangdongVegetarian2Drinks.forEach((drink) => {
+    totalPrice += drink.quantity * drink.price
+  })
+
+  return totalPrice
+})
+// 將資料推進tableRows
+const submitBangdongVegetarian2 = () => {
+  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+
+  const row = {
+    bentoType: 12,
+    id: nextId,
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdongVegetarian2TotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalQuantity = bangdongVegetarian2TotalQuantity.value
+  // 主餐
+  for (const bangdongVegetarian2Main of bangdongVegetarian2Mains) {
+    if (bangdongVegetarian2Main.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+
+      row.Main += bangdongVegetarian2Main.name + 'x' + parseInt(bangdongVegetarian2Main.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdongVegetarian2MainMealId.value,
+        productTypeName: bangdongVegetarian2MainName.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        id: bangdongVegetarian2Main.id,
+        name: bangdongVegetarian2Main.name,
+        value: parseInt(bangdongVegetarian2Main.quantity)
+      }
+      console.log(parseInt(bangdongVegetarian2Main.quantity).toString())
+      row.inputs.push(input)
+      bangdongVegetarian2Main.quantity = 0
+    }
+  }
+  // 飲料
+  for (const bangdongVegetarian2Drink of bangdongVegetarian2Drinks) {
+    if (bangdongVegetarian2Drink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdongVegetarian2Drink.name + 'x' + parseInt(bangdongVegetarian2Drink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdongVegetarian2DrinkName.value,
+        productTypeId: bangdongVegetarian2DrinkId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        name: bangdongVegetarian2Drink.name,
+        value: parseInt(bangdongVegetarian2Drink.quantity)
+      }
+      row.inputs.push(input)
+      bangdongVegetarian2Drink.quantity = 0
+    }
+  }
+  // 配菜
+  for (const bangdongVegetarian2SideDish of bangdongVegetarian2SideDishes) {
+    if (bangdongVegetarian2SideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdongVegetarian2SideDish.name + 'x' + parseInt(bangdongVegetarian2SideDish.quantity).toString()
+      // 保留配菜名稱、配菜ID
+      const productInput = {
+        productTypeName: bangdong1SideDishName.value,
+        productTypeId: bangdong1SideDishId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdongVegetarian2SideDish.is_default + ' '
+      const input = {
+        id: bangdongVegetarian2SideDish.id,
+        name: bangdongVegetarian2SideDish.name,
+        value: parseInt(bangdongVegetarian2SideDish.quantity),
+        is_default: bangdongVegetarian2SideDish.is_default
+      }
+      row.inputs.push(input)
+      bangdongVegetarian2SideDish.quantity = 0
+    }
+  }
+  // 副主餐
+  for (const bangdongVegetarian2BentoMain of bangdongVegetarian2BentoMains) {
+    if (bangdongVegetarian2BentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdongVegetarian2BentoMain.name + 'x' + parseInt(bangdongVegetarian2BentoMain.quantity).toString()
+      // 保留副主餐名稱、副主餐ID
+      const productInput = {
+        productTypeName: bangdongVegetarian2BentoMainName.value,
+        productTypeId: bangdongVegetarian2BentoMainId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+
+      const input = {
+        id: bangdongVegetarian2BentoMain.id,
+        name: bangdongVegetarian2BentoMain.name,
+        value: parseInt(bangdongVegetarian2BentoMain.quantity)
+      }
+      row.inputs.push(input)
+      bangdongVegetarian2BentoMain.quantity = 0
+    }
+  }
+  // 保留 素食便當150、1003、數量
+  const productInput = {
+    id: bangdongVegetarian2ProductId.value,
+    name: bangdongVegetarian2Name.value,
+    value: parseInt(totalQuantity),
+    price: bangdongVegetarian2Price.value,
+    totalPrice: row.price
+  }
+  row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdongVegetarian2Arbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdongVegetarian2Arbitrarily.value).toString()
+    const input = {
+      id: 'bangdongVegetarian2Arbitrarily',
+      value: bangdongVegetarian2Arbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdongVegetarian2Name.value + totalQuantity + '份'
+  // 將這個 row 推進 tableRows 中
+  tableRows.push(row)
+  showbangdongVegetarian2.value = false
+}
+
+// 修改欄位
+const bangdongVegetarian2EditMains = reactive([])
+const bangdongVegetarian2EditDrinks = reactive([])
+const bangdongVegetarian2EditSideDishes = reactive([])
+const bangdongVegetarian2EditBentoMains = reactive([])
+const loadBangdongVegetarian2Edit = async () => {
+  try {
+    // 延遲請求的時間（以毫秒為單位）
+    const delay = 2000
+
+    // 延遲指定的時間
+    await new Promise(resolve => setTimeout(resolve, delay))
+    const response = await apiAuth.get('catalog/product/1003')
+    const productOptions = response.data.product_options
+
+    // 主餐
+    const mainMeal = productOptions.main_meal
+    const values = mainMeal.product_option_values
+
+    for (const value of values) {
+      const bangdongVegetarian2EditMain = {
+        id: value.id,
+        name: value.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongVegetarian2EditMains.push(bangdongVegetarian2EditMain)
+    }
+    // 飲料
+    const Drink = productOptions.drink
+    const DrinkValues = Drink.product_option_values
+    for (const DrinkValue of DrinkValues) {
+      const bangdongVegetarian2EditDrink = {
+        id: DrinkValue.id,
+        name: DrinkValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        price: DrinkValue.price
+      }
+      bangdongVegetarian2EditDrinks.push(bangdongVegetarian2EditDrink)
+    }
+    // 配菜
+    const sideDish = productOptions.side_dish
+    const sideDishValues = sideDish.product_option_values
+    for (const sideDishValue of sideDishValues) {
+      const bangdongVegetarian2EditSideDish = {
+        id: sideDishValue.id,
+        name: sideDishValue.name,
+        quantity: 0,
+        hidenquantity: 0,
+        is_default: sideDishValue.is_default
+      }
+      bangdongVegetarian2EditSideDishes.push(bangdongVegetarian2EditSideDish)
+    }
+    // 副主餐
+    const bentoMain = productOptions.bento_main
+    const bentoMainValues = bentoMain.product_option_values
+    for (const bentoMainValue of bentoMainValues) {
+      const bangdongVegetarian2EditBentoMain = {
+        id: bentoMainValue.id,
+        name: bentoMainValue.name,
+        quantity: 0,
+        hidenquantity: 0
+      }
+      bangdongVegetarian2EditBentoMains.push(bangdongVegetarian2EditBentoMain)
+      console.log(bangdongVegetarian2EditBentoMain)
+    }
+    bangdongVegetarian2MainName.value = mainMeal.name
+    bangdongVegetarian2DrinkName.value = Drink.name
+    bangdongVegetarian2SideDishName.value = sideDish.name
+    bangdongVegetarian2BentoMainName.value = bentoMain.name
+    bangdongVegetarian2Price.value = parseInt(response.data.price)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 // ---------------------------------------------------------
 // 經濟盒餐
@@ -5132,7 +6165,7 @@ const loadLunchBox1 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -5434,7 +6467,7 @@ const loadLunchBox2 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox2SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -5751,7 +6784,7 @@ const loadLunchBox3 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox3SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -6051,7 +7084,7 @@ const loadLunchBox4 = async () => {
           // 配菜的數量跟著主餐的數量變化
           lunchBox4SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (main.name === '123' || main.name === '123') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -7374,6 +8407,10 @@ function editRowDialog (row) {
     editRowDialog0(row)
   } else if (row.bentoType === 10) {
     editBangdongSolo(row)
+  } else if (row.bentoType === 11) {
+    editBangdongVegetarian1(row)
+  } else if (row.bentoType === 12) {
+    editBangdongVegetarian2(row)
   }
 }
 // 招牌便當修改
@@ -7441,7 +8478,7 @@ function editBangdong1 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -7676,7 +8713,7 @@ function editBangdong2 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong2EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -7937,7 +8974,7 @@ function editBangdong3 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong3EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -8199,7 +9236,7 @@ function editBangdong4 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong4EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -8394,6 +9431,535 @@ function saveEditDialog4 () {
     tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
   }
   editDialog4.value = false
+}
+// 素食便當125修改
+
+const editDialogV1 = ref(false)
+
+function editBangdongVegetarian1 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  // 素食便當125主餐歸零
+  for (const bangdongVegetarian1EditMain of bangdongVegetarian1EditMains) {
+    bangdongVegetarian1EditMain.quantity = 0
+  }
+  // 素食便當125飲料歸零
+  for (const bangdongVegetarian1EditDrink of bangdongVegetarian1EditDrinks) {
+    bangdongVegetarian1EditDrink.quantity = 0
+  }
+  // 素食便當125配菜歸零
+  for (const bangdongVegetarian1EditSideDish of bangdongVegetarian1EditSideDishes) {
+    bangdongVegetarian1EditSideDish.quantity = 0
+  }
+  // 素食便當125副主餐歸零
+  for (const bangdongVegetarian1EditBentoMain of bangdongVegetarian1EditBentoMains) {
+    bangdongVegetarian1EditBentoMain.quantity = 0
+  }
+  // 素食便當125主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      bangdongVegetarian1EditArbitrarily.value = input.value
+    }
+    // 素食便當125  主餐  推入input數值
+    const mainIndex = bangdongVegetarian1EditMains.findIndex(
+      (bangdongVegetarian1EditMain) => bangdongVegetarian1EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      bangdongVegetarian1EditMains[mainIndex].quantity = parseInt(value)
+    }
+    // 素食便當125  飲料  推入input數值
+    const drinkIndex = bangdongVegetarian1EditDrinks.findIndex(
+      (bangdongVegetarian1EditDrink) => bangdongVegetarian1EditDrink.name === name
+    )
+    if (drinkIndex >= 0) {
+      bangdongVegetarian1EditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 素食便當125  配菜  推入input數值
+    const sideDishIndex = bangdongVegetarian1EditSideDishes.findIndex(
+      (bangdongVegetarian1EditSideDish) => bangdongVegetarian1EditSideDish.name === name
+    )
+    if (sideDishIndex >= 0) {
+      bangdongVegetarian1EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 素食便當125  副主餐  推入input數值
+    const bentoMainIndex = bangdongVegetarian1EditBentoMains.findIndex(
+      (bangdongVegetarian1EditBentoMain) => bangdongVegetarian1EditBentoMain.name === name
+    )
+    if (bentoMainIndex >= 0) {
+      bangdongVegetarian1EditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  bangdongVegetarian1EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        bangdongVegetarian1EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '123' || main.name === '123') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+        // 副主餐的數量跟著主餐的數量變化
+        bangdongVegetarian1EditBentoMains.forEach(bentoMain => {
+          const diff = Number(newVal) - Number(oldVal)
+          const newQuantity = Number(bentoMain.quantity) + diff
+
+          // 確保副主餐數量不會變成負數
+          bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialogV1.value = true
+}
+
+// 素食便當125總數量
+const bangdongVegetarian1EditTotalQuantity = computed(() => {
+  return bangdongVegetarian1EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0) + parseInt(bangdongVegetarian1EditArbitrarily.value)
+})
+// 素食便當125單價
+const bangdongVegetarian1EditPrice = computed(() => {
+  return bangdongVegetarian1Price.value
+})
+// 素食便當125總價格
+const bangdongVegetarian1EditTotalQuantityPrice = computed(() => {
+  let totalPrice = bangdongVegetarian1EditTotalQuantity.value * bangdongVegetarian1EditPrice.value
+  bangdongVegetarian1EditDrinks.forEach((drink) => {
+    totalPrice += drink.quantity * drink.price
+  })
+
+  return totalPrice
+})
+
+// 關閉修正欄位
+function closeEditDialogV1 () {
+  editDialogV1.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialogV1 () {
+  const row = {
+    bentoType: 2,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdongVegetarian1EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalEditQuantity = bangdongVegetarian1EditTotalQuantity.value // 計算總數量
+
+  // 儲存推入主餐置入table
+  for (const bangdongVegetarian1EditMain of bangdongVegetarian1EditMains) {
+    if (bangdongVegetarian1EditMain.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+
+      row.Main += bangdongVegetarian1EditMain.name + 'x' + parseInt(bangdongVegetarian1EditMain.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdongVegetarian1MainMealId.value,
+        productTypeName: bangdongVegetarian1MainName.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        id: bangdongVegetarian1EditMain.id,
+        name: bangdongVegetarian1EditMain.name,
+        value: parseInt(bangdongVegetarian1EditMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入飲料置入table
+  for (const bangdongVegetarian1EditDrink of bangdongVegetarian1EditDrinks) {
+    if (bangdongVegetarian1EditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdongVegetarian1EditDrink.name + 'x' + parseInt(bangdongVegetarian1EditDrink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdongVegetarian1DrinkName.value,
+        productTypeId: bangdongVegetarian1DrinkId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        id: bangdongVegetarian1EditDrink.id,
+        name: bangdongVegetarian1EditDrink.name,
+        value: parseInt(bangdongVegetarian1EditDrink.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入配菜置入table
+  for (const bangdongVegetarian1EditSideDish of bangdongVegetarian1EditSideDishes) {
+    if (bangdongVegetarian1EditSideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdongVegetarian1EditSideDish.name + 'x' + parseInt(bangdongVegetarian1EditSideDish.quantity).toString()
+      // 保留配菜名稱、ID
+      const productInput = {
+        productTypeName: bangdongVegetarian1SideDishName.value,
+        productTypeId: bangdongVegetarian1SideDishId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdongVegetarian1EditSideDish.is_default + ' '
+      const input = {
+        id: bangdongVegetarian1EditSideDish.id,
+        name: bangdongVegetarian1EditSideDish.name,
+        value: parseInt(bangdongVegetarian1EditSideDish.quantity),
+        is_default: bangdongVegetarian1EditSideDish.is_default
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入副主餐置入table
+  for (const bangdongVegetarian1EditBentoMain of bangdongVegetarian1EditBentoMains) {
+    if (bangdongVegetarian1EditBentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdongVegetarian1EditBentoMain.name + 'x' + parseInt(bangdongVegetarian1EditBentoMain.quantity).toString()
+      const productInput = {
+        productTypeName: bangdongVegetarian1BentoMainName.value,
+        productTypeId: bangdongVegetarian1BentoMainId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        id: bangdongVegetarian1EditBentoMain.id,
+        name: bangdongVegetarian1EditBentoMain.name,
+        value: parseInt(bangdongVegetarian1EditBentoMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 保留素食便當125、1002、數量
+  const productInput = {
+    id: bangdongVegetarian1ProductId.value,
+    name: bangdongVegetarian1Name.value,
+    value: parseInt(totalEditQuantity),
+    price: bangdongVegetarian1EditPrice.value,
+    totalPrice: row.price
+  }
+  row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdongVegetarian1EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdongVegetarian1EditArbitrarily.value).toString()
+    const input = {
+      id: 'bangdongVegetarian1EditArbitrarily',
+      value: bangdongVegetarian1EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdongVegetarian1Name.value + totalEditQuantity + '份' // 使用總數量
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialogV1.value = false
+}
+
+// 素食便當150修改
+
+const editDialogV2 = ref(false)
+
+function editBangdongVegetarian2 (row) {
+  watchers.forEach(unwatch => unwatch())
+  watchers = []
+  // 素食便當150主餐歸零
+  for (const bangdongVegetarian2EditMain of bangdongVegetarian2EditMains) {
+    bangdongVegetarian2EditMain.quantity = 0
+  }
+  // 素食便當150飲料歸零
+  for (const bangdongVegetarian2EditDrink of bangdongVegetarian2EditDrinks) {
+    bangdongVegetarian2EditDrink.quantity = 0
+  }
+  // 素食便當150配菜歸零
+  for (const bangdongVegetarian2EditSideDish of bangdongVegetarian2EditSideDishes) {
+    bangdongVegetarian2EditSideDish.quantity = 0
+  }
+  // 素食便當150副主餐歸零
+  for (const bangdongVegetarian2EditBentoMain of bangdongVegetarian2EditBentoMains) {
+    bangdongVegetarian2EditBentoMain.quantity = 0
+  }
+  // 素食便當150主餐隱藏欄位歸零
+  for (const input of row.inputs) {
+    const name = input.name
+    const value = input.value
+    // 任意搭配抓取推入
+    if (input.name === '任意搭配') {
+      bangdongVegetarian2EditArbitrarily.value = input.value
+    }
+    // 素食便當150 主餐 推入input數值
+    const mainIndex = bangdongVegetarian2EditMains.findIndex(
+      (bangdongVegetarian2EditMain) => bangdongVegetarian2EditMain.name === name
+    )
+    if (mainIndex >= 0) {
+      bangdongVegetarian2EditMains[mainIndex].quantity = parseInt(value)
+    }
+    // 素食便當150 飲料 推入input數值
+    const drinkIndex = bangdongVegetarian2EditDrinks.findIndex(
+      (bangdongVegetarian2EditDrink) => bangdongVegetarian2EditDrink.name === name
+    )
+    if (drinkIndex >= 0) {
+      bangdongVegetarian2EditDrinks[drinkIndex].quantity = parseInt(value)
+    }
+    // 素食便當150 配菜 推入input數值
+    const sideDishIndex = bangdongVegetarian2EditSideDishes.findIndex(
+      (bangdongVegetarian2EditSideDish) => bangdongVegetarian2EditSideDish.name === name
+    )
+    if (sideDishIndex >= 0) {
+      bangdongVegetarian2EditSideDishes[sideDishIndex].quantity = parseInt(value)
+    }
+    // 素食便當150 副主餐 推入input數值
+    const bentoMainIndex = bangdongVegetarian2EditBentoMains.findIndex(
+      (bangdongVegetarian2EditBentoMain) => bangdongVegetarian2EditBentoMain.name === name
+    )
+    if (bentoMainIndex >= 0) {
+      bangdongVegetarian2EditBentoMains[bentoMainIndex].quantity = parseInt(value)
+    }
+  }
+  // 監聽主餐的數量變化
+  bangdongVegetarian2EditMains.forEach(main => {
+    const unwatch = watch(() => main.quantity, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        // 配菜的數量跟著主餐的數量變化
+        bangdongVegetarian2EditSideDishes.forEach(sideDish => {
+          const diff = Number(newVal) - Number(oldVal)
+          if (main.name === '123' || main.name === '123') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (newVal === 0) {
+                sideDish.quantity = 0
+              } else {
+                sideDish.quantity = Number(sideDish.quantity) + diff
+              }
+            }
+          } else if (sideDish.is_default) {
+            if (newVal === 0) {
+              sideDish.quantity = 0
+            } else {
+              sideDish.quantity = Number(sideDish.quantity) + diff
+            }
+          }
+        })
+        // 副主餐的數量跟著主餐的數量變化
+        bangdongVegetarian2EditBentoMains.forEach(bentoMain => {
+          const diff = Number(newVal) - Number(oldVal)
+          const newQuantity = Number(bentoMain.quantity) + diff
+
+          // 確保副主餐數量不會變成負數
+          bentoMain.quantity = newQuantity >= 0 ? newQuantity : 0
+        })
+      }
+    })
+    // Store unwatch reference
+    watchers.push(unwatch)
+  })
+
+  editingRow = row
+  editDialogV2.value = true
+}
+
+// 素食便當150總數量
+const bangdongVegetarian2EditTotalQuantity = computed(() => {
+  return bangdongVegetarian2EditMains.reduce((total, current) => {
+    return total + parseInt(current.quantity)
+  }, 0) + parseInt(bangdongVegetarian2EditArbitrarily.value)
+})
+// 素食便當150單價
+const bangdongVegetarian2EditPrice = computed(() => {
+  return bangdongVegetarian2Price.value
+})
+// 素食便當150總價格
+const bangdongVegetarian2EditTotalQuantityPrice = computed(() => {
+  let totalPrice = bangdongVegetarian2EditTotalQuantity.value * bangdongVegetarian2EditPrice.value
+  bangdongVegetarian2EditDrinks.forEach((drink) => {
+    totalPrice += drink.quantity * drink.price
+  })
+
+  return totalPrice
+})
+
+// 關閉修正欄位
+function closeEditDialogV2 () {
+  editDialogV2.value = false
+}
+// 完成後儲存並且將資料推進tableRows刪除原本的資料
+function saveEditDialogV2 () {
+  const row = {
+    bentoType: 12,
+    id: editingRow.id, // 使用新生成的 ID
+    name: '',
+    Main: '',
+    drinks: '',
+    sideDishes: '',
+    bentoMains: '',
+    sideDishDefault: '',
+    price: bangdongVegetarian2EditTotalQuantityPrice.value,
+    inputs: [],
+    productInputs: []
+  }
+
+  const totalEditQuantity = bangdongVegetarian2EditTotalQuantity.value // 計算總數量
+
+  // 儲存推入主餐置入table
+  for (const bangdongVegetarian2EditMain of bangdongVegetarian2EditMains) {
+    if (bangdongVegetarian2EditMain.quantity > 0) {
+      if (row.Main !== '') {
+        row.Main += ','
+      }
+
+      row.Main += bangdongVegetarian2EditMain.name + 'x' + parseInt(bangdongVegetarian2EditMain.quantity).toString()
+      // 保留 主餐名稱、主餐ID
+      const productInput = {
+        productTypeId: bangdongVegetarian2MainMealId.value,
+        productTypeName: bangdongVegetarian2MainName.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        id: bangdongVegetarian2EditMain.id,
+        name: bangdongVegetarian2EditMain.name,
+        value: parseInt(bangdongVegetarian2EditMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入飲料置入table
+  for (const bangdongVegetarian2EditDrink of bangdongVegetarian2EditDrinks) {
+    if (bangdongVegetarian2EditDrink.quantity > 0) {
+      if (row.drinks !== '') {
+        row.drinks += ','
+      }
+      row.drinks += bangdongVegetarian2EditDrink.name + 'x' + parseInt(bangdongVegetarian2EditDrink.quantity).toString()
+      // 保留飲料名稱、飲料ID
+      const productInput = {
+        productTypeName: bangdongVegetarian2DrinkName.value,
+        productTypeId: bangdongVegetarian2DrinkId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        id: bangdongVegetarian2EditDrink.id,
+        name: bangdongVegetarian2EditDrink.name,
+        value: parseInt(bangdongVegetarian2EditDrink.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入配菜置入table
+  for (const bangdongVegetarian2EditSideDish of bangdongVegetarian2EditSideDishes) {
+    if (bangdongVegetarian2EditSideDish.quantity > 0) {
+      if (row.sideDishes !== '') {
+        row.sideDishes += ','
+      }
+      row.sideDishes += bangdongVegetarian2EditSideDish.name + 'x' +
+parseInt(bangdongVegetarian2EditSideDish.quantity).toString()
+// 保留配菜名稱、ID
+      const productInput = {
+        productTypeName: bangdongVegetarian2SideDishName.value,
+        productTypeId: bangdongVegetarian2SideDishId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      row.sideDishDefault += bangdongVegetarian2EditSideDish.is_default + ' '
+      const input = {
+        id: bangdongVegetarian2EditSideDish.id,
+        name: bangdongVegetarian2EditSideDish.name,
+        value: parseInt(bangdongVegetarian2EditSideDish.quantity),
+        is_default: bangdongVegetarian2EditSideDish.is_default
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 儲存推入副主餐置入table
+  for (const bangdongVegetarian2EditBentoMain of bangdongVegetarian2EditBentoMains) {
+    if (bangdongVegetarian2EditBentoMain.quantity > 0) {
+      if (row.bentoMains !== '') {
+        row.bentoMains += ','
+      }
+      row.bentoMains += bangdongVegetarian2EditBentoMain.name + 'x' +
+parseInt(bangdongVegetarian2EditBentoMain.quantity).toString()
+      const productInput = {
+        productTypeName: bangdongVegetarian2BentoMainName.value,
+        productTypeId: bangdongVegetarian2BentoMainId.value,
+        productType: 'options_with_qty'
+      }
+      row.productInputs.push(productInput)
+      const input = {
+        id: bangdongVegetarian2EditBentoMain.id,
+        name: bangdongVegetarian2EditBentoMain.name,
+        value: parseInt(bangdongVegetarian2EditBentoMain.quantity)
+      }
+      row.inputs.push(input)
+    }
+  }
+  // 保留素食便當150、1002、數量
+  const productInput = {
+    id: bangdongVegetarian2ProductId.value,
+    name: bangdongVegetarian2Name.value,
+    value: parseInt(totalEditQuantity),
+    price: bangdongVegetarian2EditPrice.value,
+    totalPrice: row.price
+  }
+  row.productInputs.push(productInput)
+  // 保留任搭數量
+  if (bangdongVegetarian2EditArbitrarily.value > 0) {
+    if (row.Main !== '') {
+      row.Main += ','
+    }
+    row.Main += '任意搭配' + 'x' + parseInt(bangdongVegetarian2EditArbitrarily.value).toString()
+    const input = {
+      id: 'bangdongVegetarian2EditArbitrarily',
+      value: bangdongVegetarian2EditArbitrarily.value,
+      name: '任意搭配'
+    }
+    row.inputs.push(input)
+  }
+  row.name = bangdongVegetarian2Name.value + totalEditQuantity + '份' // 使用總數量
+  // 將這個 row 推進 tableRows 中
+  const rowIndex = tableRows.findIndex(r => r === editingRow)
+  if (rowIndex !== -1) {
+    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
+  }
+  editDialogV2.value = false
 }
 // 客製便當修改
 function editRowDialog9 (row) {
@@ -8664,7 +10230,7 @@ function editRowDialog5 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -8893,7 +10459,7 @@ function editRowDialog6 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox2EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -9120,7 +10686,7 @@ function editRowDialog7 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox3EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -9348,7 +10914,7 @@ function editRowDialog8 (row) {
         // 配菜的數量跟著主餐的數量變化
         lunchBox4EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+          if (main.name === '123' || main.name === '123') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -10057,6 +11623,8 @@ const showbangdong1 = ref(false)
 const showbangdong2 = ref(false)
 const showbangdong3 = ref(false)
 const showbangdong4 = ref(false)
+const showbangdongVegetarian1 = ref(false)
+const showbangdongVegetarian2 = ref(false)
 // 單點開關
 const showbangdongSolo = ref(false)
 
@@ -10505,6 +12073,15 @@ const addOrder = async () => {
     }
 
   }
+  #dialogbtnBangdongCard{
+    width: 650px!important;
+    height: 680px;
+    overflow: hidden;
+    .q-input{
+      margin-top: 10px;
+    }
+
+  }
   #solocard{
     width: 100%!important;
     max-height: 900px;
@@ -10564,6 +12141,18 @@ const addOrder = async () => {
       margin: 34px;
       // margin-top: 50px;
       font-size: 50px;
+      }
+
+    }
+    #bangdongbtn{
+      width: 657px!important;
+      height: 600px;
+      .q-btn{
+      width: 260px;
+      height: 130px;
+      margin: 34px;
+      // margin-top: 50px;
+      font-size: 30px;
       }
 
     }
