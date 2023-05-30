@@ -1,674 +1,868 @@
 <template>
-  <!-- 主餐 -->
-    <div>
-  <h5 style="margin: 0; padding: 0;">{{ bangdong1MainName }}</h5>
-  <div class="row items-center"
-  >
-  <q-item  v-for="(bangdong1Main, index) in bangdong1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
-  <q-input
-  min="0"
+    <header class="header-section">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="header-box">
+                        <div class="header-left">
+                            <div class="header-logo">
+                                <a href="#">
+                                    <img src="./images/logo.png" alt="">
+                                </a>
+                            </div>
+                            <div class="header-menu">
+                                <input type="checkbox" id="toggle" >
+                                <nav id="menu">
+                                    <ul class="dropdown">
+                                        <li>
+                                            <a href="#">HOME</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">MENU</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">PAGES</a>
+                                            <ul>
+                                                <li><a href="#">About us</a></li>
+                                                <li><a href="#">Gallery</a></li>
+                                                <li><a href="#">404 Page</a></li>
+                                                <li><a href="#">Login Page</a></li>
+                                                <li><a href="#">Signup Page</a></li>
+                                                <li><a href="#">Contact</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">SHOP</a>
+                                            <ul>
+                                                <li><a href="#">Product</a></li>
+                                                <li><a href="#">Product Details</a></li>
+                                                <li><a href="#">Checkout</a></li>
+                                                <li><a href="#">Cart</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">NEWS</a>
+                                            <ul>
+                                                <li><a href="#">News</a></li>
+                                                <li><a href="#">News Details</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="header-right">
+                            <ul class="header-social">
+                                <li>
+                                    <a href="#">
+                                        <i class="fa-brands fa-facebook-f"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa-brands fa-twitter"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa-brands fa-pinterest-p"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa-brands fa-instagram"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="header-tools">
+                                <li class="login-icon">
+                                    <a href="#">
+                                        <i class="fa-regular fa-user"></i>
+                                    </a>
+                                </li>
+                                <li class="login-text">
+                                    <a href="#">LOGIN</a>
+                                </li>
+                                <li>
+                                    <a class="cart" href="#">
+                                        <img src="./images/shopping-bag.svg" alt="">
+                                        <span>2</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <label for="toggle" class="menu-icon">
+                                <i class="fa-solid fa-bars"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- section01 start -->
+    <section class="section01">
+        <img class="coriander" src="./images/shape_6.png" alt="">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="section01-text">
+                        <h1 class="section01-title">
+                            Enjoy Your
+                            <span>Pizza</span>
+                            In Town
+                        </h1>
+                        <a href="#" class="order-btn">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>ORDER NOW</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="section01-img">
+                        <img class="onion" src="./images/hero_shape_2.png" alt="">
+                        <img class="mushroom" src="./images/hero_shape_3.png" alt="">
+                        <img class="tomato" src="./images/hero_shape_4.png" alt="">
+                        <img class="vegetables" src="./images/hero_shape_1.png" alt="">
 
-  v-model="bangdong1Main.quantity"
-  :label="bangdong1Main.name"
-  outlined
-  type="number"
-    :input-style="{ fontSize: '20px', margin: '0' }"
-    :label-style="{ fontSize: '20px' }"
-    style="width: 130px;"
-    />
-  </q-item>
-  </div>
-  </div>
-  <!-- 飲料 -->
-  <div>
-    <h5 style="margin: 0; padding: 0;">{{ bangdong1DrinkName }}</h5>
-    <div class="row items-center">
-      <q-item v-for="(bangdong1Drink, index) in bangdong1Drinks" :key="index" class="flex-auto "
-        style="margin: 0; padding: 0;">
-        <q-input
-        min="0"
-         v-model="bangdong1Drink.quantity" :label="bangdong1Drink.name" outlined type="number"
-          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
-      </q-item>
+                        <img src="./images/hero_pizza.png" alt="hero_pizza">
+                        <img class="scroll-pizza" src="./images/scroll_pizza_1.png" alt="">
+                        <img class="scroll-pizza2" src="./images/scroll_pizza_2.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section01 end -->
+    <!-- section02 start -->
+    <section class="section02">
+        <div class="container">
+            <img class="leaf" src="./images/promo_leaf_bg.png" alt="">
+            <div class="row">
+                <div class="col">
+                    <div class="order-box">
+                        <div class="order-box-image">
+                            <img src="./images/promo_order_1.jpg" alt="">
+                        </div>
+                        <div class="order-text">
+                            <h2>MEXICAN GREEN WAVE</h2>
+                            <a href="#" class="order-btn">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>ORDER NOW</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="order-box">
+                        <div class="order-box-image">
+                            <img src="./images/promo_order_3.jpg" alt="">
+                        </div>
+                        <div class="order-text">
+                            <h2>
+                                DOUBLE CHEESE PIZZA
+                            </h2>
+                            <a href="#" class="order-btn">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>ORDER NOW</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section02 end -->
+    <!-- section03 start -->
+    <section class="section03">
+        <img class="sandwich" src="./images/shape_10.png" alt="">
+        <img class="fries" src="./images/shape_12.png" alt="">
+        <img class="cola" src="./images/shape_16.png" alt="">
+        <img class="chili" src="./images/shape_13.png" alt="">
+        <img class="walnut" src="./images/shape_11.png" alt="">
+        <img class="pepper" src="./images/shape_15.png" alt="">
+        <img class="sauce" src="./images/shape_14.png" alt="">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="best-box">
+                        <div class="best-box-image">
+                            <img class="best_pizza" src="./images/best_pizza_2.png" alt="">
+                            <img class="bigtomato" src="./images/shape_17.png" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="best-box">
+                        <div class="best-box-title">
+                            <span>THE BEST</span>
+                            <span>PIZZA</span>
+                            <span>ARROUND</span>
+                            <span><img src="./images/section_delimiter.png" alt=""></span>
+                        </div>
+                        <div class="best-box-text">
+                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                                accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
+                                veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam
+                                voluptatem
+                                quia voluptas sit aspernatur aut odit aut fugit.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section03 end -->
+    <!-- section04 start -->
+    <section class="section04">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="fresh-box">
+                        <span>Fresh Quality</span>
+                        <span>We Offer People Best Way</span>
+                        <span>To Eat Best Food</span>
+                        <span><img src="./images/section_delimiter.png" alt=""></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="fresh-menu">
+                        <div id="chihyu" class="swiper">
+                            <!-- 輪播圖主體 -->
+                            <!-- Additional required wrapper -->
+                            <div class="swiper-wrapper">
+                                <!-- Slides items -->
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-img">
+                                            <img src="./images/pizza_slide_1.png">
+                                            <div class="add-cart">
+                                                <a href="#" class="order-btn">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                    <span>ORDER NOW</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <h3><a href="#">BBQ Pizza TinTin</a></h3>
+                                            <p>Gourmet burger with arugula, feta cheese, quail eggs and...</p>
+                                            <h3><span>£</span>20.00</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-img">
+                                            <img src="./images/pizza_slide_2.png">
+                                            <div class="add-cart">
+                                                <a href="#" class="order-btn">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                    <span>ORDER NOW</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <h3><a href="#">Chocolate Donuts</a></h3>
+                                            <p>Gourmet burger with arugula, feta cheese, quail eggs and...</p>
+                                            <h3><span>£</span>22.70</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-img">
+                                            <img src="./images/pizza_slide_3.png">
+                                            <div class="add-cart">
+                                                <a href="#" class="order-btn">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                    <span>ORDER NOW</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <h3><a href="#">Santa Fe Pizza</a></h3>
+                                            <p>Gourmet burger with arugula, feta cheese, quail eggs and...</p>
+                                            <h3><span>£</span>24.12</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-img">
+                                            <img src="./images/pizza_slide_4.png">
+                                            <div class="add-cart">
+                                                <a href="#" class="order-btn">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                    <span>ORDER NOW</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <h3><a href="#">BBQ Pizza TinTin</a></h3>
+                                            <p>Gourmet burger with arugula, feta cheese, quail eggs and...</p>
+                                            <h3><span>£</span>24.00</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-img">
+                                            <img src="./images/juice_1.png">
+                                            <div class="add-cart">
+                                                <a href="#" class="order-btn">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                    <span>ORDER NOW</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <h3><a href="#">Lemon Juice</a></h3>
+                                            <p>Gourmet burger with arugula, feta cheese, quail eggs and...</p>
+                                            <h3><span>£</span>12.30</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-img">
+                                            <img src="./images/juice_2.png">
+                                            <div class="add-cart">
+                                                <a href="#" class="order-btn">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                    <span>ORDER NOW</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <h3><a href="#">Orange Juice</a></h3>
+                                            <p>Gourmet burger with arugula, feta cheese, quail eggs and...</p>
+                                            <h3><span>£</span>10.20</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="card">
+                                        <div class="card-img">
+                                            <img src="./images/juice_3.png">
+                                            <div class="add-cart">
+                                                <a href="#" class="order-btn">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                    <span>ORDER NOW</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <h3><a href="#">Coke Soft Drinks</a></h3>
+                                            <p>Gourmet burger with arugula, feta cheese, quail eggs and...</p>
+                                            <h3><span>£</span>13.60</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="swiper-button-prev">
+                                <img src="./images/arrow_top.svg" alt="">
+                            </div>
+                            <div class="swiper-button-next">
+                                <img src="./images/arrow_top.svg" alt="">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section04 end -->
+    <!-- section05 start -->
+    <section class="section05">
+        <img class="half-pizza" src="./images/food_menu_pizza.png" alt="">
+
+        <img class="tortilla" src="./images/food_menu_shape_1.png" alt="">
+        <img class="little-fries" src="./images/food_menu_shape_2.png" alt="">
+        <img class="slice-pizza" src="./images/food_menu_shape_3.png" alt="">
+        <img class="tortilla-2" src="./images/food_menu_shape_1.png" alt="">
+        <img class="little-fries-2" src="./images/food_menu_shape_2.png" alt="">
+
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="food-menu-box">
+                        <div class="food-menu-box-label">
+                            <span>PIZZA</span>
+                        </div>
+                        <div class="food-menu-box-detail">
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Santa Fe Pizza</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>24.12</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>BBQ Pizza TinTin</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>18.10</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Chocolate Donuts</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>29.70</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Super Sicilian</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>22.40</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Margharita Pizza</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>12.90</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="food-menu-title">
+                        <span>Freshly made</span>
+                        <span>PIZZA</span>
+                        <span>MENU</span>
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
+                            tincidunt ut laoreet dolore magna aliquam erat</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="food-menu-box">
+                        <div class="food-menu-box-label">
+                            <span>PIZZA</span>
+                        </div>
+                        <div class="food-menu-box-detail">
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Lemon Juice</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>08.20</span>
+                                </div>
+                                <p>Orange, cheddar wrapped in a masala</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Coke Soft Drinks</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>12.80</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Orange Spice Juice</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>14.40</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Super Coctail</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>12.20</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                            <div class="food-menu-box-detail-items">
+                                <div class="food-menu-box-detail-items-content">
+                                    <span>Malta Drinks</span>
+                                    <div class="dotted"></div>
+                                    <span>£</span>
+                                    <span>13.80</span>
+                                </div>
+                                <p>Chicken breast, cheddar wrapped in a crispy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section05 end -->
+    <!-- section06 start -->
+    <section class="section06">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="special-content">
+                        <span>Double The Fun
+                            <br>
+                            On Every Delivery
+                        </span>
+                        <span>Special Offer 2X1
+                        </span>
+                    </div>
+                </div>
+                <div class="col">
+                    <img class="hotpepper" src="./images/double_fun_shape.png" alt="">
+                    <img class="onion" src="./images/hero_shape_2.png" alt="">
+                    <img class="onion2" src="./images/hero_shape_2.png" alt="">
+                    <img class="mushroom" src="./images/hero_shape_3.png" alt="">
+                    <img class="vegetables" src="./images/hero_shape_1.png" alt="">
+                    <img class="leaf" src="./images/promo_leaf_bg.png" alt="">
+                    <img class="tomato" src="./images/hero_shape_4.png" alt="">
+                    <div class="special-image">
+                        <img src="./images/double_fun_bg.png" alt="">
+                        <img class="strange-pizza" src="./images/double_fun_pizza.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section06 end -->
+    <!-- section07 start -->
+    <section class="section07">
+        <img class="sandwich" src="./images/shape_10.png" alt="">
+        <img class="fries" src="./images/shape_12.png" alt="">
+        <img class="cola" src="./images/shape_16.png" alt="">
+        <img class="chili" src="./images/shape_13.png" alt="">
+        <img class="walnut" src="./images/shape_11.png" alt="">
+        <img class="pepper" src="./images/shape_15.png" alt="">
+        <img class="sauce" src="./images/shape_14.png" alt="">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="delivery-left">
+                        <img class="delivery" src="./images/delivery_bike.png" alt="">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="delivery-right">
+                        <div class="delivery-right-title">
+                            <span>Free Delivery</span>
+                            <span>Delivered On Right
+                                <br>
+                                Time & Place</span>
+                            <span><img src="./images/section_delimiter.png" alt=""></span>
+                        </div>
+                        <p>perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
+                            totam
+                            rem aperiam, eaque ipsa</p>
+                        <div class="delivery-right-order">
+                            <img src="./images/telephone.svg" alt="">
+                            <div class="delivery-right-order-phone">
+                                <span>Delivery Order Num.</span>
+                                <span>123-59794069</span>
+                            </div>
+                            <a href="#" class="order-btn">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>ORDER NOW</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section07 end -->
+    <!-- section08 start -->
+    <section class="section08">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="trend-box">
+                        <span>Always Trend</span>
+                        <span>What’s Happening Your
+                            <br>
+                            Near City & Town</span>
+                        <span><img src="./images/section_delimiter.png" alt=""></span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="food-card">
+                        <div class="food-image">
+                            <a href="#"><img src="./images/blog_1.jpg" alt=""></a>
+                            <div class="food-date">
+                                <span>13</span>
+                                <span>FEB</span>
+                            </div>
+                        </div>
+                        <div class="food-text">
+                            <span><i class="fa-solid fa-tags"></i><a href="#">Pizza</a></span>
+                            <span><a href="#">Do You Think About Cheese Pizza Recipes?</a></span>
+                            <p>Unknown printer took a galley of type and scrambled it to make a type specimen bookIt
+                                hasey survived Ut enim ad minima, quis nostrum onem</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="food-card">
+                        <div class="food-image">
+                            <a href="#"><img src="./images/blog_2.jpg" alt=""></a>
+                            <div class="food-date">
+                                <span>13</span>
+                                <span>FEB</span>
+                            </div>
+                        </div>
+                        <div class="food-text">
+                            <span><i class="fa-solid fa-tags"></i><a href="#">Pizza</a></span>
+                            <span><a href="#">Chicken Strips With New Ingridents Made.</a></span>
+                            <p>Unknown printer took a galley of type and scrambled it to make a type specimen bookIt
+                                hasey survived Ut enim ad minima, quis nostrum onem</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="food-card">
+                        <div class="food-image">
+                            <a href="#"><img src="./images/blog_3.jpg" alt=""></a>
+                            <div class="food-date">
+                                <span>13</span>
+                                <span>FEB</span>
+                            </div>
+                        </div>
+                        <div class="food-text">
+                            <span><i class="fa-solid fa-tags"></i><a href="#">Pizza</a></span>
+                            <span><a href="#">Hot Chessyraw Pasta Make Creator Fact.</a></span>
+                            <p>Unknown printer took a galley of type and scrambled it to make a type specimen bookIt
+                                hasey survived Ut enim ad minima, quis nostrum onem</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- section08 end -->
+    <!-- section09 start -->
+    <section class="section09">
+        <img class="sandwich" src="./images/shape_10.png" alt="">
+        <img class="fries" src="./images/shape_12.png" alt="">
+        <img class="cola" src="./images/shape_16.png" alt="">
+        <img class="chili" src="./images/shape_13.png" alt="">
+        <img class="walnut" src="./images/shape_11.png" alt="">
+        <img class="pepper" src="./images/shape_15.png" alt="">
+        <img class="sauce" src="./images/shape_14.png" alt="">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="subscribe-box">
+                        <div class="subscribe-title">
+                            <span>Don’t Miss</span>
+                            <span>Subsribe To Newsletter</span>
+                        </div>
+                        <div class="subscribe-input">
+                            <form>
+                                <input type="text" placeholder="Enter your E-mail">
+                                <button>SUBSCRIBE</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer-top">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="footer-customer">
+                        <span>Customer</span>
+                        <a href="#">Wishlist</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Order Tracking</a>
+                        <a href="#">Delivery Option</a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="footer-pizza">
+                        <div class="footer-pizza-logo">
+                            <img src="./images/footer_logo.png" alt="">
+                        </div>
+                        <div class="footer-pizza-detail">
+                            <p>44 Canal Center Plaza #200, Alexandria, VA 22314, USA</p>
+                            <span>Hotline : <span>1900 – 123 456 78</span></span>
+                            <br>
+                            <span>Email: <span>info@example.com</span></span>
+                        </div>
+                        <div class="footer-pizza-social">
+                            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="footer-Opening">
+                        <span>Opening Hour</span>
+                        <div class="footer-Opening-time">
+                            <span>Mon - Fri:</span>
+                            <span>09:00 – 23:00h</span>
+                        </div>
+                        <div class="footer-Opening-time">
+                            <span>Saturday:</span>
+                            <span>09:00 – 16:00h</span>
+                        </div>
+                        <div class="footer-Opening-time">
+                            <span>Sunday:</span>
+                            <span>12:00 – 18:00h</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <footer class="footer-copyright">
+        <div class="row">
+            <div class="col">
+                <div class="copyright">
+                    <span>© Copyright 2021 Pizzle. All Rights Reserved.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="go-top">
+        <a href="#"><img src="./images/arrow_top.svg" alt=""></a>
     </div>
-  </div>
-  <!-- 配菜 -->
-  <div>
-    <h5 style="margin: 0; padding: 0;">{{ bangdong1SideDishName }}</h5>
-    <div class="row items-center">
-      <q-item v-for="(bangdong1SideDish, index) in bangdong1SideDishes" :key="index" class="flex-auto "
-        style="margin: 0; padding: 0;">
-        <q-input
-        min="0"
-         v-model="bangdong1SideDish.quantity" :label="bangdong1SideDish.name" outlined type="number"
-          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
-      </q-item>
-    </div>
-  </div>
-  <!-- 總計 -->
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-      <h5  style="line-height: 0;">{{bangdong1Name}}</h5>
-      </div>
-      <div class="row">
-  <q-input
-  min="0"
-
-  outlined
-  type="number"
-  :input-style="{ fontSize: '20px' }"
-  style="width: 130px;"
-  v-model="bangdong1TotalQuantity"
-  label="數量總計"
-  readonly
-  />
-  <q-input
-  min="0"
-  outlined
-  type="number"
-  :input-style="{ fontSize: '20px' }"
-  style="width: 130px;"
-  v-model="bangdong1Price"
-  label="商品單價"
-  readonly
-  />
-  <q-input
-  min="0"
-  outlined
-  type="number"
-  :input-style="{ fontSize: '20px' }"
-  style="width: 130px;"
-  v-model="bangdong1TotalQuantityPrice"
-  label="金額總計"
-  readonly
-  />
-  </div>
-  <!-- 按鈕 -->
-  <div class="row justify-end" style="width: 100%;">
-  <q-btn
-  color="primary"
-  label="送出"
-  type="submit"
-  class="q-mt-md"
-  @click="submitBangdong1"
-  />
-  <q-btn
-  color="red"
-  label="取消"
-  @click="showbangdong1 = false"
-  class="q-mt-md"
-  />
-
-  </div >
-  <!-- 訂單區 -->
-  <q-table :rows="tableRows" class="orderTable">
-    <template #header>
-      <q-tr>
-        <q-th style="font-size:20px">ID</q-th>
-        <q-th style="font-size:20px">商品</q-th>
-        <q-th style="font-size:20px">搭配</q-th>
-        <q-th style="font-size:20px">飲料</q-th>
-        <q-th style="font-size:20px">配菜</q-th>
-        <q-th style="font-size:20px">金額</q-th>
-        <q-th style="font-size:20px">操作</q-th>
-      </q-tr>
-    </template>
-
-    <template #body="props">
-      <q-tr :props="props">
-        <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.id }}</q-td>
-        <q-td style="text-align: center;font-size:20px">
-          {{ props.row.name }}
-          <div v-for="(input, index) in props.row.inputs" :key="index" style="text-align: center;font-size:20px">
-            <input type="value" :name="input.name" v-model="input.value"
-            >
-          </div>
-        </q-td>
-        <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.Main }}</q-td>
-        <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.drinks }}</q-td>
-        <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.sideDishes }}</q-td>
-        <q-td style="text-align: center;font-size:20px;max-width:200px">{{ props.row.price }}
-          <div v-for="(productInput, index) in props.row.productInputs" :key="index" style="text-align: center;font-size:20px">
-            <input type="value" :name="productInput.name" v-model="productInput.value"
-            >
-          </div>
-        </q-td>
-        <q-td style="text-align: center">
-          <q-btn icon="delete"
-          color="red"
-          fab-mini
-          unelevated
-          size="sm"
-          @click="deleteRow(props.row.id)" />
-          <q-btn icon="edit"
-          fab-mini
-          unelevated size="sm"
-          color="info"
-          @click="editRowDialog(props.row)"/>
-        </q-td>
-      </q-tr>
-    </template>
-  </q-table>
-
-  <!-- 招牌便當修改dialog -->
-  <q-dialog v-model="editDialog1" persistent>
-      <q-card>
-        <q-card-section>
-
-          <div>
-    <h5 style="margin: 0; padding: 0;">{{ bangdong1MainName }}</h5>
-    <div class="row items-center"></div>
-    <q-item v-for="(bangdong1EditMain, index) in bangdong1EditMains" :key="index" class="flex-auto "
-      style="margin: 0; padding: 0;">
-      <q-input
-      min="0"
-       v-model="bangdong1EditMain.quantity" :label="bangdong1EditMain.name" outlined type="number"
-        :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
-    </q-item>
-  </div>
-
-  <!-- 飲料 -->
-  <div>
-    <h5 style="margin: 0; padding: 0;">{{ bangdong1DrinkName }}</h5>
-    <div class="row items-center"></div>
-      <q-item v-for="(bangdong1EditDrink, index) in bangdong1EditDrinks" :key="index" class="flex-auto "
-        style="margin: 0; padding: 0;">
-        <q-input
-        min="0"
-         v-model="bangdong1EditDrink.quantity" :label="bangdong1EditDrink.name" outlined type="number"
-          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
-      </q-item>
-    </div>
-  <!-- 配菜 -->
-  <div>
-    <h5 style="margin: 0; padding: 0;">{{ bangdong1SideDishName }}</h5>
-    <div class="row items-center"></div>
-      <q-item v-for="(bangdong1EditSideDish, index) in bangdong1EditSideDishes" :key="index" class="flex-auto "
-        style="margin: 0; padding: 0;">
-        <q-input
-        min="0"
-         v-model="bangdong1EditSideDish.quantity" :label="bangdong1EditSideDish.name" outlined type="number"
-          :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
-      </q-item>
-    </div>
-  <div style="width:100%;padding: 0;margin: 0;height: 30px;">
-    <h5 style="line-height: 0;">{{bangdong1Name}}</h5>
-  </div>
-  <div class="row">
-    <q-input
-    min="0"
-     outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-      v-model="bangdong1EditTotalQuantity" label="數量總計" readonly />
-    <q-input
-    min="0"
-     outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-      v-model="bangdong1EditPrice" label="商品單價" readonly />
-    <q-input
-    min="0"
-     outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-      v-model="bangdong1EditTotalQuantityPrice" label="金額總計" readonly />
-  </div>
-
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn label="取消" color="red" @click="closeEditDialog1editDialog1" />
-          <q-btn label="儲存" color="primary" @click="saveEditDialog1editDialog1" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </template>
 
 <script setup>
-import { reactive, ref, computed, watch } from 'vue'
-import { apiAuth } from 'src/boot/axios'
+import { gsap, ScrollTrigger } from 'gsap'
+gsap.registerPlugin(ScrollTrigger)
 
-const bangdong1Mains = reactive([])
-const bangdong1MainName = ref('')
-const bangdong1Drinks = reactive([])
-const bangdong1DrinkName = ref('')
-const bangdong1SideDishes = reactive([])
-const bangdong1SideDishName = ref('')
-const bangdong1Name = ref('')
-const price = ref(0)
-const tableRows = reactive([])
-const editDialog1 = ref(false)
-const productId = ref('')
-const mainMealId = ref('')
-const drinkId = ref('')
-const sideDishId = ref('')
-// 抓取招牌便當主餐形成input
-const loadBangdong1 = async () => {
-  try {
-    const response = await apiAuth.get('catalog/product/1001')
-    const productOptions = response.data.product_options
-    // 主餐
-    const mainMeal = productOptions.main_meal
-    const mainMealValues = mainMeal.product_option_values
-
-    for (const mainMealValue of mainMealValues) {
-      bangdong1Mains.push({
-        id: mainMealValue.id,
-        name: mainMealValue.short_name,
-        quantity: 0
-      })
-    }
-    // 飲料
-    const Drink = productOptions.drink
-    const DrinkValues = Drink.product_option_values
-
-    for (const DrinkValue of DrinkValues) {
-      bangdong1Drinks.push({
-        id: DrinkValue.id,
-        name: DrinkValue.short_name,
-        quantity: 0
-      })
-    }
-    // 配菜
-    const sideDish = productOptions.side_dish
-    const sideDishValues = sideDish.product_option_values
-
-    for (const sideDishValue of sideDishValues) {
-      bangdong1SideDishes.push({
-        id: sideDishValue.id,
-        name: sideDishValue.short_name,
-        quantity: 0,
-        is_default: sideDishValue.is_default
-      })
-    }
-    // 監聽主餐的數量變化
-    bangdong1Mains.forEach(main => {
-      watch(() => main.quantity, (newVal, oldVal) => {
-        if (newVal !== oldVal) {
-          // 配菜的數量跟著主餐的數量變化
-          bangdong1SideDishes.forEach(sideDish => {
-            const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '全潤' || main.name === '蛋潤') {
-              if (sideDish.name === '炸菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '蛋塔') {
-                if (newVal === 0) {
-                  sideDish.quantity = 0
-                } else {
-                  sideDish.quantity = Number(sideDish.quantity) + diff
-                }
-              }
-            } else if (sideDish.is_default) {
-              if (newVal === 0) {
-                sideDish.quantity = 0
-              } else {
-                sideDish.quantity = Number(sideDish.quantity) + diff
-              }
-            }
-          })
-        }
-      })
-    })
-
-    bangdong1Name.value = response.data.name
-    bangdong1MainName.value = mainMeal.name
-    bangdong1DrinkName.value = Drink.name
-    bangdong1SideDishName.value = sideDish.name
-    price.value = parseInt(response.data.price)
-    productId.value = response.data.id
-    mainMealId.value = mainMeal.id
-    drinkId.value = Drink.id
-    sideDishId.value = sideDish.id
-  } catch (error) {
-    console.error(error)
+const puzzlePizza = gsap.timeline({
+  scrollTrigger: {
+    trigger: '.section01',
+    start: 'top top',
+    end: '20% top',
+    scrub: true
+    // markers: true
   }
-}
-
-loadBangdong1()
-
-// 計算總數量
-const bangdong1TotalQuantity = computed(() => {
-  return bangdong1Mains.reduce((total, current) => {
-    return total + parseInt(current.quantity)
-  }, 0)
-})
-// 商品單價
-const bangdong1Price = computed(() => {
-  return price.value
 })
 
-// 計算總價格
-const bangdong1TotalQuantityPrice = computed(() => {
-  return bangdong1TotalQuantity.value * price.value
-})
-// 將資料推進tableRows
-const submitBangdong1 = () => {
-  const nextId = tableRows.length > 0 ? tableRows[tableRows.length - 1].id + 1 : 1
+puzzlePizza
+  .from('.scroll-pizza', {
+    xPercent: -50,
+    yPercent: -25
+  })
+  .from('.scroll-pizza2', {
+    xPercent: -50,
+    yPercent: 25
+  }, '<0')
 
-  const row = {
-    bentoType: 1,
-    id: nextId,
-    name: '',
-    Main: '',
-    drinks: '',
-    sideDishes: '',
-    sideDishDefault: '',
-    price: bangdong1TotalQuantityPrice.value,
-    inputs: [],
-    productInputs: []
+const scrollPizza = gsap.timeline({
+  scrollTrigger: {
+    trigger: '.section05',
+    start: 'top 95%',
+    end: '25% 40%',
+    scrub: true
+    // markers: true
   }
-
-  const totalQuantity = bangdong1TotalQuantity.value
-
-  for (const bangdong1Main of bangdong1Mains) {
-    if (bangdong1Main.quantity > 0) {
-      if (row.Main !== '') {
-        row.Main += ', '
-      }
-      row.name = bangdong1Name.value + totalQuantity + '份'
-      // 保留 招牌便當、1001、數量、主餐名稱、主餐ID
-      const productInput = {
-        id: productId.value,
-        name: bangdong1Name.value,
-        value: parseInt(totalQuantity),
-        price: price.value,
-        totalPrice: bangdong1TotalQuantity.value,
-        productTypeId: mainMealId.value,
-        productTypeName: bangdong1MainName.value
-      }
-      row.productInputs.push(productInput)
-      row.Main += bangdong1Main.name + '' + parseInt(bangdong1Main.quantity).toString()
-
-      const input = {
-        name: bangdong1Main.name,
-        value: parseInt(bangdong1Main.quantity)
-      }
-      row.inputs.push(input)
-      bangdong1Main.quantity = 0
-    }
-  }
-  for (const bangdong1Drink of bangdong1Drinks) {
-    if (bangdong1Drink.quantity > 0) {
-      if (row.drinks !== '') {
-        row.drinks += ', '
-      }
-      row.drinks += bangdong1Drink.name + '' + parseInt(bangdong1Drink.quantity).toString()
-      // 保留飲料名稱、飲料ID
-      const productInput = {
-        productTypeName: bangdong1DrinkName.value,
-        productTypeId: drinkId.value
-      }
-      row.productInputs.push(productInput)
-      const input = {
-        name: bangdong1Drink.name,
-        value: parseInt(bangdong1Drink.quantity)
-      }
-      row.inputs.push(input)
-      bangdong1Drink.quantity = 0
-    }
-  }
-
-  for (const bangdong1SideDish of bangdong1SideDishes) {
-    if (bangdong1SideDish.quantity > 0) {
-      if (row.sideDishes !== '') {
-        row.sideDishes += ', '
-      }
-      row.sideDishes += bangdong1SideDish.name + '' + parseInt(bangdong1SideDish.quantity).toString()
-      row.sideDishDefault += bangdong1SideDish.is_default + ' '
-      // 保留配菜名稱、配菜ID
-      const productInput = {
-        productTypeName: bangdong1SideDishName.value,
-        productTypeId: sideDishId.value
-      }
-      row.productInputs.push(productInput)
-      const input = {
-        name: bangdong1SideDish.name,
-        value: parseInt(bangdong1SideDish.quantity),
-        is_default: bangdong1SideDish.is_default
-      }
-      row.inputs.push(input)
-      bangdong1SideDish.quantity = 0
-    }
-  }
-
-  // 將這個 row 推進 tableRows 中
-  tableRows.push(row)
-}
-// 刪除該行
-const deleteRow = (id) => {
-  const index = tableRows.findIndex((row) => row.id === id)
-  if (index >= 0) {
-    tableRows.splice(index, 1)
-
-    // 重新生成 ID
-    for (let i = index; i < tableRows.length; i++) {
-      tableRows[i].id = tableRows[i].id - 1
-    }
-  }
-}
-// editDialog1導入欄位
-const bangdong1EditMains = reactive([])
-const bangdong1EditDrinks = reactive([])
-const bangdong1EditSideDishes = reactive([])
-const bangdong1EditBentoMains = reactive([])
-
-const loadBangdong1Edit = async () => {
-  try {
-    const response = await apiAuth.get('catalog/product/1001')
-    const productOptions = response.data.product_options
-
-    // 主餐
-    const mainMeal = productOptions.main_meal
-    const values = mainMeal.product_option_values
-
-    for (const value of values) {
-      const bangdong1EditMain = {
-        id: value.id,
-        name: value.short_name,
-        quantity: 0,
-        hidenquantity: 0
-      }
-      bangdong1EditMains.push(bangdong1EditMain)
-    }
-    // 飲料
-    const Drink = productOptions.drink
-    const DrinkValues = Drink.product_option_values
-    for (const DrinkValue of DrinkValues) {
-      const bangdong1EditDrink = {
-        id: DrinkValue.id,
-        name: DrinkValue.short_name,
-        quantity: 0,
-        hidenquantity: 0
-      }
-      bangdong1EditDrinks.push(bangdong1EditDrink)
-    }
-    // 配菜
-    const sideDish = productOptions.side_dish
-    const sideDishValues = sideDish.product_option_values
-    for (const sideDishValue of sideDishValues) {
-      const bangdong1EditSideDish = {
-        id: sideDishValue.id,
-        name: sideDishValue.short_name,
-        quantity: 0,
-        hidenquantity: 0,
-        is_default: sideDishValue.is_default
-      }
-      bangdong1EditSideDishes.push(bangdong1EditSideDish)
-    }
-    // 修改修改欄位配菜跟著變
-
-    bangdong1MainName.value = mainMeal.name
-    bangdong1DrinkName.value = Drink.name
-    bangdong1SideDishName.value = sideDish.name
-    price.value = parseInt(response.data.price)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-loadBangdong1Edit()
-
-// 將table資料拆解放回修正欄位
-
-let editingRow = null
-
-function editRowDialog (row) {
-  // 招牌便當主餐歸零
-  for (const bangdong1EditMain of bangdong1EditMains) {
-    bangdong1EditMain.quantity = 0
-  }
-  // 招牌便當飲料歸零
-  for (const bangdong1EditDrink of bangdong1EditDrinks) {
-    bangdong1EditDrink.quantity = 0
-  }
-  // 招牌便當配菜歸零
-  for (const bangdong1EditSideDish of bangdong1EditSideDishes) {
-    bangdong1EditSideDish.quantity = 0
-  }
-  // 招牌便當副主餐歸零
-  for (const bangdong1EditBentoMain of bangdong1EditBentoMains) {
-    bangdong1EditBentoMain.quantity = 0
-  }
-  // 招牌便當主餐隱藏欄位歸零
-  for (const input of row.inputs) {
-    const name = input.name
-    const value = input.value
-    // 招牌便當  主餐  推入input數值
-    const mainIndex = bangdong1EditMains.findIndex(
-      (bangdong1EditMain) => bangdong1EditMain.name === name
-    )
-    if (mainIndex >= 0) {
-      bangdong1EditMains[mainIndex].quantity = parseInt(value)
-    }
-    // 招牌便當  飲料  推入input數值
-    const drinkIndex = bangdong1EditDrinks.findIndex(
-      (bangdong1EditDrink) => bangdong1EditDrink.name === name
-    )
-    if (drinkIndex >= 0) {
-      bangdong1EditDrinks[drinkIndex].quantity = parseInt(value)
-    }
-    // 招牌便當  配菜  推入input數值
-    const sideDishIndex = bangdong1EditSideDishes.findIndex(
-      (bangdong1EditSideDish) => bangdong1EditSideDish.name === name
-    )
-    if (sideDishIndex >= 0) {
-      bangdong1EditSideDishes[sideDishIndex].quantity = parseInt(value)
-    }
-    // 招牌便當  副主餐  推入input數值
-    const bentoMainIndex = bangdong1EditBentoMains.findIndex(
-      (bangdong1EditBentoMain) => bangdong1EditBentoMain.name === name
-    )
-    if (bentoMainIndex >= 0) {
-      bangdong1EditBentoMains[bentoMainIndex].quantity = parseInt(value)
-    }
-  }
-
-  editingRow = row
-  editDialog1.value = true
-}
-
-const bangdong1EditTotalQuantity = computed(() => {
-  return bangdong1EditMains.reduce((total, current) => {
-    return total + parseInt(current.quantity)
-  }, 0)
 })
 
-// 修改窗商品單價
-const bangdong1EditPrice = computed(() => {
-  return price.value
+scrollPizza
+  .from('.half-pizza', {
+    yPercent: -100
+  })
+
+const strangepizza = gsap.timeline({
+  scrollTrigger: {
+    trigger: '.section06',
+    start: 'top 95%',
+    end: '15% 40%',
+    scrub: true
+    // markers: true
+  }
 })
 
-const bangdong1EditTotalQuantityPrice = computed(() => {
-  return bangdong1EditTotalQuantity.value * price.value
+strangepizza
+  .from('.strange-pizza', {
+    yPercent: 100
+  })
+
+const driver = gsap.timeline({
+  scrollTrigger: {
+    trigger: '.section07',
+    start: 'top 95%',
+    end: '25% 40%',
+    scrub: true
+    // markers: true
+  }
 })
 
-// 關閉修正欄位
-function closeEditDialog1editDialog1 () {
-  editDialog1.value = false
-}
-// 完成後儲存並且將資料推進tableRows刪除原本的資料
-function saveEditDialog1editDialog1 () {
-  const row = {
-    bentoType: 1,
-    id: editingRow.id, // 使用新生成的 ID
-    name: '',
-    Main: '',
-    drinks: '',
-    sideDishes: '',
-    sideDishDefault: '',
-    price: bangdong1EditTotalQuantityPrice.value,
-    inputs: [],
-    productInputs: []
-  }
+driver
+  .from('.delivery', {
+    xPercent: -100
+  })
 
-  const totalEditQuantity = bangdong1EditTotalQuantity.value // 計算總數量
-  for (const bangdong1EditMain of bangdong1EditMains) {
-    if (bangdong1EditMain.quantity > 0) {
-      if (row.Main !== '') {
-        row.Main += '、'
-      }
-      row.name = bangdong1Name.value + totalEditQuantity + '份' // 使用總數量
-      // 保留 招牌便當、1001、數量、主餐名稱、主餐ID
-      const productInput = {
-        id: productId.value,
-        name: bangdong1Name.value,
-        value: parseInt(totalEditQuantity),
-        price: price.value,
-        totalPrice: bangdong1EditTotalQuantity.value,
-        productTypeId: mainMealId.value,
-        productTypeName: bangdong1MainName.value
-      }
-      row.productInputs.push(productInput)
-      row.Main += bangdong1EditMain.name + '' + parseInt(bangdong1EditMain.quantity).toString() + ' '
-      const input = {
-        name: bangdong1EditMain.name,
-        value: parseInt(bangdong1EditMain.quantity)
-      }
-      row.inputs.push(input)
-    }
-  }
+// const chihyu = new Swiper('#chihyu', {
+// // 輪播圖呈現方向，水平or垂直
+// // direction: "vertical",
 
-  for (const bangdong1EditDrink of bangdong1EditDrinks) {
-    if (bangdong1EditDrink.quantity > 0) {
-      if (row.drinks !== '') {
-        row.drinks += '、'
-      }
-      row.drinks += bangdong1EditDrink.name + '' + parseInt(bangdong1EditDrink.quantity).toString() + ' '
-      // 保留飲料名稱、飲料ID
-      const productInput = {
-        productTypeName: bangdong1DrinkName.value,
-        productTypeId: drinkId.value
-      }
-      row.productInputs.push(productInput)
-      const input = {
-        name: bangdong1EditDrink.name,
-        value: parseInt(bangdong1EditDrink.quantity)
-      }
-      row.inputs.push(input)
-    }
-  }
+//   // 滑鼠游標變成可拖曳首長
+//   grabCursor: true,
 
-  for (const bangdong1EditSideDish of bangdong1EditSideDishes) {
-    if (bangdong1EditSideDish.quantity > 0) {
-      if (row.sideDishes !== '') {
-        row.sideDishes += '、'
-      }
-      row.sideDishes += bangdong1EditSideDish.name + '' + parseInt(bangdong1EditSideDish.quantity).toString() + ' '
-      row.sideDishDefault += bangdong1EditSideDish.is_default + ' '
-      // 保留配菜名稱、配菜ID
-      const productInput = {
-        productTypeName: bangdong1SideDishName.value,
-        productTypeId: sideDishId.value
-      }
-      row.productInputs.push(productInput)
-      const input = {
-        name: bangdong1EditSideDish.name,
-        value: parseInt(bangdong1EditSideDish.quantity),
-        is_default: bangdong1EditSideDish.is_default
-      }
-      row.inputs.push(input)
-    }
-  }
+//   // 可根據力道拖曳圖片
+//   freeMode: true,
 
-  // 將這個 row 推進 tableRows 中
-  const rowIndex = tableRows.findIndex(r => r === editingRow)
-  if (rowIndex !== -1) {
-    tableRows.splice(rowIndex, 1, row) // 在移除元素的同時插入新元素
-  }
-  editDialog1.value = false
-}
+//   // 使用滾輪滾動上下張
+//   mousewheel: true,
 
+//   // 不可拖曳
+//   // simulateTouch: false,
+
+//   // 無限循環
+//   loop: true,
+//   // 自動播放
+//   autoplay: {
+//     delay: 7000
+//   },
+//   // 動畫播放時間
+//   speed: 200,
+
+//   // 圖片與圖片之間間隔
+//   // spaceBetween: 10,
+//   // 每一滑動顯示幾張圖
+//   slidesPerView: 1,
+//   // 設定斷點
+//   breakpoints: {
+//     576: {
+//       slidesPerView: 2,
+//       spaceBetween: 20
+//     },
+//     768: {
+//       slidesPerView: 2,
+//       spaceBetween: 20
+//     },
+//     992: {
+//       slidesPerView: 4,
+//       spaceBetween: 20
+//     }
+//   },
+
+//   navigation: {
+//     nextEl: '.swiper-button-next',
+//     prevEl: '.swiper-button-prev'
+//   }
+// })
 </script>
   <style lang="scss" scoped>
   .orderTable{

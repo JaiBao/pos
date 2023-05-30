@@ -37,8 +37,9 @@
           icon="settings"
           target="_blank"
           href="http://ods.dtstw.com/backend/catalog/products"
-        />
           rounded
+        />
+
         />
         <q-btn
           color="red"

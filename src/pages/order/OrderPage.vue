@@ -178,6 +178,7 @@ label="Ms" />
             </q-item>
           </template>
         </q-select>
+
             </td>
             <td rowspan="2">
                  <q-input
@@ -3334,7 +3335,9 @@ function onReset () {
   personForm.name = ''// 訂購人
   personForm.tel = ''// 訂購人電話
   // personForm.email = ''// 訂購人電子信箱
+  personForm.prefix = '' // 訂購人區碼
   personForm.hometel = ''// 訂購人住家電話
+  personForm.hometel2 = '' // 訂購人分機
   personForm.address = ''// 縣市
   personForm.address2 = ''// 區域
   personForm.road = ''// 路名
@@ -3347,6 +3350,7 @@ function onReset () {
   personForm.event = []// 活動
   personForm.remark = ''// 備註
   personForm.orderStatu = '未確認'// 訂單狀態
+  personForm.locationId = '重慶南'// 店家代號
   // 重設其它狀態
   // ...
   personForm.memberId = ''// 會員ID
@@ -4092,7 +4096,7 @@ const loadBangdong1 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '123' || main.name === '123') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
               if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
@@ -4226,7 +4230,6 @@ const submitBangdong1 = () => {
       }
       row.inputs.push(input)
       bangdong1Drink.quantity = 0
-      bangdong1Arbitrarily.value = 0
     }
   }
 
@@ -4286,6 +4289,7 @@ const submitBangdong1 = () => {
   // 將這個 row 推進 tableRows 中
   tableRows.push(row)
   showbangdong1.value = false
+  bangdong1Arbitrarily.value = 0
 }
 
 // 修改欄位導入
@@ -6275,7 +6279,7 @@ const submitLunchbox1 = () => {
   const totalQuantity = lunchBox1TotalQuantity.value
   for (const option of lunchBox1Mains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -6283,7 +6287,7 @@ const submitLunchbox1 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -6337,7 +6341,7 @@ const submitLunchbox1 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox1SideDishName.value,
@@ -6578,7 +6582,7 @@ const submitLunchbox2 = () => {
   const totalQuantity = lunchBox2TotalQuantity.value
   for (const option of lunchBox2Mains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -6586,7 +6590,7 @@ const submitLunchbox2 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、ID
           const productInput = {
             mainId: option.id,
@@ -6639,7 +6643,7 @@ const submitLunchbox2 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox2SideDishName.value,
@@ -6896,7 +6900,7 @@ const submitLunchbox3 = () => {
   const totalQuantity = lunchBox3TotalQuantity.value
   for (const option of lunchBox3Mains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -6904,7 +6908,7 @@ const submitLunchbox3 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -6958,7 +6962,7 @@ const submitLunchbox3 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox3SideDishName.value,
@@ -7197,7 +7201,7 @@ const submitLunchbox4 = () => {
   const totalQuantity = lunchBox4TotalQuantity.value
   for (const option of lunchBox4Mains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -7205,7 +7209,7 @@ const submitLunchbox4 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -7259,7 +7263,7 @@ const submitLunchbox4 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox4SideDishName.value,
@@ -7785,7 +7789,7 @@ const submitLunchboxCustom1 = () => {
   const totalQuantity = lunchBoxCustom1TotalQuantity.value
   for (const option of lunchBoxCustom1Mains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -7793,7 +7797,7 @@ const submitLunchboxCustom1 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -7848,7 +7852,7 @@ const submitLunchboxCustom1 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBoxCustom1SideDishName.value,
@@ -8532,7 +8536,7 @@ function editBangdong1 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '123' || main.name === '123') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
             if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
@@ -10352,7 +10356,7 @@ const saveEditDialog5 = () => {
   const totalEditQuantity = lunchBox1EditTotalQuantity.value // 計算總數量
   for (const option of lunchBox1EditMains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -10360,7 +10364,7 @@ const saveEditDialog5 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -10413,7 +10417,7 @@ const saveEditDialog5 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox1SideDishName.value,
@@ -10582,7 +10586,7 @@ const saveEditDialog6 = () => {
   const totalEditQuantity = lunchBox2EditTotalQuantity.value // 計算總數量
   for (const option of lunchBox2EditMains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -10590,7 +10594,7 @@ const saveEditDialog6 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、ID
           const productInput = {
             mainId: option.id,
@@ -10643,7 +10647,7 @@ const saveEditDialog6 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox2SideDishName.value,
@@ -10811,7 +10815,7 @@ const saveEditDialog7 = () => {
   const totalEditQuantity = lunchBox3EditTotalQuantity.value // 計算總數量
   for (const option of lunchBox3EditMains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -10819,7 +10823,7 @@ const saveEditDialog7 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -10872,7 +10876,7 @@ const saveEditDialog7 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox3SideDishName.value,
@@ -11041,7 +11045,7 @@ const saveEditDialog8 = () => {
   const totalEditQuantity = lunchBox4EditTotalQuantity.value // 計算總數量
   for (const option of lunchBox4EditMains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -11049,7 +11053,7 @@ const saveEditDialog8 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -11102,7 +11106,7 @@ const saveEditDialog8 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBox4SideDishName.value,
@@ -11237,7 +11241,7 @@ const saveEditDialog0 = () => {
   const totalEditQuantity = lunchBoxCustom1EditTotalQuantity.value // 計算總數量
   for (const option of lunchBoxCustom1EditMains) {
     if (option.quantity > 0) {
-      let Main = `${option.name} x ${option.quantity}`
+      let Main = option.name + 'x' + parseInt(option.quantity)
       let drinkInfo = ''
 
       for (const drink of option.drinks) {
@@ -11245,7 +11249,7 @@ const saveEditDialog0 = () => {
           if (drinkInfo !== '') {
             drinkInfo += ', '
           }
-          drinkInfo += `${drink.name} x ${drink.quantity}`
+          drinkInfo += drink.name + 'x' + parseInt(drink.quantity)
           // 保留飲料名稱、飲料ID
           const productInput = {
             mainId: option.id,
@@ -11298,7 +11302,7 @@ const saveEditDialog0 = () => {
       if (row.sideDishes !== '') {
         row.sideDishes += ', '
       }
-      row.sideDishes += `${sideDish.name} x ${sideDish.quantity}`
+      row.sideDishes += sideDish.name + 'x' + parseInt(sideDish.quantity)
       // 保留配菜名稱、配菜ID
       const productInput = {
         productTypeName: lunchBoxCustom1SideDishName.value,
