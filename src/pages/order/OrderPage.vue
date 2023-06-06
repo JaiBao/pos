@@ -51,31 +51,22 @@
               />
             </td>
             <td >
-              <q-input
-                outlined
-                label="送達日期"
-                :input-style="{ fontSize: '18px' }"
-                v-model="personForm.getDate"
-                mask="date"
-                style="padding: 0;"
-
-              >
-                <template v-slot:append>
-                  <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="personForm.getDate" today-btn>
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="確定" color="primary" flat />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
+              <q-btn icon="event"  color="primary" style="width:150px;height:50px">
+      <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale"
+      style="width:800px">
+        <q-date v-model="personForm.getDate" style="width:800px">
+          <div class="row items-center justify-end q-gutter-sm">
+            <q-btn label="取消" color="red" v-close-popup />
+            <q-btn label="確認" color="primary" @click="save" v-close-popup />
+          </div>
+        </q-date>
+      </q-popup-proxy>
+    </q-btn>
+    <q-badge color="teal row justify-center "
+    style="width:150px;height:40px;font-size:18px">
+        <p >送達日</p><br>
+        <p >{{ personForm.getDate }}</p>
+      </q-badge>
 
             </td>
             <td width="100">
@@ -107,7 +98,7 @@
 <q-input
 outlined
 v-model="personForm.compilation"
-type="text"
+type="number"
 label="統編"
 style="padding: 0;"
 :input-style="{ fontSize: '20px' }"
@@ -115,7 +106,7 @@ style="padding: 0;"
 :readonly="isCompilationReadonly"
 />
 <q-checkbox
-        size="xs"
+        size="md"
         val="xs"
         v-model="personForm.noCompilation"
         label="不需要統編"
@@ -134,27 +125,6 @@ style="padding: 0;"
 
           </tr>
           <tr>
-            <td>
-              <q-input
-
-              outlined
-              v-model="personForm.name"
-              label="訂購人"
-              :input-style="{ fontSize: '20px' }"/>
-              <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
-
-<q-radio
-v-model="personForm.gender"
-val="17"
-label="Mr" />
-<q-radio
-
-v-model="personForm.gender"
-val="18"
-label="Ms" />
-</div>
-            </td>
-
             <td>
               <q-select
               outlined
@@ -181,6 +151,27 @@ label="Ms" />
         </q-select>
 
             </td>
+            <td>
+              <q-input
+
+              outlined
+              v-model="personForm.name"
+              label="訂購人"
+              :input-style="{ fontSize: '20px' }"/>
+              <div class="row" style="font-size: 20px; display: flex; justify-content: space-around;">
+
+<q-radio
+v-model="personForm.gender"
+val="17"
+label="Mr" />
+<q-radio
+
+v-model="personForm.gender"
+val="18"
+label="Ms" />
+</div>
+            </td>
+
             <td rowspan="2">
                  <q-input
                  style="width: 80px;"
@@ -316,30 +307,19 @@ label="Ms" />
     </td>
           </tr>
           <tr>
-            <td colspan="2">         <q-checkbox
-        size="xs"
-        v-model="personForm.sameOrderCustomer"
-        val="xs"
-        label="同訂購人"
-        />
-        <q-checkbox
-        size="xs"
-        v-model="personForm.sameOrderCompany"
-        val="xs"
-        label="同訂購公司"
-        />
-
-            </td>
-
-          </tr>
-          <tr>
-            <td>
+            <td >
               <q-input
               outlined
               v-model="personForm.recipient"
               type="text"
               label="收件人"
               :input-style="{ fontSize: '20px' }"/>
+              <q-checkbox
+        size="md"
+        v-model="personForm.sameOrderCustomer"
+        val="xs"
+        label="同訂購人"
+        />
 
             </td>
             <td>
@@ -352,7 +332,11 @@ label="Ms" />
 
             </td>
 
+          </tr>
+          <tr>
+
             <td colspan="2" >
+
               <q-input
 
               outlined
@@ -360,28 +344,16 @@ label="Ms" />
                type="text"
                label="送達公司"
                :input-style="{ fontSize: '20px' }" />
+               <q-checkbox
+        size="md"
+        v-model="personForm.sameOrderCompany"
+        val="xs"
+        label="同訂購公司"
+        />
             </td>
-            <td colspan="4" >
-              <q-select
 
-      filled
-      v-model="personForm.event"
-      multiple
-      :options="eventOptions"
-      use-chips
-      stack-label
-      label="活動事件"
-      use-input
-    />
-
-            </td>
-          </tr>
-          <tr>
-            <td colspan="8">
-              <div class="row">
-
-                <div class="row justify-start  col-6">
-                  <q-input
+            <td colspan="6" >
+              <q-input
                   outlined
                   style="width:100%;margin-left: 20px;"
                   v-model="personForm.remark"
@@ -390,6 +362,25 @@ label="Ms" />
                   :input-style="{ fontSize: '20px' }"
                   @input="showDialog2"
                   />
+
+            </td>
+          </tr>
+          <tr>
+            <td colspan="8">
+              <div class="row">
+
+                <div class="row justify-start  col-6">
+                  <q-select
+                  style="width:100%;margin-left: 20px;"
+              filled
+              v-model="personForm.event"
+              multiple
+              :options="eventOptions"
+              use-chips
+              stack-label
+              label="訂單分類"
+              use-input
+              />
 
                 </div>
                 <!-- 客戶備註 -->
@@ -410,14 +401,7 @@ label="Ms" />
       </q-card>
     </q-dialog>
                 <div class="row justify-end  col-3">
-                  <q-select
-                  outlined
-                  v-model="personForm.orderStatu"
-                  label="訂單狀態"
-                  :options="orderStatus"
-                  lazy-rules
-                  style="padding: 0;width: 49%;font-size: 20px;"
-              />
+
                   <q-select
                   outlined
                   v-model="personForm.locationId"
@@ -462,6 +446,13 @@ label="Ms" />
       <div class="row menu text-left" data-order-panel>
     <h5>請選擇餐點</h5>
     <q-btn
+            color="pink-5"
+            @click="addPerson"
+            :disabled="isSubmitting"
+            label="客戶資料"
+        class="personBtn"
+          />
+    <q-btn
       @click="openbangdong"
       color="blue"
       >便當</q-btn>
@@ -496,13 +487,6 @@ label="Ms" />
             label="加入訂單"
 
           />
-          <q-btn
-            color="pink-5"
-            @click="addPerson"
-            :disabled="isSubmitting"
-            label="客戶資料"
-        class="personBtn"
-          />
 
           <!-- 便當dailog -->
           <q-dialog v-model="showbangdong" class="lunchBoxdailog" >
@@ -530,7 +514,7 @@ label="Ms" />
     >
     <q-item  v-for="(bangdong1Main, index) in bangdong1Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
     <q-input
-    v-model="bangdong1Main.quantity"
+    v-model.number="bangdong1Main.quantity"
     :label="bangdong1Main.name"
     outlined
     type="number"
@@ -548,7 +532,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong1Drink, index) in bangdong1Drinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong1Drink.quantity" :label="bangdong1Drink.name" outlined type="number"
+          <q-input v-model.number="bangdong1Drink.quantity" :label="bangdong1Drink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -560,7 +544,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong1SideDish, index) in bangdong1SideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong1SideDish.quantity" :label="bangdong1SideDish.name" outlined type="number"
+          <q-input v-model.number="bangdong1SideDish.quantity" :label="bangdong1SideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -576,7 +560,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong1Arbitrarily"
+    v-model.number="bangdong1Arbitrarily"
     label="任意搭配"
     min="0"
     />
@@ -585,7 +569,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong1TotalQuantity"
+    v-model.number="bangdong1TotalQuantity"
     label="數量總計"
     min="0"
     />
@@ -596,7 +580,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong1Price"
+    v-model.number="bangdong1Price"
     label="商品單價"
     readonly
     />
@@ -605,7 +589,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong1TotalQuantityPrice"
+    v-model.number="bangdong1TotalQuantityPrice"
     label="金額總計"
     readonly
     min="0"
@@ -639,7 +623,7 @@ label="Ms" />
     >
     <q-item  v-for="(bangdong2Main, index) in bangdong2Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
     <q-input
-    v-model="bangdong2Main.quantity"
+    v-model.number="bangdong2Main.quantity"
     :label="bangdong2Main.name"
     outlined
     type="number"
@@ -657,7 +641,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong2Drink, index) in bangdong2Drinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong2Drink.quantity" :label="bangdong2Drink.name" outlined type="number"
+          <q-input v-model.number="bangdong2Drink.quantity" :label="bangdong2Drink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </q-item>
@@ -669,7 +653,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong2BentoMain, index) in bangdong2BentoMains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong2BentoMain.quantity" :label="bangdong2BentoMain.name" outlined type="number"
+          <q-input v-model.number="bangdong2BentoMain.quantity" :label="bangdong2BentoMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -681,7 +665,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong2SideDish, index) in bangdong2SideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong2SideDish.quantity" :label="bangdong2SideDish.name" outlined type="number"
+          <q-input v-model.number="bangdong2SideDish.quantity" :label="bangdong2SideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -697,7 +681,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong2Arbitrarily"
+    v-model.number="bangdong2Arbitrarily"
     label="任意搭配"
     min="0"
     />
@@ -706,7 +690,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong2TotalQuantity"
+    v-model.number="bangdong2TotalQuantity"
     label="數量總計"
     min="0"
     />
@@ -716,7 +700,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong2Price"
+    v-model.number="bangdong2Price"
     label="商品單價"
     readonly
     />
@@ -725,7 +709,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong2TotalQuantityPrice"
+    v-model.number="bangdong2TotalQuantityPrice"
     label="金額總計"
     readonly
     min="0"
@@ -760,7 +744,7 @@ label="Ms" />
     >
     <q-item  v-for="(bangdong3Main, index) in bangdong3Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
     <q-input
-    v-model="bangdong3Main.quantity"
+    v-model.number="bangdong3Main.quantity"
     :label="bangdong3Main.name"
     outlined
     type="number"
@@ -778,7 +762,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong3Drink, index) in bangdong3Drinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong3Drink.quantity" :label="bangdong3Drink.name" outlined type="number"
+          <q-input v-model.number="bangdong3Drink.quantity" :label="bangdong3Drink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -791,7 +775,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong3BentoMain, index) in bangdong3BentoMains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong3BentoMain.quantity" :label="bangdong3BentoMain.name" outlined type="number"
+          <q-input v-model.number="bangdong3BentoMain.quantity" :label="bangdong3BentoMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -804,7 +788,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong3SideDish, index) in bangdong3SideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong3SideDish.quantity" :label="bangdong3SideDish.name" outlined type="number"
+          <q-input v-model.number="bangdong3SideDish.quantity" :label="bangdong3SideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -821,7 +805,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong3Arbitrarily"
+    v-model.number="bangdong3Arbitrarily"
     label="任意搭配"
     min="0"
     />
@@ -830,7 +814,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong3TotalQuantity"
+    v-model.number="bangdong3TotalQuantity"
     label="數量總計"
     min="0"
     />
@@ -840,7 +824,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong3Price"
+    v-model.number="bangdong3Price"
     label="商品單價"
     readonly
     />
@@ -849,7 +833,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong3TotalQuantityPrice"
+    v-model.number="bangdong3TotalQuantityPrice"
     label="金額總計"
     readonly
     min="0"
@@ -884,7 +868,7 @@ label="Ms" />
     >
     <q-item  v-for="(bangdong4Main, index) in bangdong4Mains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
     <q-input
-    v-model="bangdong4Main.quantity"
+    v-model.number="bangdong4Main.quantity"
     :label="bangdong4Main.name"
     outlined
     type="number"
@@ -902,7 +886,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong4Drink, index) in bangdong4Drinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong4Drink.quantity" :label="bangdong4Drink.name" outlined type="number"
+          <q-input v-model.number="bangdong4Drink.quantity" :label="bangdong4Drink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -915,7 +899,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong4BentoMain, index) in bangdong4BentoMains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong4BentoMain.quantity" :label="bangdong4BentoMain.name" outlined type="number"
+          <q-input v-model.number="bangdong4BentoMain.quantity" :label="bangdong4BentoMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -928,7 +912,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong4SideDish, index) in bangdong4SideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong4SideDish.quantity" :label="bangdong4SideDish.name" outlined type="number"
+          <q-input v-model.number="bangdong4SideDish.quantity" :label="bangdong4SideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -945,7 +929,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong4Arbitrarily"
+    v-model.number="bangdong4Arbitrarily"
     label="任意搭配"
     min="0"
     />
@@ -954,7 +938,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong4TotalQuantity"
+    v-model.number="bangdong4TotalQuantity"
     label="數量總計"
     min="0"
     />
@@ -964,7 +948,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong4Price"
+    v-model.number="bangdong4Price"
     label="商品單價"
     readonly
     />
@@ -973,7 +957,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong4TotalQuantityPrice"
+    v-model.number="bangdong4TotalQuantityPrice"
     label="金額總計"
     readonly
     min="0"
@@ -1008,7 +992,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian1Main, index) in bangdongVegetarian1Mains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian1Main.quantity" :label="bangdongVegetarian1Main.name" outlined
+          <q-input v-model.number="bangdongVegetarian1Main.quantity" :label="bangdongVegetarian1Main.name" outlined
             type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
             style="width: 130px;" min="0" />
         </q-item>
@@ -1020,7 +1004,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian1Drink, index) in bangdongVegetarian1Drinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian1Drink.quantity" :label="bangdongVegetarian1Drink.name" outlined
+          <q-input v-model.number="bangdongVegetarian1Drink.quantity" :label="bangdongVegetarian1Drink.name" outlined
             type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
             style="width: 130px;" min="0" />
         </q-item>
@@ -1032,7 +1016,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongVegetarian1BentoMain, index) in bangdongVegetarian1BentoMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongVegetarian1BentoMain.quantity" :label="bangdongVegetarian1BentoMain.name" outlined type="number"
+            <q-input v-model.number="bangdongVegetarian1BentoMain.quantity" :label="bangdongVegetarian1BentoMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -1046,7 +1030,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian1SideDish, index) in bangdongVegetarian1SideDishes" :key="index"
           class="flex-auto " style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian1SideDish.quantity" :label="bangdongVegetarian1SideDish.name" outlined
+          <q-input v-model.number="bangdongVegetarian1SideDish.quantity" :label="bangdongVegetarian1SideDish.name" outlined
             type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
             style="width: 130px;" min="0" />
         </q-item>
@@ -1058,14 +1042,14 @@ label="Ms" />
     </div>
     <div class="row">
       <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
-        v-model="bangdongVegetarian1Arbitrarily" label="任意搭配" min="0" />
+        v-model.number="bangdongVegetarian1Arbitrarily" label="任意搭配" min="0" />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
         v-model="bangdongVegetarian1TotalQuantity" label="數量總計" min="0" />
 
       <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian1Price" label="商品單價" readonly />
+        v-model.number="bangdongVegetarian1Price" label="商品單價" readonly />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian1TotalQuantityPrice" label="金額總計" readonly min="0" />
+        v-model.number="bangdongVegetarian1TotalQuantityPrice" label="金額總計" readonly min="0" />
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -1083,7 +1067,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian2Main, index) in bangdongVegetarian2Mains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian2Main.quantity" :label="bangdongVegetarian2Main.name" outlined
+          <q-input v-model.number="bangdongVegetarian2Main.quantity" :label="bangdongVegetarian2Main.name" outlined
             type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
             style="width: 130px;" min="0" />
         </q-item>
@@ -1095,7 +1079,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian2Drink, index) in bangdongVegetarian2Drinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian2Drink.quantity" :label="bangdongVegetarian2Drink.name" outlined
+          <q-input v-model.number="bangdongVegetarian2Drink.quantity" :label="bangdongVegetarian2Drink.name" outlined
             type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
             style="width: 130px;" min="0" />
         </q-item>
@@ -1107,7 +1091,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongVegetarian2BentoMain, index) in bangdongVegetarian2BentoMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongVegetarian2BentoMain.quantity" :label="bangdongVegetarian2BentoMain.name" outlined type="number"
+            <q-input v-model.number="bangdongVegetarian2BentoMain.quantity" :label="bangdongVegetarian2BentoMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -1121,7 +1105,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian2SideDish, index) in bangdongVegetarian2SideDishes" :key="index"
           class="flex-auto " style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian2SideDish.quantity" :label="bangdongVegetarian2SideDish.name" outlined
+          <q-input v-model.number="bangdongVegetarian2SideDish.quantity" :label="bangdongVegetarian2SideDish.name" outlined
             type="number" :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
             style="width: 130px;" min="0" />
         </q-item>
@@ -1133,14 +1117,14 @@ label="Ms" />
     </div>
     <div class="row">
       <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
-        v-model="bangdongVegetarian2Arbitrarily" label="任意搭配" min="0" />
+        v-model.number="bangdongVegetarian2Arbitrarily" label="任意搭配" min="0" />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian2TotalQuantity" label="數量總計" min="0" />
+        v-model.number="bangdongVegetarian2TotalQuantity" label="數量總計" min="0" />
 
       <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian2Price" label="商品單價" readonly />
+        v-model.number="bangdongVegetarian2Price" label="商品單價" readonly />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian2TotalQuantityPrice" label="金額總計" readonly min="0" />
+        v-model.number="bangdongVegetarian2TotalQuantityPrice" label="金額總計" readonly min="0" />
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -1168,17 +1152,17 @@ label="Ms" />
         <!-- 經濟盒餐dailog -->
         <q-dialog v-model="showlunchBox1"   full-width >
     <!-- 主餐 -->
-    <q-card style="overflow: hidden;">
+    <q-card style="overflow-x:hidden">
       <div class="q-gutter-xs row items-start justify-center" id="lunchbox1">
         <div v-for="(lunchBox1Main, index) in lunchBox1Mains" :key="index">
           <h5 style="margin: 0; padding: 0;">{{ lunchBox1Main.name }}</h5>
-          <q-input v-model="lunchBox1Main.quantity" :label="lunchBox1Main.name" outlined type="number"
+          <q-input v-model.number="lunchBox1Main.quantity" :label="lunchBox1Main.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
              />
           <h5 style="margin: 0; padding: 0;">{{ lunchBox1DrinkName }}</h5>
           <div v-for="(lunchBox1Drink, drinkIndex) in lunchBox1Main.drinks" :key="drinkIndex">
-            <q-input v-model="lunchBox1Drink.quantity" :label="lunchBox1Drink.name" outlined type="number"
+            <q-input v-model.number="lunchBox1Drink.quantity" :label="lunchBox1Drink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
           </div>
         </div>
@@ -1189,7 +1173,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(lunchBox1SideDish, index) in lunchBox1SideDishes" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="lunchBox1SideDish.quantity" :label="lunchBox1SideDish.name" outlined type="number"
+            <q-input v-model.number="lunchBox1SideDish.quantity" :label="lunchBox1SideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
               min="0"
                />
@@ -1205,12 +1189,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox1Arbitrarily"
+    v-model.number="lunchBox1Arbitrarily"
     label="任意搭配"
     min="0"
     />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox1TotalQuantity" label="數量總計"
+            v-model.number="lunchBox1TotalQuantity" label="數量總計"
             min="0"
             />
             <q-input
@@ -1219,12 +1203,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox1Price"
+            v-model.number="lunchBox1Price"
             label="商品單價"
             readonly
             />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox1TotalQuantityPrice" label="金額總計" readonly
+            v-model.number="lunchBox1TotalQuantityPrice" label="金額總計" readonly
             min="0"
             />
         </div>
@@ -1250,17 +1234,17 @@ label="Ms" />
       <!-- 會議盒餐dailog -->
       <q-dialog v-model="showlunchBox2"   full-width >
          <!-- 主餐 -->
-    <q-card style="overflow: hidden;">
+    <q-card style="overflow-x:hidden" >
       <div class="q-gutter-xs row items-start justify-center" id="lunchbox2">
         <div v-for="(lunchBox2Main, index) in lunchBox2Mains" :key="index">
           <h5 style="margin: 0; padding: 0;">{{ lunchBox2Main.name }}</h5>
-          <q-input v-model="lunchBox2Main.quantity" :label="lunchBox2Main.name" outlined type="number"
+          <q-input v-model.number="lunchBox2Main.quantity" :label="lunchBox2Main.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
           <h5 style="margin: 0; padding: 0;">{{ lunchBox2DrinkName }}</h5>
           <div v-for="(lunchBox2Drink, drinkIndex) in lunchBox2Main.drinks" :key="drinkIndex">
-            <q-input v-model="lunchBox2Drink.quantity" :label="lunchBox2Drink.name" outlined type="number"
+            <q-input v-model.number="lunchBox2Drink.quantity" :label="lunchBox2Drink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
           </div>
         </div>
@@ -1271,7 +1255,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(lunchBox2SideDish, index) in lunchBox2SideDishes" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="lunchBox2SideDish.quantity" :label="lunchBox2SideDish.name" outlined type="number"
+            <q-input v-model.number="lunchBox2SideDish.quantity" :label="lunchBox2SideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
               min="0"
                />
@@ -1287,12 +1271,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox2Arbitrarily"
+    v-model.number="lunchBox2Arbitrarily"
     label="任意搭配"
     min="0"
     />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox2TotalQuantity" label="數量總計"
+            v-model.number="lunchBox2TotalQuantity" label="數量總計"
             min="0"
              />
              <q-input
@@ -1301,12 +1285,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox2Price"
+            v-model.number="lunchBox2Price"
             label="商品單價"
             readonly
             />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox2TotalQuantityPrice" label="金額總計" readonly
+            v-model.number="lunchBox2TotalQuantityPrice" label="金額總計" readonly
             min="0"
             />
         </div>
@@ -1331,17 +1315,17 @@ label="Ms" />
           <!-- 貴賓盒餐dailog -->
           <q-dialog v-model="showlunchBox3"   full-width >
     <!-- 主餐 -->
-    <q-card style="overflow: hidden;">
+    <q-card style="overflow-x:hidden">
       <div class="q-gutter-xs row items-start justify-center" id="lunchbox3">
         <div v-for="(lunchBox3Main, index) in lunchBox3Mains" :key="index">
           <h5 style="margin: 0; padding: 0;">{{ lunchBox3Main.name }}</h5>
-          <q-input v-model="lunchBox3Main.quantity" :label="lunchBox3Main.name" outlined type="number"
+          <q-input v-model.number="lunchBox3Main.quantity" :label="lunchBox3Main.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
           <h5 style="margin: 0; padding: 0;">{{ lunchBox3DrinkName }}</h5>
           <div v-for="(lunchBox3Drink, drinkIndex) in lunchBox3Main.drinks" :key="drinkIndex">
-            <q-input v-model="lunchBox3Drink.quantity" :label="lunchBox3Drink.name" outlined type="number"
+            <q-input v-model.number="lunchBox3Drink.quantity" :label="lunchBox3Drink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
               min="0"/>
           </div>
@@ -1353,7 +1337,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(lunchBox3SideDish, index) in lunchBox3SideDishes" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="lunchBox3SideDish.quantity" :label="lunchBox3SideDish.name" outlined type="number"
+            <q-input v-model.number="lunchBox3SideDish.quantity" :label="lunchBox3SideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
               min="0"
                />
@@ -1369,12 +1353,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox3Arbitrarily"
+    v-model.number="lunchBox3Arbitrarily"
     label="任意搭配"
     min="0"
     />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox3TotalQuantity" label="數量總計"
+            v-model.number="lunchBox3TotalQuantity" label="數量總計"
             min="0"/>
             <q-input
             min="0"
@@ -1382,12 +1366,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox3Price"
+            v-model.number="lunchBox3Price"
             label="商品單價"
             readonly
             />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox3TotalQuantityPrice" label="金額總計" readonly
+            v-model.number="lunchBox3TotalQuantityPrice" label="金額總計" readonly
             min="0"/>
         </div>
       </div>
@@ -1411,17 +1395,17 @@ label="Ms" />
               <!-- 首席盒餐dailog -->
               <q-dialog v-model="showlunchBox4"   full-width >
    <!-- 主餐 -->
-   <q-card style="overflow: hidden;">
+   <q-card style="overflow-x:hidden">
       <div class="q-gutter-xs row items-start justify-center" id="lunchbox4">
         <div v-for="(lunchBox4Main, index) in lunchBox4Mains" :key="index">
           <h5 style="margin: 0; padding: 0;">{{ lunchBox4Main.name }}</h5>
-          <q-input v-model="lunchBox4Main.quantity" :label="lunchBox4Main.name" outlined type="number"
+          <q-input v-model.number="lunchBox4Main.quantity" :label="lunchBox4Main.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
           <h5 style="margin: 0; padding: 0;">{{ lunchBox4DrinkName }}</h5>
           <div v-for="(lunchBox4Drink, drinkIndex) in lunchBox4Main.drinks" :key="drinkIndex">
-            <q-input v-model="lunchBox4Drink.quantity" :label="lunchBox4Drink.name" outlined type="number"
+            <q-input v-model.number="lunchBox4Drink.quantity" :label="lunchBox4Drink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
               min="0"
               />
@@ -1434,7 +1418,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(lunchBox4SideDish, index) in lunchBox4SideDishes" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="lunchBox4SideDish.quantity" :label="lunchBox4SideDish.name" outlined type="number"
+            <q-input v-model.number="lunchBox4SideDish.quantity" :label="lunchBox4SideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
               min="0"
                />
@@ -1450,12 +1434,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox4Arbitrarily"
+    v-model.number="lunchBox4Arbitrarily"
     label="任意搭配"
     min="0"
     />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox4TotalQuantity" label="數量總計"
+            v-model.number="lunchBox4TotalQuantity" label="數量總計"
             min="0"
             />
             <q-input
@@ -1464,12 +1448,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox4Price"
+            v-model.number="lunchBox4Price"
             label="商品單價"
             readonly
             />
           <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBox4TotalQuantityPrice" label="金額總計" readonly
+            v-model.number="lunchBox4TotalQuantityPrice" label="金額總計" readonly
             min="0"
             />
         </div>
@@ -1505,7 +1489,7 @@ label="Ms" />
     <q-input
     min="0"
 
-    v-model="bangdongSolo6inch.quantity"
+    v-model.number="bangdongSolo6inch.quantity"
     :label="bangdongSolo6inch.name"
     outlined
     type="number"
@@ -1525,7 +1509,7 @@ label="Ms" />
     <q-input
     min="0"
 
-    v-model="bangdongSolo3inch.quantity"
+    v-model.number="bangdongSolo3inch.quantity"
     :label="bangdongSolo3inch.name"
     outlined
     type="number"
@@ -1544,7 +1528,7 @@ label="Ms" />
           style="margin: 0; padding: 0;">
           <q-input
           min="0"
-           v-model="bangdongSoloDrink.quantity" :label="bangdongSoloDrink.name" outlined type="number"
+           v-model.number="bangdongSoloDrink.quantity" :label="bangdongSoloDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
         </q-item>
       </div>
@@ -1557,7 +1541,7 @@ label="Ms" />
           style="margin: 0; padding: 0;">
           <q-input
           min="0"
-           v-model="bangdongSoloBentoMain.quantity" :label="bangdongSoloBentoMain.name" outlined type="number"
+           v-model.number="bangdongSoloBentoMain.quantity" :label="bangdongSoloBentoMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
         </q-item>
         </div>
@@ -1570,7 +1554,7 @@ label="Ms" />
           style="margin: 0; padding: 0;">
           <q-input
           min="0"
-           v-model="bangdongSoloSideDish.quantity" :label="bangdongSoloSideDish.name" outlined type="number"
+           v-model.number="bangdongSoloSideDish.quantity" :label="bangdongSoloSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
         </q-item>
       </div>
@@ -1583,7 +1567,7 @@ label="Ms" />
           style="margin: 0; padding: 0;">
           <q-input
           min="0"
-           v-model="bangdongSoloEcoBag.quantity" :label="bangdongSoloEcoBag.name" outlined type="number"
+           v-model.number="bangdongSoloEcoBag.quantity" :label="bangdongSoloEcoBag.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
         </q-item>
         </div>
@@ -1609,7 +1593,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdongSoloTotalQuantity"
+    v-model.number="bangdongSoloTotalQuantity"
     label="數量總計"
     />
 
@@ -1620,7 +1604,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdongSoloTotalQuantityPrice"
+    v-model.number="bangdongSoloTotalQuantityPrice"
     label="金額總計"
     readonly
     />
@@ -1659,7 +1643,7 @@ label="Ms" />
     <q-input
     min="0"
 
-    v-model="bangdongCustom1Main.quantity"
+    v-model.number="bangdongCustom1Main.quantity"
     :label="bangdongCustom1Main.name"
     outlined
     type="number"
@@ -1678,7 +1662,7 @@ label="Ms" />
           style="margin: 0; padding: 0;">
           <q-input
           min="0"
-           v-model="bangdongCustom1Drink.quantity" :label="bangdongCustom1Drink.name" outlined type="number"
+           v-model.number="bangdongCustom1Drink.quantity" :label="bangdongCustom1Drink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
         </q-item>
       </div>
@@ -1690,7 +1674,7 @@ label="Ms" />
         <q-item v-for="(bangdongCustom1BentoMain, index) in bangdongCustom1BentoMains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
           <q-input
-          min="0" v-model="bangdongCustom1BentoMain.quantity" :label="bangdongCustom1BentoMain.name" outlined type="number"
+          min="0" v-model.number="bangdongCustom1BentoMain.quantity" :label="bangdongCustom1BentoMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
         </q-item>
         </div>
@@ -1703,7 +1687,7 @@ label="Ms" />
           style="margin: 0; padding: 0;">
           <q-input
           min="0"
-           v-model="bangdongCustom1SideDish.quantity" :label="bangdongCustom1SideDish.name" outlined type="number"
+           v-model.number="bangdongCustom1SideDish.quantity" :label="bangdongCustom1SideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
         </q-item>
       </div>
@@ -1718,7 +1702,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdongCustom1Arbitrarily"
+    v-model.number="bangdongCustom1Arbitrarily"
     label="任意搭配"
     min="0"
     />
@@ -1729,7 +1713,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdongCustom1TotalQuantity"
+    v-model.number="bangdongCustom1TotalQuantity"
     label="數量總計"
     />
     <q-input
@@ -1738,7 +1722,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdongCustom1Price"
+    v-model.number="bangdongCustom1Price"
     label="商品單價"
     />
     <q-input
@@ -1747,7 +1731,7 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdongCustom1TotalQuantityPrice"
+    v-model.number="bangdongCustom1TotalQuantityPrice"
     label="金額總計"
     readonly
     />
@@ -1775,19 +1759,19 @@ label="Ms" />
               <!-- 客製盒餐dailog -->
               <q-dialog v-model="showLunchBoxCustom1" class="lunchBoxdailog"  full-width >
      <!-- 主餐 -->
-     <q-card style="overflow: hidden;">
+     <q-card style="overflow-x:hidden">
       <div class="q-gutter-xs row items-start justify-center" id="lunchboxCustom1">
         <div v-for="(lunchBoxCustom1Main, index) in lunchBoxCustom1Mains" :key="index">
           <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1Main.name }}</h5>
           <q-input
           min="0"
-           v-model="lunchBoxCustom1Main.quantity" :label="lunchBoxCustom1Main.name" outlined type="number"
+           v-model.number="lunchBoxCustom1Main.quantity" :label="lunchBoxCustom1Main.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
           <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1DrinkName }}</h5>
           <div v-for="(lunchBoxCustom1Drink, drinkIndex) in lunchBoxCustom1Main.drinks" :key="drinkIndex">
             <q-input
             min="0"
-             v-model="lunchBoxCustom1Drink.quantity" :label="lunchBoxCustom1Drink.name" outlined type="number"
+             v-model.number="lunchBoxCustom1Drink.quantity" :label="lunchBoxCustom1Drink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
           </div>
         </div>
@@ -1800,7 +1784,7 @@ label="Ms" />
             style="margin: 0; padding: 0;">
             <q-input
             min="0"
-             v-model="lunchBoxCustom1SideDish.quantity" :label="lunchBoxCustom1SideDish.name" outlined type="number"
+             v-model.number="lunchBoxCustom1SideDish.quantity" :label="lunchBoxCustom1SideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
           </q-item>
         </div>
@@ -1814,22 +1798,22 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBoxCustom1Arbitrarily"
+    v-model.number="lunchBoxCustom1Arbitrarily"
     label="任意搭配"
     min="0"
     />
           <q-input
           min="0"
            outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBoxCustom1TotalQuantity" label="數量總計" />
+            v-model.number="lunchBoxCustom1TotalQuantity" label="數量總計" />
           <q-input
           min="0"
            outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBoxCustom1Price" label="商品單價"  />
+            v-model.number="lunchBoxCustom1Price" label="商品單價"  />
           <q-input
           min="0"
            outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-            v-model="lunchBoxCustom1TotalQuantityPrice" label="金額總計" readonly />
+            v-model.number="lunchBoxCustom1TotalQuantityPrice" label="金額總計" readonly />
         </div>
       </div>
       <!-- 按鈕 -->
@@ -1867,11 +1851,24 @@ label="Ms" />
         virtual-scroll
         v-model:pagination="pagination"
         :rows-per-page-options="[0]"
-        id="sliderTable" >
+        id="sliderTable"
+        no-data-label="目前沒有訂單">
         <template v-slot:top>
                 <q-toolbar>
-                  <q-toolbar-title>訂單</q-toolbar-title>
+                  <q-toolbar-title class="row flex-around"><h3 style="margin:0">訂單</h3>
+                    <div>
+                    <q-select
+                  outlined
+                  v-model="personForm.orderStatu"
+                  label="訂單狀態"
+                  :options="orderStatus"
+                  lazy-rules
+                  style="padding: 0;width: 150px;font-size: 20px;"
+              />
+              </div>
+                  </q-toolbar-title>
                   <q-space />
+
            <h class="row tableMember" >
             <p v-if="personForm.memberId" >會員編號: {{ personForm.memberId }}</p>
     <p v-if="personForm.name">訂購人: {{ personForm.name }}</p>
@@ -1918,15 +1915,23 @@ label="Ms" />
             color="red"
             fab-mini
             unelevated
-            size="sm"
+            size="md"
             @click="deleteRow(props.row.id)" />
             <q-btn icon="edit"
             fab-mini
-            unelevated size="sm"
+            unelevated size="lg"
             color="info"
             @click="editRowDialog(props.row)"/>
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:no-data="{ message }">
+        <div class="full-width row flex-center text-blue-grey-7 q-gutter-sm">
+          <q-icon size="2em" name="restaurant"></q-icon>
+          <span style="font-size: 22px;">
+            {{ message }}
+          </span>
+        </div>
       </template>
     </q-table>
               </div>
@@ -1941,7 +1946,7 @@ label="Ms" />
     >
     <q-item  v-for="(bangdong1EditMain, index) in bangdong1EditMains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
     <q-input
-    v-model="bangdong1EditMain.quantity"
+    v-model.number="bangdong1EditMain.quantity"
     :label="bangdong1EditMain.name"
     outlined
     type="number"
@@ -1959,7 +1964,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong1EditDrink, index) in bangdong1EditDrinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong1EditDrink.quantity" :label="bangdong1EditDrink.name" outlined type="number"
+          <q-input v-model.number="bangdong1EditDrink.quantity" :label="bangdong1EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -1972,7 +1977,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong1EditSideDish, index) in bangdong1EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong1EditSideDish.quantity" :label="bangdong1EditSideDish.name" outlined type="number"
+          <q-input v-model.number="bangdong1EditSideDish.quantity" :label="bangdong1EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -1989,7 +1994,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong1EditArbitrarily"
+    v-model.number="bangdong1EditArbitrarily"
     label="任意搭配"
     min="0"
     />
@@ -1998,20 +2003,20 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong1EditTotalQuantity"
+    v-model.number="bangdong1EditTotalQuantity"
     label="數量總計"
     min="0"
     />
     <q-input
       min="0"
        outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong1EditPrice" label="商品單價" readonly />
+        v-model.number="bangdong1EditPrice" label="商品單價" readonly />
     <q-input
     outlined
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong1EditTotalQuantityPrice"
+    v-model.number="bangdong1EditTotalQuantityPrice"
     label="金額總計"
     readonly
     min="0"
@@ -2036,7 +2041,7 @@ label="Ms" />
     >
     <q-item  v-for="(bangdong2EditMain, index) in bangdong2EditMains" :key="index" class="flex-auto " style="margin: 0; padding: 0;">
     <q-input
-    v-model="bangdong2EditMain.quantity"
+    v-model.number="bangdong2EditMain.quantity"
     :label="bangdong2EditMain.name"
     outlined
     type="number"
@@ -2054,7 +2059,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong2EditDrink, index) in bangdong2EditDrinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong2EditDrink.quantity" :label="bangdong2EditDrink.name" outlined type="number"
+          <q-input v-model.number="bangdong2EditDrink.quantity" :label="bangdong2EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -2067,7 +2072,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong2EditBentoMain, index) in bangdong2EditBentoMains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong2EditBentoMain.quantity" :label="bangdong2EditBentoMain.name" outlined type="number"
+          <q-input v-model.number="bangdong2EditBentoMain.quantity" :label="bangdong2EditBentoMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -2080,7 +2085,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdong2EditSideDish, index) in bangdong2EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdong2EditSideDish.quantity" :label="bangdong2EditSideDish.name" outlined type="number"
+          <q-input v-model.number="bangdong2EditSideDish.quantity" :label="bangdong2EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"
             />
@@ -2097,7 +2102,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong2EditArbitrarily"
+    v-model.number="bangdong2EditArbitrarily"
     label="任意搭配"
     min="0"
     />
@@ -2106,20 +2111,20 @@ label="Ms" />
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong2EditTotalQuantity"
+    v-model.number="bangdong2EditTotalQuantity"
     label="數量總計"
     min="0"
     />
     <q-input
       min="0"
        outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong2EditPrice" label="商品單價" readonly />
+        v-model.number="bangdong2EditPrice" label="商品單價" readonly />
     <q-input
     outlined
     type="number"
     :input-style="{ fontSize: '20px' }"
     style="width: 130px;"
-    v-model="bangdong2EditTotalQuantityPrice"
+    v-model.number="bangdong2EditTotalQuantityPrice"
     label="金額總計"
     readonly
     min="0"
@@ -2143,7 +2148,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong3EditMain, index) in bangdong3EditMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong3EditMain.quantity" :label="bangdong3EditMain.name" outlined type="number"
+            <q-input v-model.number="bangdong3EditMain.quantity" :label="bangdong3EditMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -2157,7 +2162,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong3EditDrink, index) in bangdong3EditDrinks" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong3EditDrink.quantity" :label="bangdong3EditDrink.name" outlined type="number"
+            <q-input v-model.number="bangdong3EditDrink.quantity" :label="bangdong3EditDrink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -2171,7 +2176,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong3EditBentoMain, index) in bangdong3EditBentoMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong3EditBentoMain.quantity" :label="bangdong3EditBentoMain.name" outlined type="number"
+            <q-input v-model.number="bangdong3EditBentoMain.quantity" :label="bangdong3EditBentoMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -2185,7 +2190,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong3EditSideDish, index) in bangdong3EditSideDishes" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong3EditSideDish.quantity" :label="bangdong3EditSideDish.name" outlined type="number"
+            <q-input v-model.number="bangdong3EditSideDish.quantity" :label="bangdong3EditSideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -2203,19 +2208,19 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong3EditArbitrarily"
+    v-model.number="bangdong3EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong3EditTotalQuantity" label="數量總計"
+          v-model.number="bangdong3EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
        outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong3EditPrice" label="商品單價" readonly />
+        v-model.number="bangdong3EditPrice" label="商品單價" readonly />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong3EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="bangdong3EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
       <!-- 按鈕 -->
@@ -2236,7 +2241,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong4EditMain, index) in bangdong4EditMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong4EditMain.quantity" :label="bangdong4EditMain.name" outlined type="number"
+            <q-input v-model.number="bangdong4EditMain.quantity" :label="bangdong4EditMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"/>
@@ -2249,7 +2254,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong4EditDrink, index) in bangdong4EditDrinks" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong4EditDrink.quantity" :label="bangdong4EditDrink.name" outlined type="number"
+            <q-input v-model.number="bangdong4EditDrink.quantity" :label="bangdong4EditDrink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0" />
@@ -2262,7 +2267,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong4EditBentoMain, index) in bangdong4EditBentoMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong4EditBentoMain.quantity" :label="bangdong4EditBentoMain.name" outlined type="number"
+            <q-input v-model.number="bangdong4EditBentoMain.quantity" :label="bangdong4EditBentoMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"/>
@@ -2275,7 +2280,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdong4EditSideDish, index) in bangdong4EditSideDishes" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdong4EditSideDish.quantity" :label="bangdong4EditSideDish.name" outlined type="number"
+            <q-input v-model.number="bangdong4EditSideDish.quantity" :label="bangdong4EditSideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"/>
@@ -2292,19 +2297,19 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdong4EditArbitrarily"
+    v-model.number="bangdong4EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong4EditTotalQuantity" label="數量總計"
+          v-model.number="bangdong4EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
        outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdong4EditPrice" label="商品單價" readonly />
+        v-model.number="bangdong4EditPrice" label="商品單價" readonly />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdong4EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="bangdong4EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
       <!-- 按鈕 -->
@@ -2324,7 +2329,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian1EditMain, index) in bangdongVegetarian1EditMains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian1EditMain.quantity" :label="bangdongVegetarian1EditMain.name" outlined type="number"
+          <q-input v-model.number="bangdongVegetarian1EditMain.quantity" :label="bangdongVegetarian1EditMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -2336,7 +2341,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian1EditDrink, index) in bangdongVegetarian1EditDrinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian1EditDrink.quantity" :label="bangdongVegetarian1EditDrink.name" outlined type="number"
+          <q-input v-model.number="bangdongVegetarian1EditDrink.quantity" :label="bangdongVegetarian1EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -2348,7 +2353,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongVegetarian1EditBentoMain, index) in bangdongVegetarian1EditBentoMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongVegetarian1EditBentoMain.quantity" :label="bangdongVegetarian1EditBentoMain.name" outlined type="number"
+            <q-input v-model.number="bangdongVegetarian1EditBentoMain.quantity" :label="bangdongVegetarian1EditBentoMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -2362,7 +2367,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian1EditSideDish, index) in bangdongVegetarian1EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian1EditSideDish.quantity" :label="bangdongVegetarian1EditSideDish.name" outlined type="number"
+          <q-input v-model.number="bangdongVegetarian1EditSideDish.quantity" :label="bangdongVegetarian1EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -2374,13 +2379,13 @@ label="Ms" />
     </div>
     <div class="row">
       <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
-        v-model="bangdongVegetarian1EditArbitrarily" label="任意搭配" min="0" />
+        v-model.number="bangdongVegetarian1EditArbitrarily" label="任意搭配" min="0" />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian1EditTotalQuantity" label="數量總計" min="0" />
+        v-model.number="bangdongVegetarian1EditTotalQuantity" label="數量總計" min="0" />
       <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian1EditPrice" label="商品單價" readonly />
+        v-model.number="bangdongVegetarian1EditPrice" label="商品單價" readonly />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian1EditTotalQuantityPrice" label="金額總計" readonly min="0" />
+        v-model.number="bangdongVegetarian1EditTotalQuantityPrice" label="金額總計" readonly min="0" />
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -2399,7 +2404,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian2EditMain, index) in bangdongVegetarian2EditMains" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian2EditMain.quantity" :label="bangdongVegetarian2EditMain.name" outlined type="number"
+          <q-input v-model.number="bangdongVegetarian2EditMain.quantity" :label="bangdongVegetarian2EditMain.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -2411,7 +2416,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian2EditDrink, index) in bangdongVegetarian2EditDrinks" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian2EditDrink.quantity" :label="bangdongVegetarian2EditDrink.name" outlined type="number"
+          <q-input v-model.number="bangdongVegetarian2EditDrink.quantity" :label="bangdongVegetarian2EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -2423,7 +2428,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongVegetarian2EditBentoMain, index) in bangdongVegetarian2EditBentoMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongVegetarian2EditBentoMain.quantity" :label="bangdongVegetarian2EditBentoMain.name" outlined type="number"
+            <q-input v-model.number="bangdongVegetarian2EditBentoMain.quantity" :label="bangdongVegetarian2EditBentoMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"
@@ -2437,7 +2442,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(bangdongVegetarian2EditSideDish, index) in bangdongVegetarian2EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="bangdongVegetarian2EditSideDish.quantity" :label="bangdongVegetarian2EditSideDish.name" outlined type="number"
+          <q-input v-model.number="bangdongVegetarian2EditSideDish.quantity" :label="bangdongVegetarian2EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0" />
         </q-item>
@@ -2449,13 +2454,13 @@ label="Ms" />
     </div>
     <div class="row">
       <q-input outlined type="number" :input-style="{fontSize:'20px'}" style="width:130px"
-        v-model="bangdongVegetarian2EditArbitrarily" label="任意搭配" min="0" />
+        v-model.number="bangdongVegetarian2EditArbitrarily" label="任意搭配" min="0" />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian2EditTotalQuantity" label="數量總計" min="0" />
+        v-model.number="bangdongVegetarian2EditTotalQuantity" label="數量總計" min="0" />
       <q-input min="0" outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian2EditPrice" label="商品單價" readonly />
+        v-model.number="bangdongVegetarian2EditPrice" label="商品單價" readonly />
       <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongVegetarian2EditTotalQuantityPrice" label="金額總計" readonly min="0" />
+        v-model.number="bangdongVegetarian2EditTotalQuantityPrice" label="金額總計" readonly min="0" />
     </div>
     <!-- 按鈕 -->
     <div class="row justify-end" style="width: 100%;">
@@ -2474,7 +2479,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongCustom1EditMain, index) in bangdongCustom1EditMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongCustom1EditMain.quantity" :label="bangdongCustom1EditMain.name" outlined type="number"
+            <q-input v-model.number="bangdongCustom1EditMain.quantity" :label="bangdongCustom1EditMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"/>
@@ -2487,7 +2492,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongCustom1EditDrink, index) in bangdongCustom1EditDrinks" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongCustom1EditDrink.quantity" :label="bangdongCustom1EditDrink.name" outlined type="number"
+            <q-input v-model.number="bangdongCustom1EditDrink.quantity" :label="bangdongCustom1EditDrink.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0" />
@@ -2500,7 +2505,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongCustom1EditBentoMain, index) in bangdongCustom1EditBentoMains" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongCustom1EditBentoMain.quantity" :label="bangdongCustom1EditBentoMain.name" outlined type="number"
+            <q-input v-model.number="bangdongCustom1EditBentoMain.quantity" :label="bangdongCustom1EditBentoMain.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"/>
@@ -2513,7 +2518,7 @@ label="Ms" />
         <div class="row items-center">
           <q-item v-for="(bangdongCustom1EditSideDish, index) in bangdongCustom1EditSideDishes" :key="index" class="flex-auto "
             style="margin: 0; padding: 0;">
-            <q-input v-model="bangdongCustom1EditSideDish.quantity" :label="bangdongCustom1EditSideDish.name" outlined type="number"
+            <q-input v-model.number="bangdongCustom1EditSideDish.quantity" :label="bangdongCustom1EditSideDish.name" outlined type="number"
               :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }"
               style="width: 130px;"
               min="0"/>
@@ -2530,19 +2535,19 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdongCustom1EditArbitrarily"
+    v-model.number="bangdongCustom1EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdongCustom1EditTotalQuantity" label="數量總計"
+          v-model.number="bangdongCustom1EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
        outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="bangdongCustom1EditPrice" label="商品單價"  />
+        v-model.number="bangdongCustom1EditPrice" label="商品單價"  />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="bangdongCustom1EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="bangdongCustom1EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
       <!-- 按鈕 -->
@@ -2560,13 +2565,13 @@ label="Ms" />
     <div class="q-gutter-xs row items-start justify-center" id="lunchbox1">
       <div v-for="(lunchBox1EditMain, index) in lunchBox1EditMains" :key="index">
         <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditMain.name }}</h5>
-        <q-input v-model="lunchBox1EditMain.quantity" :label="lunchBox1EditMain.name" outlined type="number"
+        <q-input v-model.number="lunchBox1EditMain.quantity" :label="lunchBox1EditMain.name" outlined type="number"
           :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
           min="0"
           />
         <h5 style="margin: 0; padding: 0;">{{ lunchBox1EditDrinkName }}</h5>
         <div v-for="(lunchBox1EditDrink, drinkIndex) in lunchBox1EditMain.drinks" :key="drinkIndex">
-          <q-input v-model="lunchBox1EditDrink.quantity" :label="lunchBox1EditDrink.name" outlined type="number"
+          <q-input v-model.number="lunchBox1EditDrink.quantity" :label="lunchBox1EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </div>
@@ -2578,7 +2583,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(lunchBox1EditSideDish, index) in lunchBox1EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="lunchBox1EditSideDish.quantity" :label="lunchBox1EditSideDish.name" outlined type="number"
+          <q-input v-model.number="lunchBox1EditSideDish.quantity" :label="lunchBox1EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </q-item>
@@ -2593,12 +2598,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox1EditArbitrarily"
+    v-model.number="lunchBox1EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox1EditTotalQuantity" label="數量總計"
+          v-model.number="lunchBox1EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2606,12 +2611,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox1EditPrice"
+            v-model.number="lunchBox1EditPrice"
             label="商品單價"
             readonly
             />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
     </div>
@@ -2639,12 +2644,12 @@ label="Ms" />
     <div class="q-gutter-xs row items-start justify-center" id="lunchbox2Edit">
       <div v-for="(lunchBox2EditMain, index) in lunchBox2EditMains" :key="index">
         <h5 style="margin: 0; padding: 0;">{{ lunchBox2EditMain.name }}</h5>
-        <q-input v-model="lunchBox2EditMain.quantity" :label="lunchBox2EditMain.name" outlined type="number"
+        <q-input v-model.number="lunchBox2EditMain.quantity" :label="lunchBox2EditMain.name" outlined type="number"
           :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
           min="0"/>
         <h5 style="margin: 0; padding: 0;">{{ lunchBox2EditDrinkName }}</h5>
         <div v-for="(lunchBox2EditDrink, drinkIndex) in lunchBox2EditMain.drinks" :key="drinkIndex">
-          <q-input v-model="lunchBox2EditDrink.quantity" :label="lunchBox2EditDrink.name" outlined type="number"
+          <q-input v-model.number="lunchBox2EditDrink.quantity" :label="lunchBox2EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </div>
@@ -2656,7 +2661,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(lunchBox2EditSideDish, index) in lunchBox2EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="lunchBox2EditSideDish.quantity" :label="lunchBox2EditSideDish.name" outlined type="number"
+          <q-input v-model.number="lunchBox2EditSideDish.quantity" :label="lunchBox2EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </q-item>
@@ -2671,12 +2676,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox2EditArbitrarily"
+    v-model.number="lunchBox2EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox2EditTotalQuantity" label="數量總計"
+          v-model.number="lunchBox2EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2684,12 +2689,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox2EditPrice"
+            v-model.number="lunchBox2EditPrice"
             label="商品單價"
             readonly
             />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox2EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="lunchBox2EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
     </div>
@@ -2717,12 +2722,12 @@ label="Ms" />
     <div class="q-gutter-xs row items-start justify-center" id="lunchbox3Edit">
       <div v-for="(lunchBox3EditMain, index) in lunchBox3EditMains" :key="index">
         <h5 style="margin: 0; padding: 0;">{{ lunchBox3EditMain.name }}</h5>
-        <q-input v-model="lunchBox3EditMain.quantity" :label="lunchBox3EditMain.name" outlined type="number"
+        <q-input v-model.number="lunchBox3EditMain.quantity" :label="lunchBox3EditMain.name" outlined type="number"
           :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
           min="0"/>
         <h5 style="margin: 0; padding: 0;">{{ lunchBox3EditDrinkName }}</h5>
         <div v-for="(lunchBox3EditDrink, drinkIndex) in lunchBox3EditMain.drinks" :key="drinkIndex">
-          <q-input v-model="lunchBox3EditDrink.quantity" :label="lunchBox3EditDrink.name" outlined type="number"
+          <q-input v-model.number="lunchBox3EditDrink.quantity" :label="lunchBox3EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </div>
@@ -2734,7 +2739,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(lunchBox3EditSideDish, index) in lunchBox3EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="lunchBox3EditSideDish.quantity" :label="lunchBox3EditSideDish.name" outlined type="number"
+          <q-input v-model.number="lunchBox3EditSideDish.quantity" :label="lunchBox3EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </q-item>
@@ -2749,12 +2754,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox3EditArbitrarily"
+    v-model.number="lunchBox3EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox3EditTotalQuantity" label="數量總計"
+          v-model.number="lunchBox3EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2762,12 +2767,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox3EditPrice"
+            v-model.number="lunchBox3EditPrice"
             label="商品單價"
             readonly
             />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox3EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="lunchBox3EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
     </div>
@@ -2795,12 +2800,12 @@ label="Ms" />
     <div class="q-gutter-xs row items-start justify-center" id="lunchbox1Edit">
       <div v-for="(lunchBox4EditMain, index) in lunchBox4EditMains" :key="index">
         <h5 style="margin: 0; padding: 0;">{{ lunchBox4EditMain.name }}</h5>
-        <q-input v-model="lunchBox4EditMain.quantity" :label="lunchBox4EditMain.name" outlined type="number"
+        <q-input v-model.number="lunchBox4EditMain.quantity" :label="lunchBox4EditMain.name" outlined type="number"
           :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
           min="0"/>
         <h5 style="margin: 0; padding: 0;">{{ lunchBox4EditDrinkName }}</h5>
         <div v-for="(lunchBox4EditDrink, drinkIndex) in lunchBox4EditMain.drinks" :key="drinkIndex">
-          <q-input v-model="lunchBox4EditDrink.quantity" :label="lunchBox4EditDrink.name" outlined type="number"
+          <q-input v-model.number="lunchBox4EditDrink.quantity" :label="lunchBox4EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </div>
@@ -2812,7 +2817,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(lunchBox4EditSideDish, index) in lunchBox4EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="lunchBox4EditSideDish.quantity" :label="lunchBox4EditSideDish.name" outlined type="number"
+          <q-input v-model.number="lunchBox4EditSideDish.quantity" :label="lunchBox4EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </q-item>
@@ -2827,12 +2832,12 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBox4EditArbitrarily"
+    v-model.number="lunchBox4EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox4EditTotalQuantity" label="數量總計"
+          v-model.number="lunchBox4EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
             min="0"
@@ -2840,12 +2845,12 @@ label="Ms" />
             type="number"
             :input-style="{ fontSize: '20px' }"
             style="width: 130px;"
-            v-model="lunchBox4EditPrice"
+            v-model.number="lunchBox4EditPrice"
             label="商品單價"
             readonly
             />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="lunchBox1EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
     </div>
@@ -2873,12 +2878,12 @@ label="Ms" />
     <div class="q-gutter-xs row items-start justify-center" id="lunchBoxCustom1Edit">
       <div v-for="(lunchBoxCustom1EditMain, index) in lunchBoxCustom1EditMains" :key="index">
         <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1EditMain.name }}</h5>
-        <q-input v-model="lunchBoxCustom1EditMain.quantity" :label="lunchBoxCustom1EditMain.name" outlined type="number"
+        <q-input v-model.number="lunchBoxCustom1EditMain.quantity" :label="lunchBoxCustom1EditMain.name" outlined type="number"
           :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
           min="0"/>
         <h5 style="margin: 0; padding: 0;">{{ lunchBoxCustom1EditDrinkName }}</h5>
         <div v-for="(lunchBoxCustom1EditDrink, drinkIndex) in lunchBoxCustom1EditMain.drinks" :key="drinkIndex">
-          <q-input v-model="lunchBoxCustom1EditDrink.quantity" :label="lunchBoxCustom1EditDrink.name" outlined type="number"
+          <q-input v-model.number="lunchBoxCustom1EditDrink.quantity" :label="lunchBoxCustom1EditDrink.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </div>
@@ -2890,7 +2895,7 @@ label="Ms" />
       <div class="row items-center">
         <q-item v-for="(lunchBoxCustom1EditSideDish, index) in lunchBoxCustom1EditSideDishes" :key="index" class="flex-auto "
           style="margin: 0; padding: 0;">
-          <q-input v-model="lunchBoxCustom1EditSideDish.quantity" :label="lunchBoxCustom1EditSideDish.name" outlined type="number"
+          <q-input v-model.number="lunchBoxCustom1EditSideDish.quantity" :label="lunchBoxCustom1EditSideDish.name" outlined type="number"
             :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;"
             min="0"/>
         </q-item>
@@ -2905,19 +2910,19 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="lunchBoxCustom1EditArbitrarily"
+    v-model.number="lunchBoxCustom1EditArbitrarily"
     label="任意搭配"
     min="0"
     />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBoxCustom1EditTotalQuantity" label="數量總計"
+          v-model.number="lunchBoxCustom1EditTotalQuantity" label="數量總計"
           min="0"/>
           <q-input
       min="0"
        outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-        v-model="lunchBoxCustom1EditPrice" label="商品單價"  />
+        v-model.number="lunchBoxCustom1EditPrice" label="商品單價"  />
         <q-input outlined type="number" :input-style="{ fontSize: '20px' }" style="width: 130px;"
-          v-model="lunchBoxCustom1EditTotalQuantityPrice" label="金額總計" readonly
+          v-model.number="lunchBoxCustom1EditTotalQuantityPrice" label="金額總計" readonly
           min="0"/>
       </div>
     </div>
@@ -2951,7 +2956,7 @@ label="Ms" />
   <q-input
   min="0"
 
-  v-model="bangdongSoloEdit6inch.quantity"
+  v-model.number="bangdongSoloEdit6inch.quantity"
   :label="bangdongSoloEdit6inch.name"
   outlined
   type="number"
@@ -2971,7 +2976,7 @@ label="Ms" />
   <q-input
   min="0"
 
-  v-model="bangdongSoloEdit3inch.quantity"
+  v-model.number="bangdongSoloEdit3inch.quantity"
   :label="bangdongSoloEdit3inch.name"
   outlined
   type="number"
@@ -2990,7 +2995,7 @@ label="Ms" />
     style="margin: 0; padding: 0;">
     <q-input
     min="0"
-     v-model="bangdongSoloEditDrink.quantity" :label="bangdongSoloEditDrink.name" outlined type="number"
+     v-model.number="bangdongSoloEditDrink.quantity" :label="bangdongSoloEditDrink.name" outlined type="number"
       :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
   </q-item>
   </div>
@@ -3003,7 +3008,7 @@ label="Ms" />
     style="margin: 0; padding: 0;">
     <q-input
     min="0"
-     v-model="bangdongSoloEditBentoMain.quantity" :label="bangdongSoloEditBentoMain.name" outlined type="number"
+     v-model.number="bangdongSoloEditBentoMain.quantity" :label="bangdongSoloEditBentoMain.name" outlined type="number"
       :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
   </q-item>
   </div>
@@ -3016,7 +3021,7 @@ label="Ms" />
     style="margin: 0; padding: 0;">
     <q-input
     min="0"
-     v-model="bangdongSoloEditSideDish.quantity" :label="bangdongSoloEditSideDish.name" outlined type="number"
+     v-model.number="bangdongSoloEditSideDish.quantity" :label="bangdongSoloEditSideDish.name" outlined type="number"
       :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
   </q-item>
   </div>
@@ -3029,7 +3034,7 @@ label="Ms" />
     style="margin: 0; padding: 0;">
     <q-input
     min="0"
-     v-model="bangdongSoloEditEcoBag.quantity" :label="bangdongSoloEditEcoBag.name" outlined type="number"
+     v-model.number="bangdongSoloEditEcoBag.quantity" :label="bangdongSoloEditEcoBag.name" outlined type="number"
       :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
   </q-item>
   </div>
@@ -3044,7 +3049,7 @@ label="Ms" />
     type="number"
     :input-style="{fontSize:'20px'}"
     style="width:130px"
-    v-model="bangdongSoloEditArbitrarily"
+    v-model.number="bangdongSoloEditArbitrarily"
     label="任意搭配"
     min="0"
     /> -->
@@ -3055,7 +3060,7 @@ label="Ms" />
   type="number"
   :input-style="{ fontSize: '20px' }"
   style="width: 130px;"
-  v-model="bangdongSoloEditTotalQuantity"
+  v-model.number="bangdongSoloEditTotalQuantity"
   label="數量總計"
   />
 
@@ -3066,7 +3071,7 @@ label="Ms" />
   type="number"
   :input-style="{ fontSize: '20px' }"
   style="width: 130px;"
-  v-model="bangdongSoloEditTotalQuantityPrice"
+  v-model.number="bangdongSoloEditTotalQuantityPrice"
   label="金額總計"
   readonly
   />
@@ -3141,7 +3146,7 @@ label="Ms" />
       <div class="q-pa-xs row justify-around ">
         <q-radio v-model="paymentMethod" val="cash" label="現金"  class="radio-option"/>
         <q-radio v-model="paymentMethod" val="wire" label="轉帳" class="radio-option" />
-        <q-radio v-model="paymentMethod" val="credit" label="信用卡" class="radio-option" />
+        <!-- <q-radio v-model="paymentMethod" val="credit" label="信用卡" class="radio-option" /> -->
         <q-radio v-model="paymentMethod" val="debt" label="賒帳"  class="radio-option"/>
 
         <q-input
@@ -3149,9 +3154,9 @@ label="Ms" />
       v-model="getMoneyDate"
       outlined
       style="width:150px"
-      label="收款日期"
+      label="收款日"
       mask="date"
-      :input-style="{ fontSize: '18px' }"
+      :input-style="{ fontSize: '16px' }"
     >               <template v-slot:append>
                   <q-icon name="calendar_today" class="cursor-pointer" style="width: 10px;">
                     <q-popup-proxy
@@ -3159,9 +3164,10 @@ label="Ms" />
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="getMoneyDate" today-btn>
+                      <q-date v-model="getMoneyDate" today-btn style="width:800px">
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="確定" color="primary" flat />
+                          <q-btn label="取消" color="red" v-close-popup />
+                          <q-btn v-close-popup label="確定" color="primary"  />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -3170,23 +3176,23 @@ label="Ms" />
               </q-input>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">運費</div>
-          <q-input outlined v-model="freight"  style="width:100px"  />
+          <q-input outlined v-model.number="freight"  style="width:90px"  />
         </div>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">折扣</div>
-          <q-input outlined v-model="discount"  style="width:100px"  />
+          <q-input outlined v-model.number="discount"  style="width:90px"  />
         </div>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">總金額</div>
-          <q-input outlined v-model="total" readonly style="width:100px"  />
+          <q-input outlined v-model.number="total" readonly style="width:90px"  />
         </div>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">已付金額</div>
-          <q-input outlined v-model="paid" style="width:100px"  />
+          <q-input outlined v-model.number="paid" style="width:90px"  />
         </div>
         <div class="q-field row no-wrap items-center">
           <div class="col-auto" style="font-size: 20px;">未付餘額</div>
-          <q-input outlined v-model="unpaid" readonly style="width:100px"   />
+          <q-input outlined v-model.number="unpaid" readonly style="width:90px"   />
         </div>
       </div>
     </div>
@@ -3204,7 +3210,15 @@ import { ref, watch, computed, reactive } from 'vue'
 import { useQuasar, Dialog } from 'quasar'
 import { apiAuth } from 'src/boot/axios'
 const $q = useQuasar()
+const date = ref('')
 
+function updateProxy () {
+  personForm.getDate = date.value
+}
+
+function save () {
+  date.value = personForm.getDate
+}
 // 聯絡人區
 const showPersonDialog = ref(false)
 function addPerson () {
@@ -3239,7 +3253,7 @@ const personForm = reactive({
   road2: '', // 門牌
   recipient: '', // 收件人
   recipientTel: '', // 收件人電話
-  gender: '', // 性別
+  gender: '17', // 性別
   sameOrderCustomer: false, // 訂購人與收件人相同
   sameOrderCompany: false, // 訂購公司與收件公司相同
   noCompilation: false, // 統編勾選
@@ -3351,7 +3365,7 @@ function onReset () {
   personForm.road = ''// 路名
   personForm.recipient = ''// 收件人
   personForm.recipientTel = ''// 收件人電話
-  personForm.gender = ''// 性別
+  personForm.gender = '17'// 性別
   personForm.sameOrderCustomer = false// 訂購人與收件人相同
   personForm.sameOrderCompany = false// 訂購公司與收件公司personForm.相同
   personForm.getCompany = ''// 收件公司
@@ -3378,7 +3392,7 @@ const roadOptions = reactive([])
 const getAddressList = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -3393,7 +3407,7 @@ const getAddressList = async () => {
 const getDistrictList = async (id) => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -3636,7 +3650,7 @@ watch(
     timeoutId = setTimeout(async () => {
       try {
         // 延遲請求的時間（以毫秒為單位）
-        const delay = 2000
+        const delay = 100
 
         // 延遲指定的時間
         await new Promise(resolve => setTimeout(resolve, delay))
@@ -3661,6 +3675,8 @@ watch(
           personForm.memberId = data.data[0].id
           personForm.compilation = data.data[0].payment_tin
           personForm.company = data.data[0].payment_company
+          personForm.gender = data.data[0].salutation_id
+
           isCompilationUserInput.value = false
 
           // 導入舊資料縣市
@@ -3681,7 +3697,7 @@ watch(
         // 處理錯誤
         console.error(error)
       }
-    }, 3000)
+    }, 100)
   }
 )
 
@@ -3691,7 +3707,7 @@ const option2s = ref([])
 const getExtraComments2 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -3760,7 +3776,7 @@ const options = ref([])
 const getExtraComments = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -3830,7 +3846,7 @@ const getCustomers = async () => {
 
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -3866,7 +3882,7 @@ const getCustomers = async () => {
 const savePerson = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -3878,7 +3894,7 @@ const savePerson = async () => {
     const stateId = state.id
     console.log(stateId)
     // 添加延迟
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 100))
     // 導入資料區域
     const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${state.id}`)
     const city = cities.data.find(c => c.name === personForm.address2)
@@ -3888,14 +3904,25 @@ const savePerson = async () => {
     const customers = await getCustomers()
     const customer = customers.find(c => c.mobile.replace('-', '') === personForm.tel.replace('-', ''))
 
+    if (personForm.prefix == null) {
+      personForm.prefix = ''
+    }
+    if (personForm.hometel2 == null) {
+      personForm.hometel2 = ''
+    }
+    if (personForm.hometel == null) {
+      personForm.hometel = ''
+    }
+
     if (customer) {
       // 如果已經存在客戶資料，就更新它
       // await apiAuth.put(`/member/member/${customer.id}`,
       await apiAuth.post('/member/member/save',
         {
+
           member_id: customer.id, // id
-          telephone_prefix: personForm.hometel.substring(0, 2),
-          telephone: personForm.hometel.substring(2),
+          telephone_prefix: personForm.prefix,
+          telephone: personForm.hometel + '#' + personForm.hometel2, // 家電
           name: personForm.name, // 訂購人
           mobile: personForm.tel, // 訂購人電話
           // email: personForm.email, // 訂購人email
@@ -3907,10 +3934,10 @@ const savePerson = async () => {
           shipping_state_id: stateId, // 縣市id
           shipping_city_id: address2Id, // 區域id
           shipping_road: personForm.road, // 路名
-          shipping_address1: personForm.road2 // 地址
-
+          shipping_address1: personForm.road2, // 地址
+          salutation_id: personForm.gender // 稱謂
         })
-      await $q.notify({
+      $q.notify({
         color: 'green-4',
         textColor: 'white',
         icon: 'check-circle',
@@ -3922,6 +3949,8 @@ const savePerson = async () => {
         member_id: '',
         name: personForm.name,
         mobile: personForm.tel,
+        telephone_prefix: personForm.prefix,
+        telephone: personForm.hometel + '#' + personForm.hometel2,
         // email: personForm.email,
         shipping_personal_name: personForm.recipient,
         shipping_phone: personForm.recipientTel,
@@ -3932,17 +3961,18 @@ const savePerson = async () => {
         shipping_city_id: address2Id,
         shipping_road: personForm.road,
         shipping_address1: personForm.road2,
-
+        salutation_id: personForm.gender, // 稱謂
         is_active: 1,
         is_admin: 0
       })
-      await $q.notify({
+      $q.notify({
         color: 'green-4',
         textColor: 'white',
         icon: 'check-circle',
         message: '是新客戶,已加入資料'
       })
     }
+    showPersonDialog.value = false
     // 介面上顯示原本的地址名稱
     personForm.address = state.name
     personForm.address2 = city.name
@@ -4056,7 +4086,7 @@ const bangdong1SideDishId = ref('')
 const loadBangdong1 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -4094,7 +4124,8 @@ const loadBangdong1 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 監聽主餐的數量變化
@@ -4105,7 +4136,7 @@ const loadBangdong1 = async () => {
           bangdong1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
             if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -4168,6 +4199,9 @@ const bangdong1TotalQuantityPrice = computed(() => {
 
   bangdong1Drinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdong1SideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -4308,7 +4342,7 @@ const bangdong1EditBentoMains = reactive([])
 const loadBangdong1Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -4350,7 +4384,8 @@ const loadBangdong1Edit = async () => {
         name: sideDishValue.name,
         quantity: 0,
         hidenquantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       }
       bangdong1EditSideDishes.push(bangdong1EditSideDish)
     }
@@ -4385,7 +4420,7 @@ const bangdong2Price = ref(0)
 const loadBangdong2 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -4423,7 +4458,8 @@ const loadBangdong2 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 副主餐
@@ -4443,8 +4479,8 @@ const loadBangdong2 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong2SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.namWe === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -4498,6 +4534,9 @@ const bangdong2TotalQuantityPrice = computed(() => {
   let totalPrice = bangdong2TotalQuantity.value * bangdong2Price.value
   bangdong2Drinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdong2SideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -4655,7 +4694,7 @@ const bangdong2EditBentoMains = reactive([])
 const loadBangdong2Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -4697,7 +4736,8 @@ const loadBangdong2Edit = async () => {
         name: sideDishValue.name,
         quantity: 0,
         hidenquantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       }
       bangdong2EditSideDishes.push(bangdong2EditSideDish)
     }
@@ -4744,7 +4784,7 @@ const bangdong3BentoMainId = ref('')
 const loadBangdong3 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -4782,7 +4822,8 @@ const loadBangdong3 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 副主餐
@@ -4802,8 +4843,8 @@ const loadBangdong3 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong3SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -4857,6 +4898,9 @@ const bangdong3TotalQuantityPrice = computed(() => {
   let totalPrice = bangdong3TotalQuantity.value * bangdong3Price.value
   bangdong3Drinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdong3SideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -5014,7 +5058,7 @@ const bangdong3EditBentoMains = reactive([])
 const loadBangdong3Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -5056,7 +5100,8 @@ const loadBangdong3Edit = async () => {
         name: sideDishValue.name,
         quantity: 0,
         hidenquantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       }
       bangdong3EditSideDishes.push(bangdong3EditSideDish)
     }
@@ -5103,7 +5148,7 @@ const bangdong4BentoMainId = ref('')
 const loadBangdong4 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -5141,7 +5186,8 @@ const loadBangdong4 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 副主餐
@@ -5161,8 +5207,8 @@ const loadBangdong4 = async () => {
           // 配菜的數量跟著主餐的數量變化
           bangdong4SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
-            if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -5217,7 +5263,9 @@ const bangdong4TotalQuantityPrice = computed(() => {
   bangdong4Drinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
   })
-
+  bangdong4SideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
   return totalPrice
 })
 // 將資料推進tableRows
@@ -5371,7 +5419,7 @@ const bangdong4EditBentoMains = reactive([])
 const loadBangdong4Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -5413,7 +5461,8 @@ const loadBangdong4Edit = async () => {
         name: sideDishValue.name,
         quantity: 0,
         hidenquantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       }
       bangdong4EditSideDishes.push(bangdong4EditSideDish)
     }
@@ -5460,7 +5509,7 @@ const bangdongVegetarian1BentoMainId = ref('')
 const loadBangdongVegetarian1 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -5498,7 +5547,8 @@ const loadBangdongVegetarian1 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 副主餐
@@ -5519,7 +5569,7 @@ const loadBangdongVegetarian1 = async () => {
           bangdongVegetarian1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
             if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -5573,6 +5623,9 @@ const bangdongVegetarian1TotalQuantityPrice = computed(() => {
   let totalPrice = bangdongVegetarian1TotalQuantity.value * bangdongVegetarian1Price.value
   bangdongVegetarian1Drinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdongVegetarian1SideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -5730,7 +5783,7 @@ const bangdongVegetarian1EditBentoMains = reactive([])
 const loadBangdongVegetarian1Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -5772,7 +5825,8 @@ const loadBangdongVegetarian1Edit = async () => {
         name: sideDishValue.name,
         quantity: 0,
         hidenquantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       }
       bangdongVegetarian1EditSideDishes.push(bangdongVegetarian1EditSideDish)
     }
@@ -5819,7 +5873,7 @@ const bangdongVegetarian2BentoMainId = ref('')
 const loadBangdongVegetarian2 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -5858,7 +5912,8 @@ const loadBangdongVegetarian2 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 副主餐
@@ -5879,7 +5934,7 @@ const loadBangdongVegetarian2 = async () => {
           bangdongVegetarian2SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
             if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -5933,6 +5988,9 @@ const bangdongVegetarian2TotalQuantityPrice = computed(() => {
   let totalPrice = bangdongVegetarian2TotalQuantity.value * bangdongVegetarian2Price.value
   bangdongVegetarian2Drinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdongVegetarian2SideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -6090,7 +6148,7 @@ const bangdongVegetarian2EditBentoMains = reactive([])
 const loadBangdongVegetarian2Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -6132,7 +6190,8 @@ const loadBangdongVegetarian2Edit = async () => {
         name: sideDishValue.name,
         quantity: 0,
         hidenquantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       }
       bangdongVegetarian2EditSideDishes.push(bangdongVegetarian2EditSideDish)
     }
@@ -6175,7 +6234,7 @@ const lunchBox1SideDishId = ref('')
 const loadLunchBox1 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -6214,7 +6273,8 @@ const loadLunchBox1 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 監聽主餐的數量變化
@@ -6225,7 +6285,7 @@ const loadLunchBox1 = async () => {
           lunchBox1SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
             if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -6266,7 +6326,11 @@ const lunchBox1TotalQuantity = computed(() => {
 
 // 計算總價格
 const lunchBox1TotalQuantityPrice = computed(() => {
-  return lunchBox1TotalQuantity.value * lunchBox1Price.value
+  let totalPrice = lunchBox1TotalQuantity.value * lunchBox1Price.value
+  lunchBox1SideDishes.forEach(sideDish => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
+  return totalPrice
 })
 
 const submitLunchbox1 = () => {
@@ -6411,7 +6475,7 @@ const lunchBox1EditName = ref('')
 const loadLunchBox1Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -6450,7 +6514,8 @@ const loadLunchBox1Edit = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     lunchBox1EditName.value = response.data.name
@@ -6478,7 +6543,7 @@ const lunchBox2SideDishId = ref('')
 const loadLunchBox2 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -6517,7 +6582,8 @@ const loadLunchBox2 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 監聽主餐的數量變化
@@ -6528,7 +6594,7 @@ const loadLunchBox2 = async () => {
           lunchBox2SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
             if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -6569,7 +6635,11 @@ const lunchBox2TotalQuantity = computed(() => {
 
 // 計算總價格
 const lunchBox2TotalQuantityPrice = computed(() => {
-  return lunchBox2TotalQuantity.value * lunchBox2Price.value
+  let totalPrice = lunchBox2TotalQuantity.value * lunchBox2Price.value
+  lunchBox2SideDishes.forEach(sideDish => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
+  return totalPrice
 })
 
 const submitLunchbox2 = () => {
@@ -6711,7 +6781,7 @@ const lunchBox2EditName = ref('')
 const loadLunchBox2Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -6750,7 +6820,8 @@ const loadLunchBox2Edit = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // // 監聽主餐的數量變化
@@ -6796,7 +6867,7 @@ const lunchBox3SideDishId = ref('')
 const loadLunchBox3 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -6835,7 +6906,8 @@ const loadLunchBox3 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 監聽主餐的數量變化
@@ -6846,7 +6918,7 @@ const loadLunchBox3 = async () => {
           lunchBox3SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
             if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -6887,7 +6959,11 @@ const lunchBox3TotalQuantity = computed(() => {
 
 // 計算總價格
 const lunchBox3TotalQuantityPrice = computed(() => {
-  return lunchBox3TotalQuantity.value * lunchBox3Price.value
+  let totalPrice = lunchBox3TotalQuantity.value * lunchBox3Price.value
+  lunchBox3SideDishes.forEach(sideDish => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
+  return totalPrice
 })
 
 const submitLunchbox3 = () => {
@@ -7030,7 +7106,7 @@ const lunchBox3EditName = ref('')
 const loadLunchBox3Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -7069,7 +7145,8 @@ const loadLunchBox3Edit = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     lunchBox3EditName.value = response.data.name
@@ -7097,7 +7174,7 @@ const lunchBox4SideDishId = ref('')
 const loadLunchBox4 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -7136,7 +7213,8 @@ const loadLunchBox4 = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     // 監聽主餐的數量變化
@@ -7147,7 +7225,7 @@ const loadLunchBox4 = async () => {
           lunchBox4SideDishes.forEach(sideDish => {
             const diff = Number(newVal) - Number(oldVal)
             if (main.name === '123' || main.name === '123') {
-              if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+              if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
                 if (newVal === 0) {
                   sideDish.quantity = 0
                 } else {
@@ -7188,7 +7266,11 @@ const lunchBox4TotalQuantity = computed(() => {
 
 // 計算總價格
 const lunchBox4TotalQuantityPrice = computed(() => {
-  return lunchBox4TotalQuantity.value * lunchBox4Price.value
+  let totalPrice = lunchBox4TotalQuantity.value * lunchBox4Price.value
+  lunchBox4SideDishes.forEach(sideDish => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
+  return totalPrice
 })
 
 const submitLunchbox4 = () => {
@@ -7331,7 +7413,7 @@ const lunchBox4EditName = ref('')
 const loadLunchBox4Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -7370,7 +7452,8 @@ const loadLunchBox4Edit = async () => {
         id: sideDishValue.id,
         name: sideDishValue.name,
         quantity: 0,
-        is_default: sideDishValue.is_default
+        is_default: sideDishValue.is_default,
+        price: sideDishValue.price
       })
     }
     lunchBox4EditName.value = response.data.name
@@ -7404,7 +7487,7 @@ const editDialog9 = ref(false)
 const loadBangdongCustom1 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -7630,7 +7713,7 @@ const bangdongCustom1EditBentoMains = reactive([])
 const loadBangdongCustom1Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -7713,7 +7796,7 @@ const lunchBoxCustom1SideDishId = ref('')
 const loadLunchBoxCustom1 = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -7920,7 +8003,7 @@ const lunchBoxCustom1EditName = ref('')
 const loadLunchBoxCustom1Edit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -7997,7 +8080,7 @@ const editDialog10 = ref(false)
 const loadBangdongSolo = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -8333,7 +8416,7 @@ const bangdongSoloEditName = ref('')
 const loadBangdongSoloEdit = async () => {
   try {
     // 延遲請求的時間（以毫秒為單位）
-    const delay = 2000
+    const delay = 100
 
     // 延遲指定的時間
     await new Promise(resolve => setTimeout(resolve, delay))
@@ -8545,7 +8628,7 @@ function editBangdong1 (row) {
         bangdong1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
           if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -8587,6 +8670,9 @@ const bangdong1EditTotalQuantityPrice = computed(() => {
   let totalPrice = bangdong1EditTotalQuantity.value * bangdong1EditPrice.value
   bangdong1EditDrinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdong1EditSideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -8780,8 +8866,8 @@ function editBangdong2 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong2EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -8829,6 +8915,9 @@ const bangdong2EditTotalQuantityPrice = computed(() => {
   let totalPrice = bangdong2EditTotalQuantity.value * bangdong2EditPrice.value
   bangdong2EditDrinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdong2EditSideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -9042,8 +9131,8 @@ function editBangdong3 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong3EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -9092,6 +9181,9 @@ const bangdong3EditTotalQuantityPrice = computed(() => {
   let totalPrice = bangdong3EditTotalQuantity.value * bangdong3EditPrice.value
   bangdong3EditDrinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdong3EditSideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -9305,8 +9397,8 @@ function editBangdong4 (row) {
         // 配菜的數量跟著主餐的數量變化
         bangdong4EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
-          if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+          if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' || sideDish.name === '毛豆' || sideDish.name === '玉米') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -9353,6 +9445,9 @@ const bangdong4EditTotalQuantityPrice = computed(() => {
   let totalPrice = bangdong4EditTotalQuantity.value * bangdong4EditPrice.value
   bangdong4EditDrinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdong4EditSideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -9570,7 +9665,7 @@ function editBangdongVegetarian1 (row) {
         bangdongVegetarian1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
           if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -9618,6 +9713,9 @@ const bangdongVegetarian1EditTotalQuantityPrice = computed(() => {
   let totalPrice = bangdongVegetarian1EditTotalQuantity.value * bangdongVegetarian1EditPrice.value
   bangdongVegetarian1EditDrinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdongVegetarian1EditSideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -9835,7 +9933,7 @@ function editBangdongVegetarian2 (row) {
         bangdongVegetarian2EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
           if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -9883,6 +9981,9 @@ const bangdongVegetarian2EditTotalQuantityPrice = computed(() => {
   let totalPrice = bangdongVegetarian2EditTotalQuantity.value * bangdongVegetarian2EditPrice.value
   bangdongVegetarian2EditDrinks.forEach((drink) => {
     totalPrice += drink.quantity * drink.price
+  })
+  bangdongVegetarian2EditSideDishes.forEach((sideDish) => {
+    totalPrice += sideDish.quantity * sideDish.price
   })
 
   return totalPrice
@@ -10304,7 +10405,7 @@ function editRowDialog5 (row) {
         lunchBox1EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
           if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -10341,7 +10442,11 @@ const lunchBox1EditPrice = computed(() => {
 })
 // 經濟盒餐修改總價格
 const lunchBox1EditTotalQuantityPrice = computed(() => {
-  return lunchBox1EditTotalQuantity.value * lunchBox1Price.value
+  let totalPrice = lunchBox1EditTotalQuantity.value * lunchBox1Price.value
+  lunchBox1EditSideDishes.forEach(sideDish => {
+    totalPrice += sideDish.price * sideDish.quantity
+  })
+  return totalPrice
 })
 function closeEditDialog5 () {
   editDialog5.value = false
@@ -10534,7 +10639,7 @@ function editRowDialog6 (row) {
         lunchBox2EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
           if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -10570,7 +10675,11 @@ const lunchBox2EditPrice = computed(() => {
 })
 // 會議盒餐修改總價格
 const lunchBox2EditTotalQuantityPrice = computed(() => {
-  return lunchBox2EditTotalQuantity.value * lunchBox2Price.value
+  let totalPrice = lunchBox2EditTotalQuantity.value * lunchBox2Price.value
+  lunchBox2EditSideDishes.forEach(sideDish => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
+  return totalPrice
 })
 
 function closeEditDialog6 () {
@@ -10762,7 +10871,7 @@ function editRowDialog7 (row) {
         lunchBox3EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
           if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -10799,7 +10908,11 @@ const lunchBox3EditPrice = computed(() => {
 })
 // 貴賓盒餐修改總價格
 const lunchBox3EditTotalQuantityPrice = computed(() => {
-  return lunchBox3EditTotalQuantity.value * lunchBox3Price.value
+  let totalPrice = lunchBox3EditTotalQuantity.value * lunchBox3Price.value
+  lunchBox3EditSideDishes.forEach(sideDish => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
+  return totalPrice
 })
 
 function closeEditDialog7 () {
@@ -10991,7 +11104,7 @@ function editRowDialog8 (row) {
         lunchBox4EditSideDishes.forEach(sideDish => {
           const diff = Number(newVal) - Number(oldVal)
           if (main.name === '123' || main.name === '123') {
-            if (sideDish.name === '酥炸菇菇' || sideDish.name === '炸地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
+            if (sideDish.name === '酥炸菇菇' || sideDish.name === '烤地瓜' || sideDish.name === '水果' || sideDish.name === '手作蛋塔') {
               if (newVal === 0) {
                 sideDish.quantity = 0
               } else {
@@ -11029,7 +11142,11 @@ const lunchBox4EditPrice = computed(() => {
 })
 // 首席盒餐修改總價格
 const lunchBox4EditTotalQuantityPrice = computed(() => {
-  return lunchBox4EditTotalQuantity.value * lunchBox4Price.value
+  let totalPrice = lunchBox4EditTotalQuantity.value * lunchBox4Price.value
+  lunchBox4EditSideDishes.forEach(sideDish => {
+    totalPrice += sideDish.quantity * sideDish.price
+  })
+  return totalPrice
 })
 
 function closeEditDialog8 () {
@@ -11762,7 +11879,7 @@ const addOrder = async () => {
     const stateId = state.id
     console.log(stateId)
     // 添加延迟
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 100))
     // 導入資料區域
     const cities = await apiAuth.get(`localization/division/city?filter_parent_id=${state.id}`)
     const city = cities.data.find(c => c.name === personForm.address2)
@@ -11818,6 +11935,16 @@ const addOrder = async () => {
         return ''
       }
     })
+
+    if (personForm.prefix == null) {
+      personForm.prefix = ''
+    }
+    if (personForm.hometel2 == null) {
+      personForm.hometel2 = ''
+    }
+    if (personForm.hometel == null) {
+      personForm.hometel = ''
+    }
 
     const locationIdValue = computed(() => {
       if (personForm.locationId === '重慶南') {
@@ -11892,82 +12019,63 @@ const addOrder = async () => {
         }
       }
 
-      for (const row of tableRows) {
-        for (const productInput of row.productInputs) {
-          if (Object.prototype.hasOwnProperty.call(productInput, 'name')) {
-            formData.append(`order_products[${row.id}][product_id]`, productInput.id)
-            formData.append(`order_products[${row.id}][name]`, productInput.name)
-            formData.append(`order_products[${row.id}][quantity]`, productInput.value)
-            formData.append(`order_products[${row.id}][price]`, productInput.price)
-            formData.append(`order_products[${row.id}][total]`, productInput.totalPrice)
-            formData.append(`order_products[${row.id}][final_total]`, productInput.totalPrice)
-          }
-        }
-
-        let productOptionIndex = 1
-        for (const productInput of row.productInputs) {
+      let productOptionIndex = 1
+      for (const productInput of row.productInputs) {
+        if (
+          typeof productInput.productTypeId !== 'undefined' &&
+    typeof productInput.productType !== 'undefined' &&
+    typeof productInput.productTypeName !== 'undefined'
+        ) {
           formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_id]`, productInput.productTypeId)
           formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][type]`, productInput.productType)
           formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][name]`, productInput.productTypeName)
 
           let productOptionValueIndex = 1
-
           for (const input of row.inputs) {
             if (input.mainId === productInput.mainId) {
-              // 確保 input.name 不包含 '任意搭配'
-              if (!input.name.includes('任意搭配')) {
-                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][product_option_value_id]`, input.id)
-                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][value]`, input.name)
-                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][quantity]`, input.value)
-                if (input.mainId) {
-                  formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][parent_povid]`, input.mainId)
-                }
-
-                productOptionValueIndex++
+              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][product_option_value_id]`, input.id)
+              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][value]`, input.name)
+              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][quantity]`, input.value)
+              if (input.mainId) {
+                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][parent_povid]`, input.mainId)
               }
+
+              productOptionValueIndex++
             }
           }
 
           productOptionIndex++
         }
       }
-
-      // let statusId = 103 // 預設狀態為 116
-
-      // for (const input of row.inputs) {
-      //   if (input.name.includes('任意搭配')) {
-      //     statusId = 116
-      //     break // 找到符合條件的 input，結束迴圈
-      //   }
-      // }
-
-      // formData.append('status_id', statusId) // 設定訂單狀態
-
-      // 發送訂單到API
-      const response = await apiAuth.post('sale/order/save', formData)
-      console.log(response.data)
-      await $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'check-circle',
-        message: '已成功加入訂單'
-      })
     }
+    // 發送訂單到API
+    const response = await apiAuth.post('sale/order/save', formData)
+    console.log(response.data)
+    $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'check-circle',
+      position: 'center',
+      message: '已成功加入訂單'
+    })
     // 清空 tableRows
     tableRows.splice(0, tableRows.length)
     onReset()
     getMoneyDate.value = ''
     paid.value = 0
+    freight.value = 0
+    discount.value = 0
     mealRemark.value = ''
     // 介面上顯示原本的地址名稱
     personForm.address = state.name
     personForm.address2 = city.name
   } catch (error) {
     console.error(error)
-    await $q.notify({
+    $q.notify({
       color: 'red-4',
       textColor: 'white',
       icon: 'error',
+      position: 'center',
       message: 'An error occurred: ' + error.message
     })
   } finally {
@@ -12129,7 +12237,7 @@ const addOrder = async () => {
       color: #FFFFFF;
   }
   .person{
-    height: 427px;
+    height: 580px;
     width:100%;
     margin:0 5px;
     .person-form{
@@ -12159,8 +12267,8 @@ const addOrder = async () => {
   }
   #dialogbtnCard{
     width: 650px!important;
-    height: 680px;
-    overflow: hidden;
+    height: 700px;
+    overflow-x: hidden;
     .q-input{
       margin-top: 10px;
     }
@@ -12168,8 +12276,8 @@ const addOrder = async () => {
   }
   #dialogbtnBangdongCard{
     width: 650px!important;
-    height: 680px;
-    overflow: hidden;
+    height: 700px;
+    overflow-x: hidden;
     .q-input{
       margin-top: 10px;
     }

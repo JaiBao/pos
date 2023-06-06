@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-table
-      :rows="member"
+      :rows="orders"
       :columns="columns"
       row-key="id"
       :filter="filter"
@@ -9,9 +9,9 @@
       style="font-size: 22px"
     >
     <template v-slot:top >
-                <q-toolbar  >
-                  <q-toolbar-title class="row " style="margin:0;padding:0;height:100px">
-                    <h3>會員列表</h3>
+                <q-toolbar  style="margin:0;padding:0;" >
+                  <q-toolbar-title class="row  flex-around" style="margin:0;padding:0;height:50px">
+                    <h3 style="margin:0;padding:0;">訂單列表</h3>
                   </q-toolbar-title>
                   <q-space />
 
@@ -50,7 +50,7 @@
           <div class="row">
           <q-select outlined v-model="filters.filter_status_id"
           label="訂單狀態"
-          :options="membertatus"
+          :options="orderStatus"
           style="width: 200px"
           />
           <q-input outlined v-model="filters.filter_delivery_date" label="送達日期" />
@@ -81,7 +81,7 @@ const pagination = reactive({
   pages: 0
 })
 
-const membertatus = reactive([
+const orderStatus = reactive([
   { label: '未確認', value: 101 },
   { label: '已確認', value: 103 },
   { label: '已確待配', value: 116 },
@@ -102,7 +102,7 @@ const columns = [
   { name: 'delete', required: true, label: '刪除', align: 'left', field: 'id', sortable: false, style: 'font-size: 18px;' }
 ]
 
-const member = ref([])
+const orders = ref([])
 const filters = reactive({
   filter_status_id: '',
   filter_delivery_date: '',
@@ -111,7 +111,7 @@ const filters = reactive({
   filter_phone: ''
 })
 
-async function fetchmember () {
+async function fetchOrders () {
   try {
     const cleanedFilters = Object.fromEntries(
       Object.entries(filters).filter(([_, v]) => v != null && v !== '')
@@ -125,7 +125,7 @@ async function fetchmember () {
         ...cleanedFilters
       }
     })
-    member.value = response.data.data
+    orders.value = response.data.data
     pagination.pages = response.data.last_page
   } catch (error) {
     console.error(error)
@@ -147,5 +147,5 @@ function deleteOrder (order) {
   // Implement your delete order logic here
 }
 
-watchEffect(fetchmember)
+watchEffect(fetchOrders)
 </script>

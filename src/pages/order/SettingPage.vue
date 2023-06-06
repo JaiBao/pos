@@ -1,128 +1,141 @@
 <template>
-  <div class="q-pa-md">
-    <h2>Product Table</h2>
+  <div>
     <q-table
-      :data="products"
-      :columns="productColumns"
+      :rows="orders"
+      :columns="columns"
       row-key="id"
-      :pagination="true"
-      :rows-per-page-options="[10, 25, 50]"
+      :filter="filter"
+      :rows-per-page-options="[10]"
+      style="font-size: 22px"
     >
-      <template v-slot:top-right>
-        <q-btn color="primary" icon="add" label="Add New Product" @click="showProductDialog = true" />
-      </template>
+    <template v-slot:top >
+                <q-toolbar  style="margin:0;padding:0;" >
+                  <q-toolbar-title class="row  flex-around" style="margin:0;padding:0;height:50px">
+                    <h3 style="margin:0;padding:0;">訂單列表</h3>
+                  </q-toolbar-title>
+                  <q-space />
+
+                </q-toolbar>
+              </template>
+              <template v-slot:header="props">
+    <q-tr>
+      <q-th v-for="col in props.cols" :key="col.name" :props="props" :style="{ 'font-size': '24px' }">
+        {{ col.label }}
+      </q-th>
+    </q-tr>
+  </template>
       <template v-slot:body-cell-edit="props">
-        <q-btn icon="edit" color="primary" size="sm" class="q-ml-sm" @click="editProduct(props.row)" />
-        <q-btn icon="delete" color="negative" size="sm" class="q-ml-sm" @click="deleteProduct(props.row)" />
+        <q-td auto-width :props="props">
+          <q-btn
+          size="lg"
+          color="primary"
+          round dense @click="editOrder(props.row)" icon="edit" />
+        </q-td>
+      </template>
+      <template v-slot:bottom>
+        <q-pagination
+          v-model="pagination.page"
+          :max="pagination.pages"
+        />
       </template>
     </q-table>
-
-    <q-dialog v-model="showProductDialog" persistent>
-      <q-card>
-        <q-card-section>
-          <q-form @submit="saveProduct">
-            <q-input v-model="product.name" label="Product Name" required />
-            <q-select v-model="product.sideDishes" :options="sideDishes" label="Side Dishes" multiple />
-            <q-input v-model="product.price" type="number" label="Price" required />
-            <q-input v-model="product.quantity" type="number" label="Quantity" required />
-            <q-btn type="submit" label="Save" class="q-mt-md" color="primary" />
-            <q-btn label="Cancel" class="q-mt-md" @click="showProductDialog = false" />
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <h2>Side Dish Table</h2>
-    <q-table
-      :data="sideDishes"
-      :columns="sideDishColumns"
-      row-key="id"
-      :pagination="true"
-      :rows-per-page-options="[10, 25, 50]"
-    >
-      <template v-slot:top-right>
-        <q-btn color="primary" icon="add" label="Add New Side Dish" @click="showSideDishDialog = true" />
-      </template>
-      <template v-slot:body-cell-edit="props">
-        <q-btn icon="edit" color="primary" size="sm" class="q-ml-sm" @click="editSideDish(props.row)" />
-        <q-btn icon="delete" color="negative" size="sm" class="q-ml-sm" @click="deleteSideDish(props.row)" />
-      </template>
-    </q-table>
-
-    <q-dialog v-model="showSideDishDialog" persistent>
-      <q-card>
-        <q-card-section>
-          <q-form @submit="saveSideDish">
-            <q-input v-model="sideDish.name" label="Side Dish Name" required />
-            <q-input v-model="sideDish.price" type="number" label="Price" required />
-            <q-input v-model="sideDish.quantity" type="number" label="Quantity" required />
-            <q-btn type="submit" label="Save" class="q-mt-md" color="primary" />
-            <q-btn label="Cancel" class="q-mt-md" @click="showSideDishDialog =false" />
-          </q-form>
-</q-card-section>
-</q-card>
-</q-dialog>
+    <q-card>
+      <q-card-section>
+        <div class="q-gutter-md row items-start">
+          <div class="row">
+          <q-select outlined v-model="filters.filter_status_id"
+          label="訂單狀態"
+          :options="orderStatus"
+          style="width: 200px"
+          />
+          <q-input outlined v-model="filters.filter_delivery_date" label="送達日期" />
+          <q-input outlined v-model="filters.filter_code" label="訂單編號" />
+          <q-input outlined v-model="filters.filter_keyname" label="姓名" />
+          <q-input outlined v-model="filters.filter_phone" label="電話" />
+          </div>
+          <div class=" row  justify-end q-ma-md">
+          <q-btn color="red" label="清除"
+          @click="clearFilters"
+          size="xl" />
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
 
   </div>
 </template>
+
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, watchEffect } from 'vue'
+import axios from 'axios'
 
-const products = ref([
-  { id: 1, name: 'Product 1', sideDishes: ['Side Dish 1', 'Side Dish 2'], price: 10.99, quantity: 20 },
-  { id: 2, name: 'Product 2', sideDishes: ['Side Dish 2', 'Side Dish 3'], price: 15.99, quantity: 30 },
-  { id: 3, name: 'Product 3', sideDishes: ['Side Dish 3', 'Side Dish 4'], price: 20.99, quantity: 40 }
-])
+const filter = ref('')
+const pagination = reactive({
+  page: 1,
+  rowsPerPage: 10, // change this to control how many rows you want to display per page
+  pages: 0
+})
 
-const sideDishes = ref([
-  { id: 1, name: 'Side Dish 1', price: 2.99, quantity: 50 },
-  { id: 2, name: 'Side Dish 2', price: 3.99, quantity: 60 },
-  { id: 3, name: 'Side Dish 3', price: 4.99, quantity: 70 },
-  { id: 4, name: 'Side Dish 4', price: 5.99, quantity: 80 }
-])
+const orderStatus = reactive([
+  { label: '未確認', value: 101 },
+  { label: '已確認', value: 103 },
+  { label: '已確待配', value: 116 },
+  { label: '未結清', value: 117 },
+  { label: '已結案', value: 118 },
+  { label: '作廢', value: 115 }
 
-const productColumns = [
-  { name: 'name', align: 'left', label: 'Product Name', field: 'name' },
-  { name: 'sideDishes', align: 'left', label: 'Side Dishes', field: 'sideDishes' },
-  { name: 'price', align: 'left', label: 'Price', field: 'price' },
-  { name: 'quantity', align: 'left', label: 'Quantity', field: 'quantity' },
-  { name: 'actions', align: 'center', label: 'Actions', field: 'actions' }
+])// 訂單狀態
+
+const columns = [
+  { name: 'ID', required: true, label: 'ID', align: 'left', field: 'id', style: 'font-size: 18px;' },
+  { name: 'code', required: true, label: '訂單編號', align: 'left', field: 'code', style: 'font-size: 18px;' },
+  { name: 'personal_name', required: true, label: '姓名', align: 'left', field: 'personal_name', style: 'font-size: 18px;' },
+  { name: 'mobile', required: true, label: '電話', align: 'left', field: 'mobile', style: 'font-size: 18px;' },
+  { name: 'delivery_date_ymd', required: true, label: '送達日期', align: 'left', field: 'delivery_date_ymd', style: 'font-size: 18px;' },
+  { name: 'status_txt', required: true, label: '訂單狀態', align: 'left', field: 'status_txt', style: 'font-size: 18px;' },
+  { name: 'edit', required: true, label: '修改', align: 'left', field: 'id', sortable: false, style: 'font-size: 18px;' }
 ]
 
-const sideDishColumns = [
-  { name: 'name', align: 'left', label: 'Side Dish Name', field: 'name' },
-  { name: 'price', align: 'left', label: 'Price', field: 'price' },
-  { name: 'quantity', align: 'left', label: 'Quantity', field: 'quantity' },
-  { name: 'actions', align: 'center', label: 'Actions', field: 'actions' }
-]
+const orders = ref([])
+const filters = reactive({
+  filter_status_id: '',
+  filter_delivery_date: '',
+  filter_code: '',
+  filter_keyname: '',
+  filter_phone: ''
+})
 
-const product = ref({ name: '', sideDishes: [], price: '', quantity: '' })
-const sideDish = ref({ name: '', price: '', quantity: '' })
-const showProductDialog = ref(false)
-const showSideDishDialog = ref(false)
-
-function saveProduct () {
-  if (!product.value.name || !product.value.price || !product.value.quantity) return
-  if (!product.value.id) {
-    const maxId = Math.max(...products.value.map((p) => p.id))
-    product.value.id = maxId + 1
-    products.value.push(product.value)
-  } else {
-    const index = products.value.findIndex((p) => p.id === product.value.id)
-    products.value.splice(index, 1, product.value)
+async function fetchOrders () {
+  try {
+    const cleanedFilters = Object.fromEntries(
+      Object.entries(filters).filter(([_, v]) => v != null && v !== '')
+    )
+    if (cleanedFilters.filter_status_id) {
+      cleanedFilters.filter_status_id = cleanedFilters.filter_status_id.value
+    }
+    const response = await axios.get('http://ods.dtstw.com/backend/api/sale/order', {
+      params: {
+        page: pagination.page,
+        ...cleanedFilters
+      }
+    })
+    orders.value = response.data.data
+    pagination.pages = response.data.last_page
+  } catch (error) {
+    console.error(error)
   }
-  product.value = { name: '', sideDishes: [], price: '', quantity: '' }
-  showProductDialog.value = false
+}
+function clearFilters () {
+  filters.filter_status_id = ''
+  filters.filter_delivery_date = ''
+  filters.filter_code = ''
+  filters.filter_keyname = ''
+  filters.filter_phone = ''
 }
 
-function editProduct (row) {
-  product.value = { ...row }
-  showProductDialog.value = true
+function editOrder (order) {
+  // Implement your edit order logic here
 }
 
-function deleteProduct (row) {
-  const index = products.value.findIndex((p) => p.id === row.id)
-  products.value.splice(index, 1)
-}
-
+watchEffect(fetchOrders)
 </script>
