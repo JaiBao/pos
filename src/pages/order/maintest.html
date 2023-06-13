@@ -1,37 +1,42 @@
-<div>
-  <h5 style="margin: 0; padding: 0;">{{ bangdong1DrinkName }}</h5>
-  <div class="row items-center">
-    <q-item v-for="(bangdong1Drink, index) in bangdong1Drinks" :key="index" class="flex-auto "
-      style="margin: 0; padding: 0;">
-      <q-input v-model="bangdong1Drink.quantity" :label="bangdong1Drink.name" outlined type="number"
-        :input-style="{ fontSize: '20px', margin: '0' }" :label-style="{ fontSize: '20px' }" style="width: 130px;" />
-    </q-item>
-  </div>
-</div>
-<script setup>
-  // 抓取招牌便當主餐形成input
-  const loadBangdong1Drink = async () => {
-    try {
-      const response = await apiAuth.get('catalog/product/1001')
-      const productOptions = response.data.product_options
-      // 主餐
-      const Drink = productOptions.drink
-      const DrinkValues = Drink.product_option_values
+// 計算主餐總數的函數（不包含全素潤餅3吋和蛋素潤餅3吋）
+function calculateDefaultMainQuantityTotal() {
+return bangdong2Mains.reduce((total, main) => {
+if (main.name !== '全素潤餅3吋' && main.name !== '蛋素潤餅3吋') {
+return total + Number(main.quantity);
+} else {
+return total;
+}
+}, 0);
+}
 
-      for (const DrinkValue of DrinkValues) {
-        bangdong1Drinks.push({
-          id: DrinkValue.id,
-          name: DrinkValue.short_name,
-          quantity: 0
-        })
-      }
-      bangdong1Name.value = response.data.name
-      bangdong1DrinkName.value = Drink.name
-      price.value = parseInt(response.data.price)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+// 計算主餐總數的函數（包含全素潤餅3吋和蛋素潤餅3吋）
+function calculateTotalMainQuantity() {
+return bangdong2Mains.reduce((total, main) => total + Number(main.quantity), 0);
+}
 
-  loadBangdong1Drink()
-</script>
+// 監聽主餐的數量變化
+bangdong2Mains.forEach(main => {
+watch(() => main.quantity, (newVal, oldVal) => {
+if (newVal !== oldVal) {
+const diff = Number(newVal) - Number(oldVal);
+
+bangdong2SideDishes.forEach(sideDish => {
+if (main.name === '全素潤餅3吋' || main.name === '蛋素潤餅3吋') {
+// 如果是特定的主餐，那麼只更新對應的配菜
+if (sideDish.name === '酥炸菇菇' || sideDish.name === '芋頭糕' || sideDish.name === '梅汁番茄' || sideDish.name === '鹽水煮蛋' ||
+sideDish.name === '毛豆' || sideDish.name === '玉米') {
+sideDish.quantity = Number(sideDish.quantity) + diff;
+}
+} else if (sideDish.is_default) {
+// 如果是默認的配菜，那麼數量等於所有非特定主餐的總數
+sideDish.quantity = calculateDefaultMainQuantityTotal();
+}
+});
+
+// 更新副主餐的數量為所有主餐的總和
+bangdong2BentoMains.forEach(bentoMain => {
+bentoMain.quantity = calculateTotalMainQuantity();
+});
+}
+});
+});

@@ -33,11 +33,11 @@ import { useUserStore } from 'src/stores/user.js'
 // "export default () => {}" function below (which runs individually
 // for each client)
 
-// const api = axios.create({ baseURL: 'http://192.168.1.40/' })// 餅店專用
-// const apiAuth = axios.create({ baseURL: 'http://192.168.1.40/api/' })// 餅店專用
+const api = axios.create({ baseURL: 'http://192.168.1.40/' })// 餅店專用
+const apiAuth = axios.create({ baseURL: 'http://192.168.1.40/api/' })// 餅店專用
 
-const api = axios.create({ baseURL: 'http://ods.dtstw.com/backend/' })// 公司測試專用
-const apiAuth = axios.create({ baseURL: 'http://ods.dtstw.com/backend/api/' })// 公司測試專用
+// const api = axios.create({ baseURL: 'http://ods.dtstw.com/' })// 公司測試專用
+// const apiAuth = axios.create({ baseURL: 'http://ods.dtstw.com/backend/api/' })// 公司測試專用
 
 apiAuth.interceptors.request.use(config => {
   const user = useUserStore()

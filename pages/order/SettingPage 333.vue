@@ -6,16 +6,35 @@
       row-key="id"
       :filter="filter"
       :rows-per-page-options="[10]"
+      style="font-size: 22px"
     >
+    <template v-slot:top >
+                <q-toolbar  style="margin:0;padding:0;" >
+                  <q-toolbar-title class="row  flex-around" style="margin:0;padding:0;height:50px">
+                    <h3 style="margin:0;padding:0;">訂單列表</h3>
+                  </q-toolbar-title>
+                  <q-space />
 
+                </q-toolbar>
+              </template>
+              <template v-slot:header="props">
+    <q-tr>
+      <q-th v-for="col in props.cols" :key="col.name" :props="props" :style="{ 'font-size': '24px' }">
+        {{ col.label }}
+      </q-th>
+    </q-tr>
+  </template>
       <template v-slot:body-cell-edit="props">
         <q-td auto-width :props="props">
-          <q-btn flat round dense @click="editOrder(props.row)" icon="edit" />
+          <q-btn
+          size="lg"
+          color="primary"
+          round dense @click="editOrder(props.row)" icon="edit" />
         </q-td>
       </template>
       <template v-slot:body-cell-delete="props">
         <q-td auto-width :props="props">
-          <q-btn flat round dense @click="deleteOrder(props.row)" icon="delete" />
+          <q-btn size="lg" color="red" round dense @click="deleteOrder(props.row)" icon="delete" />
         </q-td>
       </template>
       <template v-slot:bottom>
@@ -32,16 +51,12 @@
           <q-select outlined v-model="filters.filter_status_id"
           label="訂單狀態"
           :options="orderStatus"
+          style="width: 200px"
           />
           <q-input outlined v-model="filters.filter_delivery_date" label="送達日期" />
           <q-input outlined v-model="filters.filter_code" label="訂單編號" />
           <q-input outlined v-model="filters.filter_keyname" label="姓名" />
           <q-input outlined v-model="filters.filter_phone" label="電話" />
-          <q-input
-          outlined
-          v-model.number="test"
-          label="測試"
-          />
           </div>
           <div class=" row  justify-end q-ma-md">
           <q-btn color="red" label="清除"
@@ -58,7 +73,7 @@
 <script setup>
 import { ref, reactive, watchEffect } from 'vue'
 import axios from 'axios'
-const test = ref(0)
+
 const filter = ref('')
 const pagination = reactive({
   page: 1,
@@ -67,18 +82,24 @@ const pagination = reactive({
 })
 
 const orderStatus = reactive([
-  '未確認', '已確認', '已確待配', '未結清', '已結案', '作廢'
+  { label: '未確認', value: 101 },
+  { label: '已確認', value: 103 },
+  { label: '已確待配', value: 116 },
+  { label: '未結清', value: 117 },
+  { label: '已結案', value: 118 },
+  { label: '作廢', value: 115 }
+
 ])// 訂單狀態
 
 const columns = [
-  { name: 'ID', required: true, label: 'ID', align: 'left', field: 'id' },
-  { name: 'code', required: true, label: '訂單編號', align: 'left', field: 'code' },
-  { name: 'personal_name', required: true, label: '姓名', align: 'left', field: 'personal_name' },
-  { name: 'telephone', required: true, label: '電話', align: 'left', field: 'telephone' },
-  { name: 'delivery_date_ymd', required: true, label: '送達日期', align: 'left', field: 'delivery_date_ymd' },
-  { name: 'status_txt', required: true, label: '訂單狀態', align: 'left', field: 'status_txt' },
-  { name: 'edit', required: true, label: '修改', align: 'left', field: 'id', sortable: false },
-  { name: 'delete', required: true, label: '刪除', align: 'left', field: 'id', sortable: false }
+  { name: 'ID', required: true, label: 'ID', align: 'left', field: 'id', style: 'font-size: 18px;' },
+  { name: 'code', required: true, label: '訂單編號', align: 'left', field: 'code', style: 'font-size: 18px;' },
+  { name: 'personal_name', required: true, label: '姓名', align: 'left', field: 'personal_name', style: 'font-size: 18px;' },
+  { name: 'mobile', required: true, label: '電話', align: 'left', field: 'mobile', style: 'font-size: 18px;' },
+  { name: 'delivery_date_ymd', required: true, label: '送達日期', align: 'left', field: 'delivery_date_ymd', style: 'font-size: 18px;' },
+  { name: 'status_txt', required: true, label: '訂單狀態', align: 'left', field: 'status_txt', style: 'font-size: 18px;' },
+  { name: 'edit', required: true, label: '修改', align: 'left', field: 'id', sortable: false, style: 'font-size: 18px;' },
+  { name: 'delete', required: true, label: '刪除', align: 'left', field: 'id', sortable: false, style: 'font-size: 18px;' }
 ]
 
 const orders = ref([])
@@ -95,6 +116,9 @@ async function fetchOrders () {
     const cleanedFilters = Object.fromEntries(
       Object.entries(filters).filter(([_, v]) => v != null && v !== '')
     )
+    if (cleanedFilters.filter_status_id) {
+      cleanedFilters.filter_status_id = cleanedFilters.filter_status_id.value
+    }
     const response = await axios.get('http://ods.dtstw.com/backend/api/sale/order', {
       params: {
         page: pagination.page,

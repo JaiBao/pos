@@ -1,6 +1,8 @@
 <template>
 
   <div class="orderMenucontainer">
+    <!-- 聯絡人區 -->
+    <!-- <q-btn v-if="!show" color="blue" size="md" @click="show = !show" style="width:100%">{{ show ? '收起客戶資料' : '開啟客戶資料' }}</q-btn> -->
     <q-dialog  v-model="showPersonDialog" maximized>
   <div class="row person"  >
 
@@ -75,6 +77,14 @@
               readonly/>
             </td>
             <td >
+              <!-- <q-select
+      v-model="personForm.time"
+      outlined
+      :options="timeOptions"
+      label="送達時間"
+      style="font-size: 15px;"
+      :input-style="{ fontSize: '17px' }"
+    /> -->
               <q-input
       v-model="personForm.time"
       outlined
@@ -1158,7 +1168,7 @@ label="Ms" />
         <!-- 經濟盒餐dailog -->
         <q-dialog v-model="showlunchBox1"   full-width >
     <!-- 主餐 -->
-    <q-card style="overflow-x:hidden" >
+    <q-card style="overflow-x:hidden">
       <div class="q-gutter-xs row items-start justify-center" id="lunchbox1">
         <div v-for="(lunchBox1Main, index) in lunchBox1Mains" :key="index" :class="getBackgroundColor(index)">
           <h5 style="margin: 0; padding: 0;">{{ lunchBox1Main.name }}</h5>
@@ -1587,6 +1597,15 @@ label="Ms" />
         <h5  style="margin: 0; padding: 0;">{{bangdongSoloName}}</h5>
 
         <div class="row">
+          <!-- <q-input
+    outlined
+    type="number"
+    :input-style="{fontSize:'20px'}"
+    style="width:130px"
+    v-model="bangdongSoloArbitrarily"
+    label="任意搭配"
+    min="0"
+    /> -->
     <q-input
     min="0"
 
@@ -12179,8 +12198,8 @@ const addOrder = async () => {
       for (const productInput of row.productInputs) {
         if (
           typeof productInput.productTypeId !== 'undefined' &&
-      typeof productInput.productType !== 'undefined' &&
-      typeof productInput.productTypeName !== 'undefined'
+    typeof productInput.productType !== 'undefined' &&
+    typeof productInput.productTypeName !== 'undefined'
         ) {
           formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_id]`, productInput.productTypeId)
           formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][type]`, productInput.productType)
@@ -12189,25 +12208,21 @@ const addOrder = async () => {
           let productOptionValueIndex = 1
           for (const input of row.inputs) {
             if (input.mainId === productInput.mainId) {
-              if (!input.name.includes('任意搭配')) {
-                if (input.name !== 'Arbitrarily') {
-                  formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][product_option_value_id]`, input.id)
-                  formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][value]`, input.name)
-                  formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][quantity]`, input.value)
-                  if (input.mainId) {
-                    formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][parent_povid]`, input.mainId)
-                  }
-
-                  productOptionValueIndex++
-                }
+              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][product_option_value_id]`, input.id)
+              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][value]`, input.name)
+              formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][quantity]`, input.value)
+              if (input.mainId) {
+                formData.append(`order_products[${row.id}][product_options][${productOptionIndex}][product_option_values][${productOptionValueIndex}][parent_povid]`, input.mainId)
               }
+
+              productOptionValueIndex++
             }
           }
+
           productOptionIndex++
         }
       }
     }
-
     // 發送訂單到API
     const response = await apiAuth.post('sale/order/save', formData)
     console.log(response.data)
