@@ -1,0 +1,43 @@
+.q-input {
+  width: 150px;
+}
+.q-date {
+  width: 800px;
+}
+.w-120px {
+  max-width: 200px;
+}
+.w-60px{
+  width: 60px !important;
+}
+.columnselect{
+  max-width: 90px;
+  background-color: white;
+  border-radius: 10px;
+}
+.columnWeek{
+  max-width: 70px;
+  background-color: white;
+  border-radius: 10px;
+  text-align: center;
+}
+
+
+@keyframes blink {
+  0%, 100% {
+    background-color: $primary; /* 背景顏色在動畫開始和結束時 */
+    opacity: .5; /* 完全不透明 */
+    color: #000 }
+  50% {
+    background-color: #fff; /* 背景顏色在動畫中間 */
+    opacity: 1;
+    color: #000;
+}
+}
+
+.noLinkStyle{
+  text-decoration: none; color: inherit;
+}
+// .blinking-background {
+//   animation: blink 3s linear infinite;
+// }

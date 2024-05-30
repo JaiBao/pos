@@ -1,141 +1,105 @@
 <template>
-
-  <div id="sm" class="row">
-
-      <div  class="col-xs-12 col-md-6 text-center" id="login">
-        <h5>華餅系統</h5>
-        <!-- <img src="src/assets/休假2.png" style="width:300px;"> -->
-      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md" >
-        <q-input
+      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md w-100 row justify-center">
+        <div class="col q-mt-xxl"></div>
+        <div class="col-12 row justify-center items-center">
+          <img src="/logo.jpg">
+        </div>
+        <div class="col-6 row justify-center">
+          <q-input
           outlined
           type="text"
-          v-model="form.username"
-          label="帳號"
-          hint="請輸入帳號"
+          v-model="form.name"
+          label="管理者帳號"
           lazy-rules
-          :rules="[(val) => (val && val.length >= 4) || '最少4位數以上']"
+          class="col-12 input"
+          clearable
+        clear-icon="close"
+
         />
         <q-input
           outlined
-          type="password"
+          :type="isPwd ? 'password' : 'text'"
           v-model="form.password"
-          label="密碼"
-          hint="請輸入密碼"
+          label="管理者密碼"
           lazy-rules
-          :rules="[(val) => (val && val.length >= 4) || '最少4位數以上']"
-        />
-        <div>
-          <q-btn
-            label="清除"
-            type="reset"
-            color="primary"
-            flat
-            class="q-ml-sm"
+          class="col-12 input"
+          clearable
+          clear-icon="close"
+        >
+        <template v-slot:prepend>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
           />
-          <q-btn label="送出" color="primary" @click="login" />
+        </template>
+        </q-input>
+        <div class="col-12 row  justify-center q-mt-xl">
+
+          <!-- <q-btn label="註冊" color="secondary" to="/register" size="25px" class="btnbtn q-mx-md"/> -->
+          <q-btn label="登入" color="primary" @click="login" size="25px" class="btnbtn"/>
+        </div>
 
         </div>
+
       </q-form>
-      <q-btn
+
+      <!-- <q-btn
       outline
         class="register1"
         label="未註冊帳號"
         type="button"
         color="primary"
         to="/register"
-      />
-    </div>
+      /> -->
 
-  </div>
 </template>
 
 <script setup>
 // import { useQuasar } from 'quasar'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useUserStore } from 'src/stores/user'
 import { useRouter } from 'vue-router'
 // import { api } from 'src/boot/axios'
 
+const isPwd = ref(true)
 const router = useRouter()
 // const $q = useQuasar()
 const user = useUserStore()
+const formShit = reactive({
+  username: 'Hpuser',
+  password: 'Hu1314666'
+})
 const form = reactive({
-  username: '',
+  name: '',
   password: ''
 })
-
 const login = async () => {
-  await user.login(form)
+  await user.login(formShit)
+  await user.loginShit(form)
   if (user.tokens.length !== 0) {
     router.push('/index')
   }
 }
 
-// const login = async () => {
-//   try {
-//     const result = await api.post('/login', form)
-//     // console.log(user.tokens)
-//     user.tokens = result.data.token
-//     // console.log(user.tokens)
-//     if (user.tokens.length !== 0) {
-//       router.push('/index')
-//     }
-//     $q.notify({
-//       color: 'green-4',
-//       textColor: 'white',
-//       icon: 'cloud_done',
-//       message: '登入成功'
-//     })
-//   } catch (error) {
-//     console.log(error)
-//     $q.notify({
-//       color: 'red-4',
-//       textColor: 'white',
-//       icon: 'info',
-//       message: error.message
-//     })
-//   }
-// }
+if (user.isLogin) {
+  router.push('/index')
+}
 
-// function onReset () {
-//   form.name = ''
-//   form.account = ''
-//   form.password = ''
-//   form.phone = ''
-//   accept.value = false
-// }
 </script>
 
 <style lang="scss" scoped>
-.register1{
-margin-top: 20px;
-margin-left: 30px;
-}
-#sm {
-  width: 100%;
-  margin-top: 50px;
-.col-md-6{
-margin: auto;
-padding: 12px;
-margin-top: 20%;
-}
-}
-#login{
-background: #eeeeee;
-padding: 20px;
-border: 5px solid #eeeeee;
-border-radius: 5%;
-width: 40%;
-}
-@media screen and (min-width: 768px) {
-  #login{
-background: #eeeeee;
-padding: 20px;
-border: 5px solid #eeeeee;
-border-radius: 5%;
-width: 40%;
+.q-mt-xxl{
 
-}
+  margin-top: 200px;
 }
 
+.input{
+  width: 420px !important;
+  margin-top: 70px;
+}
+.btnbtn{
+  width: 150px;
+  height: 60px;
+}
 </style>

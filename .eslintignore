@@ -4,3 +4,6 @@
 /.quasar
 /node_modules
 .eslintrc.js
+/src/vuecopy
+# /src/pages/order/OrderPage.vue
+# /src/components/

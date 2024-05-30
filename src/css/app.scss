@@ -1,119 +1,164 @@
 
 // app global css in SCSS form
-body{
-  font-family: 'Roboto';
+@font-face {
+  font-family: customfont;
+  src: url('/NotoSans.ttf');
+}
+
+body {
+  font-family: "customfont";
   overflow-x: hidden;
-
-  }
-  h3 {
-    border-left: 5px solid $primary;
-    padding-left: 2rem;
-    margin-left: 1rem;
-  }
-  h5{
-  color: $accent;
-  // line-height: 0;
-  }
+}
+// h3 {
+//   border-left: 5px solid $primary;
+//   padding-left: 2rem;
+//   margin-left: 1rem;
+// }
+// h5 {
+//   // color: $accent;
+//   // line-height: 0;
+// }
+.flex-break {
+  flex: 1 0 100% !important;
+}
+.row {
   .flex-break {
-    flex: 1 0 100% !important;
+    height: 0 !important;
   }
-  .row {
-    .flex-break {
-      height: 0 !important;
-    }
+}
+.column {
+  .flex-break {
+    width: 0 !important;
   }
-  .column {
-    .flex-break {
-      width: 0 !important;
-    }
-  }
+}
 
-  h6{
+h6 {
   margin-right: 1.5rem;
+}
 
-  }
-
-  #footer{
-    border-top: 5px solid $secondary;
-    background-color: $secondary;
-    text-align: center;
-    .q-btn{
+#footer {
+  border-top: 5px solid $secondary;
+  background-color: $secondary;
+  text-align: center;
+  .q-btn {
     position: relative;
-    left:-1%
-    };
+    left: -1%;
+  }
+}
+
+#sliderTable {
+  .q-table__middle {
+    th {
+      font-size: 24px !important;
     }
+    .q-table td {
+      font-size: 21px !important;
+    }
+  }
+}
+#setting_commodity {
+  th {
+    font-size: 24px !important;
+  }
+  .q-table td {
+    font-size: 21px !important;
+  }
+}
 
-    #sliderTable{
-      .q-table__middle{
-            th{
-        font-size: 24px!important;
-       }
-       .q-table td{
-        font-size: 21px!important;
-       }
-      }
-      }
-    #setting_commodity{
+.q-field__append .q-icon {
+  width: 1px;
+}
 
-            th{
-        font-size: 24px!important;
-       }
-       .q-table td{
-        font-size: 21px!important;
-       }
-
-      }
-
-      .q-field__append  .q-icon{
-        width: 1px;
-      }
-
-      .radio-option {
-        .q-radio__label {
-        font-size: 20px;
-      }}
-      .radio-option {
-        font-size: 20px;
-      }
+.radio-option {
+  .q-radio__label {
+    font-size: 20px;
+  }
+}
+.radio-option {
+  font-size: 20px;
+}
 //日立的月份
-      .q-date__navigation{
-        height: 80px;
-        .q-btn__content{
-          width: 200px;
-          height: 100px;
-          font-size: 40px;
-        }
-        .q-date__arrow{
-          height: 70px;
-          .q-btn{
-            height: 70px;
-            width: 70px;
-            font-size: 40px;
-          }
-          .q-btn__content{
-            height: 70px;
-            width: 70px;
-            font-size: 40px;
-          }
-        }
-      }
-.q-date__calendar-days-container{
-  height: 400px;
-  width: 760px;
-  font-size: 40px;
-      .q-date__calendar-days{
-        height: 40px;
-        width: 40px;
-        font-size: 20px;
-        .q-date__calendar-item{
-          height: 40px;
-          width: 40px;
-          font-size: 20px;
-          .q-btn{
-            height: 50px;
-            width: 50px;
-            font-size: 30px;
-          }
-        }
-      }
-    }
+
+.w-100 {
+  width: 100%;
+}
+
+.w-75 {
+  width: 75%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-25 {
+  width: 25%;
+}
+.h-100{
+height:90vh
+}
+
+.toolbar {
+  padding: 16px 4px 20px 4px !important;
+  background:#666
+}
+.w-40px{
+max-width: 40px !important;
+
+}
+
+.arrow_box {
+  animation: glow 800ms ease-out infinite alternate;
+  z-index: 1000;
+
+}
+
+@keyframes glow {
+  0% {
+    border-color: #f33; /* 更淺的紅色 */
+    box-shadow: 0 0 5px rgba(255, 0, 0, .2), inset 0 0 5px rgba(255, 0, 0, .1), 0 1px 0 #f33;
+  }
+  100% {
+    border-color: #d00; /* 更深的紅色 */
+    box-shadow: 0 0 20px rgba(255, 0, 0, .6), inset 0 0 10px rgba(255, 0, 0, .4), 0 1px 0 #d00;
+  }
+}
+
+.q-table__top{
+  padding: 0 !important
+}
+
+.inputradius{
+  background-color: #fff;
+  border-radius: 6px  ;
+  max-width: 150px !important;
+}
+
+.inputsearch{
+  background-color: #fff;
+  border-radius: 6px  ;
+  max-width: 220px !important;
+}
+.h-100{
+  max-height: 100% !important;
+}
+
+
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.custom-header {
+  tr{
+
+  th{
+
+    font-size: 16px;
+  } }
+}
